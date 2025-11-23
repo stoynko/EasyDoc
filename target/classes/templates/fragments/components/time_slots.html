@@ -1,0 +1,13 @@
+<th:block th:fragment="time-slots">
+
+    <th:block th:each="slot : ${timeSlots}">
+        <button type="button"
+                class="time-slot-btn"
+                th:data-time="${#temporals.format(slot.time, 'HH:mm')}"
+                th:text="${#temporals.format(slot.time, 'HH:mm')}"
+                th:classappend="${slot.available} ? '' : ' unavailable'"
+                th:disabled="${!slot.available}">
+        </button>
+    </th:block>
+
+</th:block>

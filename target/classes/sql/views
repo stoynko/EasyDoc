@@ -1,0 +1,61 @@
+-- Accounts
+CREATE VIEW `v_accounts` AS
+SELECT
+  a.`id`,
+  a.`email_address`,
+  a.`password_hash`,
+  a.`first_name`,
+  a.`last_name`,
+  a.`date_of_birth`,
+  GROUP_CONCAT(ar.`roles` ORDER BY ar.`roles` SEPARATOR ',') AS `roles`,
+  a.`is_active`,
+  a.`created_by`,
+  a.`updated_by`,
+  a.`created_at`,
+  a.`updated_at`
+FROM `accounts` a
+LEFT JOIN `account_roles` ar
+  ON ar.`account_id` = a.`id`
+GROUP BY
+  a.`id`,
+  a.`email_address`,
+  a.`password_hash`,
+  a.`first_name`,
+  a.`last_name`,
+  a.`date_of_birth`,
+  a.`is_active`,
+  a.`created_by`,
+  a.`updated_by`,
+  a.`created_at`,
+  a.`updated_at`;
+
+  -- Appointments
+  DROP VIEW IF EXISTS `v_appointments`;
+  CREATE VIEW `v_appointments` AS
+  SELECT
+    ap.`id`,
+    ap.`patient_id`,
+    ap.`doctor_id`,
+    ap.`status`,
+    ap.`reason`,
+    ap.`starts_at`,
+    ap.`ends_at`,
+    ap.`created_by`,
+    ap.`updated_by`,
+    ap.`created_at`,
+    ap.`updated_at`
+  FROM `appointments` ap;
+
+  -- Medical Notes
+  DROP VIEW IF EXISTS `v_medical_notes`;
+  CREATE VIEW `v_medical_notes` AS
+  SELECT
+    mn.`id`,
+    mn.`appointment_id`,
+    mn.`summary`,
+    mn.`recommendations`,
+    mn.`created_by`,
+    mn.`updated_by`,
+    mn.`created_at`,
+    mn.`updated_at`
+  FROM `medical_notes` mn;

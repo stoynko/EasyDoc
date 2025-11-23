@@ -1,0 +1,178 @@
+<th:block th:fragment="workspace_navigation"
+          xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+    <div th:if="${!#strings.isEmpty(userSummary.firstName) or !#strings.isEmpty(userSummary.lastName)}" class="user-profile">
+        <div th:if="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR}" class="user-avatar">
+            <img th:if="${userSummary != null and !#strings.isEmpty(userSummary.profilePhotoUrl)}"
+                 th:src="${userSummary.profilePhotoUrl}" alt="Profile Photo">
+            <!--<th:block th:if="${professionalSummary == null or #strings.isEmpty(professionalSummary.avatarUrl)}">
+                <i class="fas fa-user-md"></i>
+            </th:block>-->
+        </div>
+
+        <div th:if="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR}" th:text="${'Dr. ' + userSummary.firstName + ' ' + userSummary.lastName}" class="user-name">Dr. John Doe</div>
+        <div th:unless="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR}" th:text="${userSummary.firstName + ' ' + userSummary.lastName}" class="user-name">Dr. John Doe</div>
+        <div th:if="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR
+            and professionalSummary != null}" th:text="${professionalSummary.expertise.displayValue}" class="doctor-expertise">
+            MD
+        </div>
+    </div>
+
+    <nav>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a th:href="@{/dashboard}" class="nav-link"
+                   th:classappend="${currentPath == '/dashboard'} ? ' active'">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('DOCTOR', 'PATIENT')">
+                <a th:href="@{/appointments}" class="nav-link"
+                   th:classappend="${currentPath == '/appointments'} ? ' active'">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                <a th:href="@{/reports}" class="nav-link"
+                   th:classappend="${currentPath == '/reports'} ? ' active'">
+                    <i class="fas fa-file-medical"></i>
+                    <span>Medical Reports</span>
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasRole('PATIENT')">
+                <a th:href="@{/doctors}" class="nav-link"
+                   th:classappend="${currentPath == '/doctors'} ? ' active'">
+                    <i class="fas fa-users"></i>
+                    <span>Doctors</span>
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasAnyRole('DOCTOR','PATIENT')">
+                <a th:href="@{/prescriptions}" class="nav-link"
+                   th:classappend="${currentPath == '/prescriptions'} ? ' active'">
+                    <i class="fas fa-prescription"></i>
+                    <span>Prescriptions</span>
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/users}" class="nav-link"
+                   th:classappend="${currentPath == '/users'} ? ' active'">
+                    <i class="fas fa-user"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/applications}" class="nav-link"
+                   th:classappend="${currentPath == '/applications'} ? ' active'">
+                    <i class="fas fa-user-md"></i>
+                    <span>Practitioner Applications</span>
+                </a>
+            </li>
+
+            <!--TODO: IMPLEMENT IF SUCH FEATURE WILL BE SUPPORTED-->
+            <!--<li class="nav-item">
+                <a th:href="@{/messages}" class="nav-link"
+                   th:classappend="${currentPath == '/messages'} ? ' active'">
+                    <i class="fas fa-envelope"></i>
+                    <span>Messages</span>
+                </a>
+            </li>-->
+
+            <li class="nav-divider"></li>
+
+            <li class="nav-item logout">
+                <a th:href="@{/logout}" class="nav-link logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Log out</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</th:block>
+
+<th:block th:fragment="settings_navigation" xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+        <ul class="nav-menu">
+
+            <!-- SECURITY DASHBOARD -->
+            <li class="nav-item">
+                <a th:href="@{/settings}" class="nav-link"
+                   th:classappend="${currentPath == '/settings'} ? ' active'">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- PERSONAL & CONTACT INFORMATION -->
+            <li class="nav-item">
+                <a th:href="@{/settings/personal-info}" class="nav-link"
+                   th:classappend="${currentPath == '/settings/personal-info'} ? ' active'">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Personal &amp; Contact Information</span>
+                </a>
+            </li>
+
+            <!-- PROFESSIONAL DETAILS -->
+            <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                <a th:href="@{/settings/professional-info}" class="nav-link"
+                   th:classappend="${currentPath == '/settings/professional-info'} ? ' active'">
+                    <i class="fas fa-stethoscope"></i>
+                    <span>Professional Expertise</span>
+                </a>
+            </li>
+
+            <!-- SECURITY DETAILS -->
+            <li class="nav-item">
+                <a th:href="@{/settings/security}" class="nav-link"
+                   th:classappend="${currentPath == '/settings/security'} ? ' active'">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Security</span>
+                </a>
+            </li>
+
+            <!-- PREFERENCES DETAILS -->
+            <li class="nav-item">
+                <a th:href="@{/settings/preferences}" class="nav-link"
+                   th:classappend="${currentPath == '/settings/preferences'} ? ' active'">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Preferences</span>
+                </a>
+            </li>
+
+            <!--TODO: SWITCH WHEN THERE IS ACTIVE PLAN-->
+
+            <!-- PRACTITIONER MEMBERSHIP -->
+            <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+                <a th:href="@{/settings/membership}" class="nav-link doctor"
+                   th:classappend="${currentPath == '/settings/membership'} ? ' active'">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Membership &amp; Billing </span>
+                </a>
+            </li>
+
+            <!--TODO: SWITCH WHEN THERE IS NO ACTIVE PLAN-->
+
+            <!-- PRACTITIONER ONBOARDING -->
+            <li th:if="${!hasSubmittedApplication}" class="nav-item" sec:authorize="hasRole('PATIENT')">
+                <a th:href="@{/onboarding/doctors}" class="nav-link doctor"
+                   th:classappend="${currentPath == '/onboarding/doctors' or currentPath == '/onboarding/doctors/submit'} ? ' active'">
+                    <i class="fas fa-user-md"></i>
+                    <span>Register As Practitioner</span>
+                </a>
+            </li>
+
+            <li class="nav-divider"></li>
+
+            <!-- DELETE ACCOUNT -->
+            <li class="nav-item">
+                <a th:href="@{/settings/delete}" class="nav-link delete"
+                   th:classappend="${currentPath == '/settings/delete'} ? ' active'">
+                    <i class="fas fa-user-slash"></i>
+                    <span>Delete your account</span>
+                </a>
+            </li>
+        </ul>
+</th:block>

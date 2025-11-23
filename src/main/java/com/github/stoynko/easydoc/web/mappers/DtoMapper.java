@@ -1,0 +1,172 @@
+package com.github.stoynko.easydoc.web.mappers;
+
+import com.github.stoynko.easydoc.models.Appointment;
+import com.github.stoynko.easydoc.models.Doctor;
+import com.github.stoynko.easydoc.models.PractitionerApplication;
+import com.github.stoynko.easydoc.models.User;
+import com.github.stoynko.easydoc.web.dto.request.UpdateContactDetailsRequest;
+import com.github.stoynko.easydoc.web.dto.request.UpdateEmailAddressRequest;
+import com.github.stoynko.easydoc.web.dto.request.UpdateAccountDetailsRequest;
+import com.github.stoynko.easydoc.web.dto.request.UpdateProfessionalDetailsRequest;
+import com.github.stoynko.easydoc.web.dto.request.RegisterPractitionerRequest;
+import com.github.stoynko.easydoc.web.dto.response.DoctorAppointmentResponse;
+import com.github.stoynko.easydoc.web.dto.response.DoctorBriefSummaryResponse;
+import com.github.stoynko.easydoc.web.dto.response.DoctorDetailedSummaryResponse;
+import com.github.stoynko.easydoc.web.dto.response.PatientAppointmentResponse;
+import com.github.stoynko.easydoc.web.dto.response.PatientSummaryResponse;
+import com.github.stoynko.easydoc.web.dto.response.PendingPractitionerApplicationResponse;
+import com.github.stoynko.easydoc.web.dto.response.UserSummaryResponse;
+import lombok.experimental.UtilityClass;
+
+import static com.github.stoynko.easydoc.utilities.ValidationUtilities.extractName;
+
+@UtilityClass
+public class DtoMapper {
+
+    public UpdateAccountDetailsRequest getPersonalDetailsFrom(User user) {
+        return UpdateAccountDetailsRequest.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .dateOfBirth(user.getDateOfBirth())
+                .gender(user.getGender())
+                .build();
+    }
+
+    public UpdateContactDetailsRequest getContactDetailsFrom(User user) {
+        return UpdateContactDetailsRequest.builder()
+                .phoneNumber(user.getPhoneNumber())
+                .build();
+    }
+
+    public UpdateEmailAddressRequest getEmailAddressFrom(User user) {
+        return UpdateEmailAddressRequest.builder()
+                .currentEmailAddress(user.getEmailAddress())
+                .build();
+    }
+
+    public RegisterPractitionerRequest getRegisterPractitionerFrom(User user) {
+        return RegisterPractitionerRequest.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .dateOfBirth(user.getDateOfBirth())
+                .gender(user.getGender())
+                .build();
+    }
+
+    public PatientSummaryResponse getUserSummary(User user) {
+        return PatientSummaryResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName() != null ? user.getFirstName() : "")
+                .lastName(user.getLastName() != null ? user.getLastName() : "")
+                .gender(user.getGender())
+                .build();
+    }
+
+    public UpdateProfessionalDetailsRequest getProfessionalDetailsFrom(Doctor doctor) {
+        return UpdateProfessionalDetailsRequest.builder()
+                .expertise(doctor.getExpertise())
+                .yearsExperience(doctor.getYearsExperience())
+                .practiceLocation(doctor.getPracticeLocation())
+                .professionalHighlights(doctor.getProfessionalHighlights())
+                .build();
+    }
+
+    public static UpdateAccountDetailsRequest getChangePersonalDetailsFrom(RegisterPractitionerRequest request) {
+        return UpdateAccountDetailsRequest.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .dateOfBirth(request.getDateOfBirth())
+                .gender(request.getGender())
+                .build();
+    }
+
+    public PatientSummaryResponse toUserDetailsFrom(User user) {
+        return PatientSummaryResponse.builder()
+                .id(user.getId())
+                .emailAddress(user.getEmailAddress())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .build();
+    }
+
+    public UserSummaryResponse toUserSummaryFrom(User user) {
+        return UserSummaryResponse.builder()
+                .id(user.getId())
+                .name(extractName(user))
+                .accountRole(user.getRole())
+                .accountStatus(user.getAccountStatus())
+                .emailAddress(user.getEmailAddress())
+                .creationDate(user.getCreatedModifiedAt().getCreatedAt())
+                .build();
+    }
+
+    public static DoctorBriefSummaryResponse toDoctorBriefInfoFrom(Doctor doctor) {
+        return DoctorBriefSummaryResponse.builder()
+                .id(doctor.getId())
+                .firstName(doctor.getUser().getFirstName())
+                .lastName(doctor.getUser().getLastName())
+                .profilePhotoUrl(doctor.getProfilePhotoUrl())
+                .expertise(doctor.getExpertise())
+                .practiceLocation(doctor.getPracticeLocation())
+                .build();
+    }
+
+    public static DoctorDetailedSummaryResponse toDoctorDetailedInfoFrom(Doctor doctor) {
+        return DoctorDetailedSummaryResponse.builder()
+                .id(doctor.getId())
+                .firstName(doctor.getUser().getFirstName())
+                .lastName(doctor.getUser().getLastName())
+                .emailAddress(doctor.getUser().getEmailAddress())
+                .phoneNumber(doctor.getUser().getPhoneNumber())
+                .profilePhotoUrl(doctor.getProfilePhotoUrl())
+                .uin(doctor.getUin())
+                .expertise(doctor.getExpertise())
+                .yearsExperience(doctor.getYearsExperience())
+                .practiceLocation(doctor.getPracticeLocation())
+                .professionalHighlights(doctor.getProfessionalHighlights())
+                .spokenLanguages(doctor.getSpokenLanguages())
+                .build();
+    }
+
+    public static PatientAppointmentResponse getPatientAppointmentDetailsFrom(Appointment appointment) {
+        return PatientAppointmentResponse.builder()
+                .appointmentId(appointment.getId())
+                .appointmentPublicId(appointment.getPublicId())
+                .doctorUin(appointment.getDoctor().getUin())
+                .doctorFirstName(appointment.getDoctor().getUser().getFirstName())
+                .doctorLastName(appointment.getDoctor().getUser().getLastName())
+                .doctorExpertise(appointment.getDoctor().getExpertise())
+                .appointmentReason(appointment.getAppointmentReason())
+                .appointmentStatus(appointment.getStatus())
+                .startsAt(appointment.getStartsAt())
+                .build();
+    }
+
+    public static DoctorAppointmentResponse getDoctorAppointmentDetailsFrom(Appointment appointment) {
+
+        User patient = appointment.getPatient();
+
+        return DoctorAppointmentResponse.builder()
+                .appointmentPublicId(appointment.getPublicId())
+                .patientPin(appointment.getPatient().getPersonalIdentificationNumber())
+                .patientName(extractName(patient))
+                .patientEmailAddress(patient.getEmailAddress())
+                .appointmentReason(appointment.getAppointmentReason())
+                .appointmentStatus(appointment.getStatus())
+                .startsAt(appointment.getStartsAt())
+                .build();
+    }
+
+    public static PendingPractitionerApplicationResponse toPendingPractitionerApplicationFrom(PractitionerApplication application) {
+
+        return PendingPractitionerApplicationResponse.builder()
+                .applicationId(application.getId())
+                .profilePhotoUrl(application.getProfilePhotoUrl())
+                .doctorUin(application.getUin())
+                .doctorExpertise(application.getExpertise())
+                .doctorProfessionalHighlights(application.getProfessionalHighlights())
+                .doctorPracticeLocation(application.getPracticeLocation())
+                .doctorSpokenLanguages(application.getSpokenLanguages())
+                .build();
+    }
+}

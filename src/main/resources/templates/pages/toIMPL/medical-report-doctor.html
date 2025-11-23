@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{pages/main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">Medical Report</title>
+    <th:block data-fragment="head">
+        <!-- Using only styles declared in base.css -->
+    </th:block>
+</head>
+<body data-fragment="body">
+
+<header th:insert="~{fragments/components/header :: header_auth}"></header>
+
+<div class="workspace-container">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <!--<aside th:insert="~{fragments/components/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>-->
+
+    <main class="main-content">
+
+    <div class="dashboard-card">
+        <div class="register-header">
+            <h2>Medical Report Form</h2>
+            <p class="text-muted">Document examination findings and follow-up recommendations.</p>
+        </div>
+
+        <form th:action="@{/}" th:method="POST" class="add-form">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="report-id">Report Identifier</label>
+                    <input id="report-id" type="text" name="id" placeholder="Auto-generated" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="appointment">Appointment</label>
+                    <select id="appointment"
+                            name="appointmentId" required>
+                        <option value="" disabled selected>Select appointment</option>
+                        <option>
+                            Sample Appointment
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="accompanying-illnesses">Accompanying Illnesses</label>
+                <textarea id="accompanying-illnesses"
+                          name="accompanyingIllnesses"
+                          placeholder="List any accompanying illnesses"
+                          required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="anamnesis">Anamnesis</label>
+                <textarea id="anamnesis"
+                          name="anamnesis"
+                          placeholder="Summarize patient history"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="status-at-exam">Status at Exam</label>
+                <textarea id="status-at-exam"
+                          name="statusAtExam"
+                          placeholder="Describe patient status at examination"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="diagnostic-procedures">Diagnostic Procedures</label>
+                <textarea id="diagnostic-procedures"
+                          name="diagnosticProdecures"
+                          placeholder="Outline diagnostic procedures performed"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="recommendations">Recommendations</label>
+                <textarea id="recommendations"
+                          name="recommendations"
+                          placeholder="Add recommended follow-up actions"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="prescription">Prescription</label>
+                <textarea id="prescription"
+                          name="prescription"
+                          placeholder="Specify medication or therapy"></textarea>
+            </div>
+
+            <div class="form-actions right-align">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i>
+                    Save Report
+                </button>
+            </div>
+        </form>
+    </div>
+    </main>
+
+</div>
+
+</body>
+</html>
+

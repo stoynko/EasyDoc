@@ -1,0 +1,113 @@
+<th:block th:fragment="registration-failure">
+    <section class="register-container">
+        <div class="error-wrapper">
+            <div class="register-header">
+                <i class="fas fa-exclamation-circle error-icon"></i>
+                <h2 class="error-title">Registration Failed</h2>
+            </div>
+
+            <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+            <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We could not process your request
+
+            <div class="form-actions">
+                <a th:href="@{/register}" class="btn-primary">
+                    <i class="fas fa-redo"></i> Try Again
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="onboarding-account-info-submit-failure">
+
+    <section class="register-container">
+        <div class="error-wrapper">
+
+            <div class="register-header">
+                <i class="fas fa-exclamation-circle error-icon"></i>
+                <h2 class="error-title">Onboarding Submission Failed</h2>
+                <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We could not process your request
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/onboarding/account}" class="btn-primary">
+                    <i class="fas fa-redo"></i> Try Again
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="onboarding-doctor-info-submit-failure">
+
+    <section class="register-container">
+        <div class="error-wrapper">
+
+            <div class="register-header">
+                <i class="fas fa-exclamation-circle error-icon"></i>
+                <h2 class="error-title">Onboarding Submission Failed</h2>
+                <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We could not process your request
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/onboarding/doctors/submit}" class="btn-primary">
+                    <i class="fas fa-redo"></i> Try Again
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="appointment-booking-failed">
+    <section class="register-container">
+        <div class="error-wrapper">
+            <div class="register-header">
+                <i class="fas fa-exclamation-circle error-icon"></i>
+                <h2 class="success-title">Appointment Failed</h2>
+                <p class="success-subtitle">We encountered an error while booking your appointment</p>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/appointments}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> View Appointments
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="404">
+
+    <div class="view-card is-centered">
+        <div class="view-card-title">
+            <p>Oops! Something went wrong.</p>
+        </div>
+        <p class="view-card-subtitle">
+            The page or resource you're looking for doesn't exist or has been moved.
+        </p>
+
+        <div class="form-actions">
+            <a th:href="@{/dashboard}" class="btn-primary">Back to Dashboard</a>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block th:fragment="401">
+
+     <div class="view-card is-centered">
+        <div class="view-card-title">
+            <p>Access Denied</p>
+        </div>
+        <p class="view-card-subtitle">
+            You do not have permission to view this page.
+        </p>
+
+        <div class="form-actions">
+            <a th:href="@{/dashboard}" class="btn-primary">Back to Dashboard</a>
+        </div>
+    </div>
+
+</th:block>

@@ -1,0 +1,162 @@
+<th:block th:fragment="patient_prescriptions">
+    <p>THIS IS THE PATIENT'S PRESCRIPTIONS</p>
+    <section class="prescriptions-list">
+
+        <article class="dashboard-card">
+
+            <header class="prescriptions-card-header">
+                <h2 class="section-heading"> <span class="prescriptions-meta-value">3</span> Active Prescriptions</h2>
+            </header>
+            <div class="table-wrapper" >
+                <table class="prescriptions-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Reference</th>
+                        <th scope="col">Prescribing Doctor</th>
+                        <th scope="col">Issued On</th>
+                        <th scope="col">Valid Until</th>
+                        <th scope="col" class="th-actions">Details</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td data-label="Reference" class="prescription-id">EP-45209</td>
+                        <td data-label="Prescribing Doctor">Dr. John Doe</td>
+                        <td data-label="Issued On">07 Nov 2025</td>
+                        <td data-label="Valid Until">21 Dec 2025</td>
+                        <td data-label="Details" class="table-actions">
+                            <a class="table-link">View</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="empty-container">
+                <div class="empty-container-icon" aria-hidden="true">
+                    <i class="fas fa-file-prescription"></i>
+                </div>
+                <h3 class="empty-container-title">No active prescriptions</h3>
+                <p class="empty-container-description">Active prescriptions will appear here once your doctor issues a treatment plan.</p>
+            </div>
+        </article>
+
+        <article class="dashboard-card">
+            <header class="prescriptions-card-header">
+                <h2 class="section-heading"><span class="prescriptions-meta-value">7</span> Expired Prescriptions</h2>
+            </header>
+            <div class="table-wrapper">
+                <table class="prescriptions-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Reference</th>
+                        <th scope="col">Prescribing Doctor</th>
+                        <th scope="col">Issued On</th>
+                        <th scope="col">Completed On</th>
+                        <th scope="col" class="th-actions">Details</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td data-label="Reference" class="prescription-id">OC-11854</td>
+                        <td data-label="Prescribing Doctor">Dr. Olivia Chen</td>
+                        <td data-label="Issued On">04 Oct 2025</td>
+                        <td data-label="Completed On">02 Nov 2025</td>
+                        <td data-label="Details" class="table-actions">
+                            <a class="table-link">View</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="empty-container">
+                <div class="empty-container-icon" aria-hidden="true">
+                    <i class="fas fa-archive"></i>
+                </div>
+                <h3 class="empty-container-title">No expired prescriptions</h3>
+                <p class="empty-container-description">Past prescriptions will be listed here the prescription was fulfilled.</p>
+            </div>
+        </article>
+    </section>
+</th:block>
+
+<th:block th:fragment="doctor_prescriptions">
+    <p>THIS IS THE DOCTOR'S PRESCRIPTIONS</p>
+
+    <section class="prescriptions-list">
+
+        <article class="dashboard-card">
+
+            <header class="prescriptions-card-header">
+                <h2 class="section-heading"> <span class="prescriptions-meta-value">3</span> Active Prescriptions</h2>
+            </header>
+            <div class="table-wrapper" >
+                <table class="prescriptions-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Reference</th>
+                        <th scope="col">Prescribing Doctor</th>
+                        <th scope="col">Issued On</th>
+                        <th scope="col">Valid Until</th>
+                        <th scope="col" class="th-actions">Details</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td data-label="Reference" class="prescription-id">EP-45209</td>
+                        <td data-label="Prescribing Doctor">Dr. John Doe</td>
+                        <td data-label="Issued On">07 Nov 2025</td>
+                        <td data-label="Valid Until">21 Dec 2025</td>
+                        <td data-label="Details" class="table-actions">
+                            <a class="table-link">View</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="prescriptions-empty">
+                <div class="empty-illustration" aria-hidden="true">
+                    <i class="fas fa-file-prescription"></i>
+                </div>
+                <h3 class="empty-title">No active prescriptions</h3>
+                <p class="empty-description">Active prescriptions will appear here once your doctor issues a treatment plan.</p>
+            </div>
+        </article>
+
+        <article class="dashboard-card">
+            <header class="prescriptions-card-header">
+                <h2 class="section-heading"><span class="prescriptions-meta-value">7</span> Expired Prescriptions</h2>
+            </header>
+            <div class="table-wrapper">
+                <table class="prescriptions-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Reference</th>
+                        <th scope="col">Prescribing Doctor</th>
+                        <th scope="col">Issued On</th>
+                        <th scope="col">Completed On</th>
+                        <th scope="col" class="th-actions">Details</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td data-label="Reference" class="prescription-id">OC-11854</td>
+                        <td data-label="Prescribing Doctor">Dr. Olivia Chen</td>
+                        <td data-label="Issued On">04 Oct 2025</td>
+                        <td data-label="Completed On">02 Nov 2025</td>
+                        <td data-label="Details" class="table-actions">
+                            <a class="table-link">View</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="prescriptions-empty">
+                <div class="empty-illustration" aria-hidden="true">
+                    <i class="fas fa-archive"></i>
+                </div>
+                <h3 class="empty-title">No expired prescriptions</h3>
+                <p class="empty-description">Past prescriptions will be listed here the prescription was fulfilled.</p>
+            </div>
+        </article>
+    </section>
+</th:block>

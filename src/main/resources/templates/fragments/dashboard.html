@@ -1,0 +1,137 @@
+<th:block th:fragment="patient_dashboard"
+          xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+    <p> THIS IS THE PATIENT'S DASHBOARD</p>
+    <div sec:authorize="isAuthenticated()">
+        <small>Authorities: <span sec:authentication="authorities"></span></small>
+    </div>
+</th:block>
+
+<th:block th:fragment="doctor_dashboard" xmlns:th="http://www.thymeleaf.org">
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <div>
+                    <div class="summary-label">Appointments Today</div>
+                    <div class="summary-value">12</div>
+                    <div class="summary-details">63% of total available</div>
+                </div>
+                <div class="summary-icon patient">
+                    <i class="fas fa-hospital-user"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <div>
+                    <div class="summary-label">Appointments This Week</div>
+                    <div class="summary-value">132</div>
+                    <div class="summary-details">53% of total available</div>
+                </div>
+                <div class="summary-icon calendar">
+                    <i class="fas fa-hospital-user"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <div>
+                    <div class="summary-label">Appointments This Month</div>
+                    <div class="summary-value">180</div>
+                    <div class="summary-details">15% of total available</div>
+                </div>
+                <div class="summary-icon calendar">
+                    <i class="fas fa-hospital-user"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <div>
+                    <div class="summary-label">New Patients This Month</div>
+                    <div class="summary-value">32</div>
+                    <div class="summary-details">+9 more compared to last month</div>
+                </div>
+                <div class="summary-icon calendar">
+                    <i class="fas fa-calendar-plus"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <div>
+                    <div class="summary-label">First Available Appointment</div>
+                    <div class="summary-value">07.11.2025</div>
+                    <div class="summary-details">at 09:00</div>
+                </div>
+                <div class="summary-icon calendar">
+                    <i class="fas fa-calendar-clock"></i>
+                </div>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <div>
+                    <div class="summary-label">Average Rating</div>
+                    <div class="summary-value">4.4</div>
+                    <div class="summary-details">from 273 reviews</div>
+                </div>
+                <div class="summary-icon calendar">
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="admin_dashboard" xmlns:th="http://www.thymeleaf.org">
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <div>
+                    <div class="summary-label">Active Users</div>
+                    <div th:text="${usersCountExceptAdmins}" class="summary-value" >Placeholder Count</div>
+                    <!--<div class="summary-details">63% of total available</div>-->
+                </div>
+                <div class="summary-icon patient">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <div>
+                    <div class="summary-label">Active Doctors</div>
+                    <div th:text="${doctorsCount}" class="summary-value">Placeholder Count</div>
+                    <!--<div class="summary-details">53% of total available</div>-->
+                </div>
+                <div class="summary-icon calendar">
+                    <i class="fas fa-user-md"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <div>
+                    <div class="summary-label">Pending Applications</div>
+                    <div th:text="${pendingApplicationsCount}" class="summary-value">Placeholder Count</div>
+                    <!--<div class="summary-details">15% of total available</div>-->
+                </div>
+                <div class="summary-icon calendar">
+                    <i class="fas fa-user-md"></i>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</th:block>
