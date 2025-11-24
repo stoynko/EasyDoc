@@ -14,7 +14,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 @Configuration
 @EnableMethodSecurity
 public class WebConfiguration implements WebMvcConfigurer {
@@ -27,7 +26,7 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .securityContext(securityContext -> securityContext.requireExplicitSave(false))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/", "/test/**", "/debug/**", "/doctors", "/onboarding/doctors","/register", "/error").permitAll()
+                        .requestMatchers("/", "/auth/verify-email", "/debug/**", "/doctors", "/onboarding/doctors","/register", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

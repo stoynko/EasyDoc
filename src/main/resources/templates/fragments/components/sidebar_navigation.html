@@ -158,7 +158,7 @@
             <!-- PRACTITIONER ONBOARDING -->
             <li th:if="${!hasSubmittedApplication}" class="nav-item" sec:authorize="hasRole('PATIENT')">
                 <a th:href="@{/onboarding/doctors}" class="nav-link doctor"
-                   th:classappend="${currentPath == '/onboarding/doctors' or currentPath == '/onboarding/doctors/submit'} ? ' active'">
+                   th:classappend="${currentPath == '/onboarding/doctors' or currentPath == '/onboarding/doctors/apply'} ? ' active'">
                     <i class="fas fa-user-md"></i>
                     <span>Register As Practitioner</span>
                 </a>

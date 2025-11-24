@@ -4,52 +4,7 @@
     padding: 10px 10px;
 }
 
-.category-filter-container {
-    margin-bottom: 30px;
-}
 
-.category-filter {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    padding: 20px 0;
-    scrollbar-width: thin;
-}
-
-.category-filter::-webkit-scrollbar {
-    height: 4px;
-}
-
-.category-filter::-webkit-scrollbar-thumb {
-    background: var(--color-gray-medium);
-    border-radius: 2px;
-}
-
-.category-btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    font-family: 'Poppins', sans-serif;
-    color: var(--color-text-muted);
-    background: var(--color-white);
-    cursor: pointer;
-    transition: all 0.3s;
-    white-space: nowrap;
-    flex-shrink: 0;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.category-btn:hover {
-    background: var(--color-gray-light);
-}
-
-.category-btn.active {
-    background: var(--color-primary);
-    color: var(--color-white);
-}
 
 .doctors-grid {
     display: grid;

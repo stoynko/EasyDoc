@@ -33,3 +33,24 @@
             </a>
         </div>
 </th:block>
+
+<th:block th:fragment="user-roles">
+
+    <div class="category-filter">
+        <a th:href="@{/users}"
+           th:classappend="${role == null} ? ' active' : ''" class="category-btn">ALL
+        </a>
+
+        <a th:href="@{/users(role=${T(com.github.stoynko.easydoc.models.enums.AccountRole).PATIENT})}"
+           class="category-btn"
+           th:classappend="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).PATIENT} ? ' active' : ''">
+            PATIENTS
+        </a>
+
+        <a th:href="@{/users(role=${T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR})}"
+           class="category-btn"
+           th:classappend="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR} ? ' active' : ''">
+            DOCTORS
+        </a>
+    </div>
+</th:block>

@@ -46,6 +46,7 @@ com/github/stoynko/easydoc/web/dto/request/DeleteAccountRequest.class
 com/github/stoynko/easydoc/web/dto/response/PatientAppointmentResponse.class
 com/github/stoynko/easydoc/config/RedisConfiguration.class
 com/github/stoynko/easydoc/web/dto/DtoAggregator$1.class
+com/github/stoynko/easydoc/services/NotificationService.class
 com/github/stoynko/easydoc/config/CloudinaryConfiguration.class
 com/github/stoynko/easydoc/web/dto/response/DoctorAppointmentResponse.class
 com/github/stoynko/easydoc/annotation/MaxFileSize.class

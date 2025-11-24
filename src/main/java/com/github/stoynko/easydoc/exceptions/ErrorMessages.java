@@ -18,8 +18,9 @@ public enum ErrorMessages {
     APPOINTMENT_NOT_FOUND("Appointment with such details does not exist"),
     APPOINTMENT_DATE_INVALID("The date for the appointment cannot be in the past"),
     APPOINTMENT_TIME_OUTSIDE_HOURS("The time for the appointment cannot be outside the working hours"),
-    APPOINTMENT_TIME_INVALID("The date for the appointment cannot be in the past");
+    APPOINTMENT_TIME_INVALID("The date for the appointment cannot be in the past"),
 
+    INVALID_TOKEN("Invalid or expired token");
 
     private final String errorMessage;
 

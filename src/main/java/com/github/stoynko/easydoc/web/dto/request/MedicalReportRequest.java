@@ -1,6 +1,5 @@
 package com.github.stoynko.easydoc.web.dto.request;
 
-import com.github.stoynko.easydoc.models.Appointment;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +10,7 @@ public class MedicalReportRequest {
 
     private UUID appointmentId;
 
-    private String accompanyingIlnesses;
+    private String accompanyingIllnesses;
 
     private String anamnesis;
 

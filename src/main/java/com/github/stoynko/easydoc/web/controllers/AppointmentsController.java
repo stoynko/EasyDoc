@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +31,6 @@ import static com.github.stoynko.easydoc.web.dto.DtoContext.forTargetResource;
 import static com.github.stoynko.easydoc.web.model.ViewPage.ACCOUNT;
 import static com.github.stoynko.easydoc.web.model.ViewPage.APPOINTMENT;
 import static com.github.stoynko.easydoc.web.model.ViewPage.APPOINTMENTS;
-import static com.github.stoynko.easydoc.web.model.ViewFragment.NONE;
 import static com.github.stoynko.easydoc.web.model.ViewPage.CONFIRMATION;
 import static com.github.stoynko.easydoc.web.model.ViewPage.DOCTORS;
 
@@ -70,15 +70,14 @@ public class AppointmentsController {
                                     Model model) {
 
         List<AppointmentTimeSlotResponse> slots = appointmentService.getTimeSlotsFor(doctorId, date);
-
         model.addAttribute("timeSlots", slots);
-
         return "fragments/components/time_slots :: time-slots";
     }
 
 
 
     @PostMapping("/appointments/doctor/{doctorId}")
+    //TODO: @PreAuthorize(value = "hasAuthority('STATUS_ACTIVE')")
     public ModelAndView submitAppointmentPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                               @PathVariable UUID doctorId,
                                               @Valid AppointmentRequest request,
@@ -101,12 +100,7 @@ public class AppointmentsController {
     @GetMapping("/doctor/{doctorId}")
     public ModelAndView getDoctorProfilePage(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                                 @PathVariable UUID doctorId) {
-
         return pageBuilder.buildPage(forTargetResource(ACCOUNT, principal, doctorId));
-
-        //Doctor doctor = doctorService.getDoctorById(uuid);
-        /*modelAndView.addObject("doctorSummary", DoctorMapper.toDoctorDetailedInfoFrom(doctor));
-        return modelAndView;*/
     }
 
     @GetMapping(value = "/doctors", params = "category")
@@ -122,6 +116,15 @@ public class AppointmentsController {
         return modelAndView;
     }
 
+    @PostMapping("/appointments/{appointmentId}/view")
+    public ModelAndView viewAppointmentDetails(@AuthenticationPrincipal UserAuthenticationDetails principal,
+                                                @PathVariable UUID appointmentId) {
+
+        appointmentService.markAsNoShow(appointmentId, principal);
+        ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
+        return modelAndView.addObject("confirmationMessage", "appointmentMarkNoShow");
+    }
+
     @PostMapping("/appointments/{appointmentId}/cancel")
     public ModelAndView cancelAppointment(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                          @PathVariable UUID appointmentId) {
@@ -129,5 +132,14 @@ public class AppointmentsController {
         appointmentService.cancelAppointment(appointmentId, principal);
         ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
         return modelAndView.addObject("confirmationMessage", "appointmentCancellationSuccess");
+    }
+
+    @PostMapping("/appointments/{appointmentId}/no-show")
+    public ModelAndView markAppointmentAsNoShow(@AuthenticationPrincipal UserAuthenticationDetails principal,
+                                          @PathVariable UUID appointmentId) {
+
+        appointmentService.markAsNoShow(appointmentId, principal);
+        ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
+        return modelAndView.addObject("confirmationMessage", "appointmentMarkNoShow");
     }
 }

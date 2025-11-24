@@ -11,7 +11,6 @@ import com.github.stoynko.easydoc.web.dto.DtoAggregator;
 import com.github.stoynko.easydoc.web.dto.DtoContext;
 import com.github.stoynko.easydoc.web.dto.request.AppointmentRequest;
 import com.github.stoynko.easydoc.web.dto.request.LoginRequest;
-import com.github.stoynko.easydoc.web.dto.request.RegisterPractitionerRequest;
 import com.github.stoynko.easydoc.web.dto.request.RegisterRequest;
 import com.github.stoynko.easydoc.web.dto.request.SubmitAccountDetailsRequest;
 import com.github.stoynko.easydoc.web.mappers.DtoMapper;
@@ -25,10 +24,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.github.stoynko.easydoc.models.enums.AccountRole.PATIENT;
-import static com.github.stoynko.easydoc.web.dto.DtoAggregator.MODEL_ELEMENT_FRAGMENT;
-import static com.github.stoynko.easydoc.web.model.ViewPage.ACCOUNT_ONBOARDING;
-import static com.github.stoynko.easydoc.web.model.ViewPage.LOGIN;
-import static com.github.stoynko.easydoc.web.model.ViewPage.REGISTER;
 
 @Component
 public class PatientRoleViewResolver implements RoleViewResolver {
@@ -117,7 +112,7 @@ public class PatientRoleViewResolver implements RoleViewResolver {
         }
 
         if (dtoContext.principal() != null) {
-            model.put("role", dtoContext.principal().getRole());
+            //model.put("role", dtoContext.principal().getRole());
             model.put("userSummary", DtoMapper.getUserSummary(userService.getUserById(dtoContext.principal().getId())));
             model.put("hasSubmittedApplication", practitionerApplicationService.hasSubmittedApplication(dtoContext.principal().getId()));
         }

@@ -55,7 +55,7 @@ public class Doctor {
     @Column(name = "uin", nullable = false, unique = true)
     private String uin;
 
-    @Enumerated(value = EnumType.STRING)
+    //@Enumerated(value = EnumType.STRING)
     @Column(name = "expertise", nullable = false)
     private Expertise expertise;
 

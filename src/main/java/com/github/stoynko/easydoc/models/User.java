@@ -15,16 +15,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.util.UUID;
+
+import static com.github.stoynko.easydoc.models.enums.AccountStatus.ACTIVE;
 
 @Setter
 @Getter
@@ -69,6 +73,16 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private AccountRole role;
 
+    @Column(name = "email_verified", nullable = false)
+    private boolean emailVerified;
+
+    @UpdateTimestamp
+    @Column(name = "email_verified_at", nullable = false)
+    private LocalDateTime emailVerifiedAt;
+
+    @Column(name = "profile_completed", nullable = false)
+    private boolean profileCompleted;
+
     @Column(name = "account_status", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private AccountStatus accountStatus;
@@ -80,4 +94,18 @@ public class User {
     @Embedded
     @Builder.Default
     private CreatedModifiedAt createdModifiedAt = new CreatedModifiedAt();
+
+    public boolean isProfileCompleted(User user) {
+        return user.isProfileCompleted();
+    }
+
+    public boolean isEmailVerified(User user) {
+        return user.isEmailVerified();
+    }
+
+    public boolean isFullyActive(User user) {
+        return user.getAccountStatus() == ACTIVE
+                && user.isProfileCompleted()
+                && user.isEmailVerified();
+    }
 }

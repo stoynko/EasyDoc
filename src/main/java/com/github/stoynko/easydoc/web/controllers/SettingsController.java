@@ -39,7 +39,6 @@ import static com.github.stoynko.easydoc.web.model.ViewPage.CONFIRMATION;
 import static com.github.stoynko.easydoc.web.model.ViewPage.NOTIFICATIONS;
 import static com.github.stoynko.easydoc.web.model.ViewPage.SETTINGS;
 
-
 @Controller
 public class SettingsController {
 

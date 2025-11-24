@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import com.github.stoynko.easydoc.models.User;
 import com.github.stoynko.easydoc.models.enums.ApplicationStatus;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

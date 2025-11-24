@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">Notifications</title>
+    <th:block data-fragment="head">
+        <link rel="stylesheet" href="/css/notifications.css" th:href="@{/css/notifications.css}">
+    </th:block>
+</head>
+<body data-fragment="body">
+
+<header th:insert="~{fragments/components/header :: header_auth}"></header>
+
+<div class="workspace-container">
+    <aside class="sidebar"
+           th:insert="~{fragments/components/sidebar_navigation :: settings_navigation}"></aside>
+
+    <main class="main-content">
+        <section class="dashboard-card notifications-card">
+
+            <div class="notifications-filters">
+                <span class="filters-label text-muted">Filter by:</span>
+                <div class="filters-group">
+                    <a class="btn filter-btn active"
+                       href="?filter=all"
+                       data-filter="all">
+                        All
+                    </a>
+                    <a class="btn filter-btn"
+                       href="?filter=system"
+                       data-filter="system">
+                        System
+                    </a>
+                    <a class="btn filter-btn"
+                       href="?filter=messages"
+                       data-filter="messages">
+                        Messages
+                    </a>
+                </div>
+            </div>
+
+            <div class="notifications-content">
+                <table class="notifications-table" role="table" aria-label="Notifications">
+                    <tbody id="notifications-list">
+                    <tr>
+                        <td class="empty-state" colspan="3">
+                            <div class="empty-illustration" aria-hidden="true">
+                                <i class="fa-solid fa-envelope-open-text"></i>
+                            </div>
+                            <h2 class="empty-title">You're all caught up</h2>
+                            <p class="empty-message text-muted">
+                                We will let you know as soon as something new arrives.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr class="notification-item is-unread" data-id="1" data-type="system">
+                        <td class="notification-item-badge">
+                            <span class="notification-icon">
+                                <i class="fa-solid fa-bell-concierge"></i>
+                            </span>
+                        </td>
+                        <td class="notification-item-body">
+                            <div class="notification-heading">
+                                <span class="notification-title">
+                                    New lab results are available
+                                </span>
+                                <span class="notification-meta text-muted">
+                                    2m ago
+                                </span>
+                            </div>
+                            <p class="notification-message text-muted">
+                                Review the latest blood panel uploaded by the diagnostic team.
+                            </p>
+                        </td>
+                        <td class="notification-item-actions">
+                            <button class="btn btn-ghost btn-small"
+                                    type="button"
+                                    data-action="mark-read"
+                                    data-id="1">
+                                Mark read
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="notification-item" data-id="2" data-type="messages">
+                        <td class="notification-item-badge">
+                            <span class="notification-icon" aria-hidden="true">
+                                <i class="fa-solid fa-comment-medical"></i>
+                            </span>
+                        </td>
+                        <td class="notification-item-body">
+                            <div class="notification-heading">
+                                <span class="notification-title">
+                                    Message from Dr. Novak
+                                </span>
+                                <span class="notification-meta text-muted">
+                                    15m ago
+                                </span>
+                            </div>
+                            <p class="notification-message text-muted">
+                                “Please monitor your blood pressure twice daily and log it in the app.”
+                            </p>
+                        </td>
+                        <td class="notification-item-actions">
+                            <button class="btn btn-ghost btn-small"
+                                    type="button"
+                                    data-action="mark-read"
+                                    data-id="2">
+                                Mark read
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="notification-item" data-id="3" data-type="system">
+                        <td class="notification-item-badge">
+                            <span class="notification-icon" aria-hidden="true">
+                                <i class="fa-solid fa-user-doctor"></i>
+                            </span>
+                        </td>
+                        <td class="notification-item-body">
+                            <div class="notification-heading">
+                                <span class="notification-title">
+                                    Annual physical scheduled
+                                </span>
+                                <span class="notification-meta text-muted">
+                                    Today 09:15
+                                </span>
+                            </div>
+                            <p class="notification-message text-muted">
+                                Your appointment with Dr. Petkova is confirmed for Friday, 11:00 AM.
+                            </p>
+                        </td>
+                        <td class="notification-item-actions">
+                            <button class="btn btn-ghost btn-small"
+                                    type="button"
+                                    data-action="view-details"
+                                    data-id="3">
+                                View details
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="notification-item" data-id="4" data-type="messages">
+                        <td class="notification-item-badge">
+                            <span class="notification-icon" aria-hidden="true">
+                                <i class="fa-solid fa-prescription-bottle-medical"></i>
+                            </span>
+                        </td>
+                        <td class="notification-item-body">
+                            <div class="notification-heading">
+                                <span class="notification-title">
+                                    Prescription refill ready
+                                </span>
+                                <span class="notification-meta text-muted">
+                                    Yesterday
+                                </span>
+                            </div>
+                            <p class="notification-message text-muted">
+                                Your refill for Atorvastatin is prepared. Collect it from the pharmacy within 48 hours.
+                            </p>
+                        </td>
+                        <td class="notification-item-actions">
+                            <button class="btn btn-ghost btn-small"
+                                    type="button"
+                                    data-action="mark-read"
+                                    data-id="4">
+                                Mark read
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+</body>
+</html>
+

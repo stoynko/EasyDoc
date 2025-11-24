@@ -2,25 +2,26 @@ package com.github.stoynko.easydoc.web.model;
 
 public enum ViewPage {
 
-    INDEX("pages/index"),
-    REGISTER("pages/register"),
-    LOGIN("pages/login"),
-    DASHBOARD("pages/dashboard"),
-    APPOINTMENTS("pages/appointments"),
-    APPOINTMENT("pages/appointment"),
-    PRESCRIPTIONS("pages/prescriptions"),
-    MEDICAL_REPORTS("pages/reports"),
-    DOCTORS("pages/doctors"),
-    ACCOUNT_ONBOARDING("pages/onboarding-account"),
-    DOCTOR_ONBOARDING("pages/onboarding"),
-    PRACTITIONER_APPLICATIONS("pages/applications"),
-    USERS("pages/users"),
-    ACCOUNT("pages/account"),
-    SETTINGS("pages/settings"),
-    NOTIFICATIONS("pages/notifications"),
-    MESSAGES("pages/messages"),
-    CONFIRMATION("pages/confirmation"),
-    ERROR("pages/errors");
+    INDEX("index"),
+    REGISTER("register"),
+    LOGIN("login"),
+    DASHBOARD("dashboard"),
+    APPOINTMENTS("appointments"),
+    APPOINTMENT("appointment_creation"),
+    PRESCRIPTIONS("prescriptions"),
+    MEDICAL_REPORT_CREATION("medical_report_creation"),
+    MEDICAL_REPORTS("reports"),
+    DOCTORS("doctors"),
+    ACCOUNT_ONBOARDING("onboarding_account"),
+    DOCTOR_ONBOARDING("onboarding_doctors"),
+    PRACTITIONER_APPLICATIONS("applications_review"),
+    USERS("users"),
+    ACCOUNT("account"),
+    SETTINGS("settings"),
+    NOTIFICATIONS("notifications"),
+    MESSAGES("messages"),
+    CONFIRMATION("action_confirmation"),
+    ERROR("action_error");
 
     private final String page;
 

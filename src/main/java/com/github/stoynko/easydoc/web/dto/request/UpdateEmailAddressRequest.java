@@ -1,6 +1,5 @@
 package com.github.stoynko.easydoc.web.dto.request;
 
-import jakarta.validation.constraints.AssertFalse;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

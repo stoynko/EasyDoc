@@ -1,5 +1,7 @@
 package com.github.stoynko.easydoc.services;
 
+import com.github.stoynko.easydoc.events.EmailChangeEvent;
+import com.github.stoynko.easydoc.events.RegistrationCompletedEvent;
 import com.github.stoynko.easydoc.events.UserContextRefreshEvent;
 import com.github.stoynko.easydoc.exceptions.CredentialsException;
 import com.github.stoynko.easydoc.exceptions.ErrorMessages;
@@ -7,12 +9,14 @@ import com.github.stoynko.easydoc.exceptions.InvalidInputException;
 import com.github.stoynko.easydoc.exceptions.UserDoesNotExistException;
 import com.github.stoynko.easydoc.exceptions.UserExistsWithEmailException;
 import com.github.stoynko.easydoc.exceptions.UserExistsWithPinException;
+import com.github.stoynko.easydoc.models.EmailVerificationToken;
 import com.github.stoynko.easydoc.models.User;
 import com.github.stoynko.easydoc.models.enums.AccountRole;
 import com.github.stoynko.easydoc.models.enums.AccountStatus;
 import com.github.stoynko.easydoc.repositories.UserRepository;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.web.dto.request.*;
+import com.github.stoynko.easydoc.web.dto.response.UserSummaryResponse;
 import com.github.stoynko.easydoc.web.mappers.EntityMapper;
 import jakarta.validation.Valid;
 
@@ -30,11 +34,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.github.stoynko.easydoc.exceptions.ErrorMessages.ACCOUNT_DUPLICATE_EMAIL;
 import static com.github.stoynko.easydoc.exceptions.ErrorMessages.ACCOUNT_NOT_FOUND;
 import static com.github.stoynko.easydoc.exceptions.ErrorMessages.CREDENTIALS_PASSWORD_INVALID;
 import static com.github.stoynko.easydoc.models.enums.AccountRole.ADMIN;
 import static com.github.stoynko.easydoc.models.enums.AccountRole.DOCTOR;
+import static com.github.stoynko.easydoc.models.enums.AccountStatus.ACTIVE;
+import static com.github.stoynko.easydoc.models.enums.AccountStatus.DELETED;
 import static com.github.stoynko.easydoc.models.enums.AccountStatus.EMAIL_UNVERIFIED;
+import static com.github.stoynko.easydoc.models.enums.AccountStatus.INCOMPLETE;
+import static com.github.stoynko.easydoc.models.enums.AccountStatus.SUSPENDED;
 import static com.github.stoynko.easydoc.utilities.ValidationUtilities.normalizeEmailAddress;
 
 @Slf4j
@@ -43,22 +52,26 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailVerificationService emailVerificationService;
     private final ApplicationEventPublisher eventPublisher;
+
 
     public static final String ACCOUNT_DELETION_CONFIGURATION = "I confirm the deletion of my account";
 
     @Autowired
-    public UserService(UserRepository repository, PasswordEncoder passwordEncoder, ApplicationEventPublisher eventPublisher) {
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder, EmailVerificationService emailVerificationService, ApplicationEventPublisher eventPublisher) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
+        this.emailVerificationService = emailVerificationService;
         this.eventPublisher = eventPublisher;
     }
 
+    @Transactional
     public void registerAccount(@Valid RegisterRequest registerRequest) {
 
         String emailAddress = normalizeEmailAddress(registerRequest.getEmailAddress());
         if (repository.existsByEmailAddress(emailAddress)) {
-            throw new UserExistsWithEmailException(ErrorMessages.ACCOUNT_DUPLICATE_EMAIL);
+            throw new UserExistsWithEmailException(ACCOUNT_DUPLICATE_EMAIL);
         }
 
         String hashedPassword = passwordEncoder.encode(registerRequest.getPassword());
@@ -66,6 +79,44 @@ public class UserService implements UserDetailsService {
 
         repository.save(user);
         log.info("-registration | emailAddress:{} timestamp:{}", registerRequest.getEmailAddress(), LocalDateTime.now());
+
+        EmailVerificationToken verificationToken = emailVerificationService.createTokenForUser(user);
+        eventPublisher.publishEvent(new RegistrationCompletedEvent(
+                user.getId(), user.getEmailAddress(), verificationToken.getId()));
+    }
+
+    public void verifyEmailAddress(UUID tokenId) {
+
+        EmailVerificationToken token = emailVerificationService.getValidToken(tokenId);
+        User user = token.getUser();
+        user.setEmailVerified(true);
+        updateAccountStatus(user);
+
+        emailVerificationService.markTokenAsUsed(token);
+        //eventPublisher.publishEvent(new UserContextRefreshEvent(user.getEmailAddress()));
+
+        log.info("-emailVerification | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
+    }
+
+    @Transactional
+    public void updateAccountStatus(User user) {
+        if (user.getAccountStatus() == SUSPENDED || user.getAccountStatus() == DELETED) {
+            return;
+        }
+
+        if (!user.isProfileCompleted()) {
+            user.setAccountStatus(INCOMPLETE);
+        } else if (!user.isEmailVerified()) {
+            user.setAccountStatus(EMAIL_UNVERIFIED);
+        } else {
+            user.setAccountStatus(ACTIVE);
+        }
+    }
+
+    @Transactional
+    public void updateAccountStatusAndSave(User user) {
+        updateAccountStatus(user);
+        repository.save(user);
     }
 
     @Override
@@ -90,9 +141,12 @@ public class UserService implements UserDetailsService {
         user.setPersonalIdentificationNumber(request.getPin());
         user.setDateOfBirth(request.getDateOfBirth());
         user.setGender(request.getGender());
-        updateAccountStatus(user.getId(), EMAIL_UNVERIFIED);
+        user.setProfileCompleted(true);
+        updateAccountStatus(user);
+
         repository.save(user);
         log.info("-submitPersonalInfo | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
+
         eventPublisher.publishEvent(new UserContextRefreshEvent(user.getEmailAddress()));
     }
 
@@ -101,11 +155,11 @@ public class UserService implements UserDetailsService {
         User user = getUserById(uuid);
 
         if (user.getEmailAddress().equals(request.getNewEmailAddress())) {
-            throw new UserExistsWithEmailException(ErrorMessages.ACCOUNT_DUPLICATE_EMAIL);
+            throw new UserExistsWithEmailException(ACCOUNT_DUPLICATE_EMAIL);
         }
 
         if (repository.existsByEmailAddress(request.getNewEmailAddress())) {
-            throw new UserExistsWithEmailException(ErrorMessages.ACCOUNT_DUPLICATE_EMAIL);
+            throw new UserExistsWithEmailException(ACCOUNT_DUPLICATE_EMAIL);
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
@@ -113,10 +167,16 @@ public class UserService implements UserDetailsService {
         }
 
         user.setEmailAddress(request.getNewEmailAddress());
+        user.setEmailVerified(false);
+        updateAccountStatus(user);
         repository.save(user);
+
+        EmailVerificationToken verificationToken = emailVerificationService.createTokenForUser(user);
+        eventPublisher.publishEvent(new EmailChangeEvent
+                (user.getId(), user.getEmailAddress(), verificationToken.getId()));
+
         log.info("-updateEmailAddress | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
-
 
     public void updatePassword(UUID uuid, UpdatePasswordRequest request) {
         User user = getUserById(uuid);
@@ -184,7 +244,7 @@ public class UserService implements UserDetailsService {
             throw new InvalidInputException(ErrorMessages.INPUT_INVALID);
         }
 
-        updateAccountStatus(user.getId(), AccountStatus.DELETED);
+        updateAccountStatus(user.getId(), DELETED);
         repository.save(user);
         log.info("-accountDeleted | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
@@ -201,4 +261,11 @@ public class UserService implements UserDetailsService {
         return repository.countByRole(DOCTOR);
     }
 
+    public List<User> getAllUsersByRole(AccountRole role) {
+       return (role == null) ? getAllUsersExceptAdmins() : getUsersByRole(role);
+    }
+
+    public List<User> getUsersByRole(AccountRole role) {
+        return repository.findAllByRole(role);
+    }
 }

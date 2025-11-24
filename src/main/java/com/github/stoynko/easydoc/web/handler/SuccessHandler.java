@@ -1,7 +1,6 @@
 package com.github.stoynko.easydoc.web.handler;
 
 import com.github.stoynko.easydoc.models.User;
-import com.github.stoynko.easydoc.models.enums.AccountStatus;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;

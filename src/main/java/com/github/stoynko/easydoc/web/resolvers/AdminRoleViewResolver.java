@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.github.stoynko.easydoc.models.enums.AccountRole.ADMIN;
-import static com.github.stoynko.easydoc.web.dto.DtoAggregator.MODEL_ELEMENT_FRAGMENT;
 
 @Component
 public class AdminRoleViewResolver implements RoleViewResolver{
@@ -64,7 +63,7 @@ public class AdminRoleViewResolver implements RoleViewResolver{
             }
 
         }
-            model.put("role", dtoContext.principal().getRole());
+            //model.put("role", dtoContext.principal().getRole());
             model.put("userSummary", DtoMapper.getUserSummary(userService.getUserById(dtoContext.principal().getId())));
         return model;
     }

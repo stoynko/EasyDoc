@@ -3,7 +3,6 @@ package com.github.stoynko.easydoc.web.model;
 public enum ViewFragment {
 
     NONE(""),
-    LOGIN_FAILED("fragments/errors :: login-failure"),
     SETTINGS_DASHBOARD("fragments/settings :: dashboard"),
     PERSONAL_INFO("fragments/settings :: personal_info"),
     PROFESSIONAL_INFO("fragments/settings :: professional_info"),

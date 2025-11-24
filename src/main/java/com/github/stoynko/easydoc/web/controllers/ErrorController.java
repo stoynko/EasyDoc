@@ -9,7 +9,7 @@ public class ErrorController {
 
     @GetMapping("/401")
     public ModelAndView get401() {
-        ModelAndView modelAndView = new ModelAndView("pages/errors/401");
+        ModelAndView modelAndView = new ModelAndView("errors/401");
         return modelAndView;
     }
 
@@ -21,7 +21,7 @@ public class ErrorController {
 
     @GetMapping("/test")
     public ModelAndView getTest() {
-        return new ModelAndView("pages/toIMPL/medical-report-doctor");
+        return new ModelAndView("pages/medical-report-doctor");
     }
 
     @GetMapping("/test-2")
@@ -31,13 +31,13 @@ public class ErrorController {
 
     @GetMapping("/test1")
     public ModelAndView getReportPage() {
-        ModelAndView modelAndView = new ModelAndView("pages/prescription_medicaments");
+        ModelAndView modelAndView = new ModelAndView("prescription_medicaments");
         return modelAndView;
     }
 
     @GetMapping("/test-p2")
     public ModelAndView getReportPage2() {
-        ModelAndView modelAndView = new ModelAndView("pages/prescription-create");
+        ModelAndView modelAndView = new ModelAndView("prescription_create");
         return modelAndView;
     }
 }

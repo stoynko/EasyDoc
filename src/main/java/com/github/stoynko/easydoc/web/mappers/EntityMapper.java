@@ -21,6 +21,8 @@ public class EntityMapper {
                 .emailAddress(request.getEmailAddress())
                 .passwordHash(hashedPassword)
                 .accountStatus(INCOMPLETE)
+                .emailVerified(false)
+                .profileCompleted(false)
                 .role(PATIENT)
                 .build();
     }

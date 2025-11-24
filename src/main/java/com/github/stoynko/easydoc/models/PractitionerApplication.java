@@ -47,6 +47,7 @@ public class PractitionerApplication {
     @Column(name = "profile_photo_public_id", nullable = false)
     private String profilePhotoPublicId;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "expertise", nullable = false)
     private Expertise expertise;
 

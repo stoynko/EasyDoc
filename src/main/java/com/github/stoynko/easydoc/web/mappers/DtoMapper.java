@@ -147,6 +147,7 @@ public class DtoMapper {
         User patient = appointment.getPatient();
 
         return DoctorAppointmentResponse.builder()
+                .appointmentId(appointment.getId())
                 .appointmentPublicId(appointment.getPublicId())
                 .patientPin(appointment.getPatient().getPersonalIdentificationNumber())
                 .patientName(extractName(patient))
@@ -164,6 +165,7 @@ public class DtoMapper {
                 .profilePhotoUrl(application.getProfilePhotoUrl())
                 .doctorUin(application.getUin())
                 .doctorExpertise(application.getExpertise())
+                .doctorYearsExperience(application.getYearsExperience())
                 .doctorProfessionalHighlights(application.getProfessionalHighlights())
                 .doctorPracticeLocation(application.getPracticeLocation())
                 .doctorSpokenLanguages(application.getSpokenLanguages())

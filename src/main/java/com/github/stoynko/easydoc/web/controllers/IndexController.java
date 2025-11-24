@@ -4,7 +4,6 @@ import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.services.PractitionerApplicationService;
 import com.github.stoynko.easydoc.services.UserService;
 import com.github.stoynko.easydoc.web.dto.request.SubmitAccountDetailsRequest;
-import com.github.stoynko.easydoc.web.dto.request.UpdateAccountDetailsRequest;
 import com.github.stoynko.easydoc.web.dto.request.RegisterPractitionerRequest;
 import com.github.stoynko.easydoc.web.dto.request.RegisterRequest;
 import com.github.stoynko.easydoc.web.model.ViewPage;
@@ -125,13 +124,13 @@ public class IndexController {
         return modelAndView;
     }
 
-    @GetMapping("/onboarding/doctors/submit")
+    @GetMapping("/onboarding/doctors/apply")
     @PreAuthorize(value = "hasRole('PATIENT')")
     public ModelAndView getOnboardingForm(@AuthenticationPrincipal UserAuthenticationDetails principal) {
         return pageBuilder.buildPage(forFragment(ViewPage.DOCTOR_ONBOARDING, DOCTOR_ONBOARDING, principal));
     }
 
-    @PostMapping("/onboarding/doctors/submit")
+    @PostMapping("/onboarding/doctors/apply")
     @PreAuthorize(value = "hasRole('PATIENT')")
     public ModelAndView submitOnboardingApplication(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                                     @Valid RegisterPractitionerRequest request,

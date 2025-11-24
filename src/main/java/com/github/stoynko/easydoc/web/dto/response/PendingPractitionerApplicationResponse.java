@@ -22,7 +22,7 @@ public class PendingPractitionerApplicationResponse {
 
     private Expertise doctorExpertise;
 
-    private String doctorYearsExperience;
+    private int doctorYearsExperience;
 
     private String doctorPracticeLocation;
 

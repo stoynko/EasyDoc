@@ -1,10 +1,10 @@
 package com.github.stoynko.easydoc.web.controllers.advice;
 
 import com.github.stoynko.easydoc.exceptions.AlreadyOnboardedException;
+import com.github.stoynko.easydoc.exceptions.InvalidTokenException;
 import com.github.stoynko.easydoc.exceptions.UserExistsWithEmailException;
 import com.github.stoynko.easydoc.exceptions.UserExistsWithPinException;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
-import com.github.stoynko.easydoc.web.dto.DtoContext;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forPage;
-import static com.github.stoynko.easydoc.web.model.ViewFragment.NONE;
 import static com.github.stoynko.easydoc.web.model.ViewPage.DOCTOR_ONBOARDING;
 import static com.github.stoynko.easydoc.web.model.ViewPage.ERROR;
 
@@ -53,5 +52,12 @@ public class GlobalExceptionAdvice {
         return modelAndView;
     }
 
+    @ExceptionHandler(InvalidTokenException.class)
+    public ModelAndView handleInvalidTokenException(InvalidTokenException exception) {
+        ModelAndView modelAndView = pageBuilder.buildPage(forPage(ERROR, null));
+        modelAndView.addObject("errorMessage", "emailVerificationFailure");
+        modelAndView.addObject("errorMessageDetails", exception.getMessage());
+        return modelAndView;
+    }
     //TODO: Handle 413 - MaxUploadSizeExceededException when uploading avatar with larger size
 }

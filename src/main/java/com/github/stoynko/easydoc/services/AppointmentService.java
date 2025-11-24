@@ -6,7 +6,6 @@ import com.github.stoynko.easydoc.exceptions.InvalidTimeException;
 import com.github.stoynko.easydoc.exceptions.PastDateException;
 import com.github.stoynko.easydoc.models.Appointment;
 import com.github.stoynko.easydoc.models.Doctor;
-import com.github.stoynko.easydoc.models.PractitionerApplication;
 import com.github.stoynko.easydoc.models.User;
 import com.github.stoynko.easydoc.repositories.AppointmentRepository;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
@@ -14,13 +13,11 @@ import com.github.stoynko.easydoc.web.dto.request.AppointmentRequest;
 
 import com.github.stoynko.easydoc.web.dto.response.AppointmentTimeSlotResponse;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -70,6 +67,7 @@ public class AppointmentService {
         if (repository.existsAppointmentByPatientAndDoctorAndDate()) {
             throw new AppointmentAlreadyExistsException();
         }*/
+
         Appointment appointment = Appointment.builder()
                 .publicId(extractDigits(UUID.randomUUID().toString()))
                 .patient(userService.getUserById(patientId))
@@ -161,6 +159,13 @@ public class AppointmentService {
         return repository.findAppointmentById(id)
                 .orElseThrow(() -> new AppointmentDoesNotExistException(ErrorMessages.APPOINTMENT_NOT_FOUND));
 
+    }
+
+    public void markAsNoShow(UUID appointmentId, UserAuthenticationDetails principal) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        appointment.setStatus(NO_SHOW);
+        repository.save(appointment);
+        log.info("-appointmentNoShow | appointment: {} timestamp: {}", appointment.getId(),  LocalDateTime.now());
     }
 
     /*public List<Appointment> getUpcomingAppointments(UUID doctorUserId) {

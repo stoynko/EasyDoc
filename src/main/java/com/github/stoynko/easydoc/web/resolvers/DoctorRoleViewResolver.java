@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.github.stoynko.easydoc.models.enums.AccountRole.DOCTOR;
-import static com.github.stoynko.easydoc.web.dto.DtoAggregator.MODEL_ELEMENT_FRAGMENT;
-import static com.github.stoynko.easydoc.web.model.ViewFragment.SETTINGS_DASHBOARD;
 
 @Component
 public class DoctorRoleViewResolver implements RoleViewResolver {
@@ -91,7 +89,7 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
             Doctor doctor = doctorService.getDoctorDetailsByUserId(dtoContext.principal().getId());
             model.put("doctorSummary", DtoMapper.toDoctorDetailedInfoFrom(doctor));
             model.put("userSummary", DtoMapper.toDoctorDetailedInfoFrom(doctor));
-            model.put("role", dtoContext.principal().getRole());
+            //model.put("role", dtoContext.principal().getRole());
         }
 
         return model;

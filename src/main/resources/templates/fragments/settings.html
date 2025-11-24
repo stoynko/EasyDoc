@@ -76,7 +76,7 @@
         <div class="register-form">
             <form sec:authorize="hasRole('DOCTOR')" th:object="${changeAvatarRequest}" th:action="@{/settings/personal-info/photo}" th:method="POST" class="view-card" enctype="multipart/form-data">
                     <h3 class="view-card-title">Profile Photo</h3>
-                    <p class="view-card-subtitle">Upload a clear, front-facing photo. PNG or JPG files up to 5 MB are supported.</p>
+                    <p class="view-card-subtitle">Upload a clear, front-facing photo. PNG or JPG files up to 10 MB are supported.</p>
 
                     <div class="form-group">
                         <label for="avatarUpload">Upload Profile Photo</label>

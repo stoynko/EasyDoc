@@ -61,8 +61,6 @@
     gap: 18px;
 }
 
-
-
 .table-wrapper {
     width: 100%;
     overflow-x: auto;
@@ -73,12 +71,12 @@
     border-collapse: separate;
     border-spacing: 0 12px;
     font-size: 14px;
-    table-layout: fixed;
+    /*table-layout: fixed;*/
     margin-top: var(--spacing-lg);
 }
-
+/*
 .appointment-table col.col-id {
-    width: 15%;
+    width: 6%;
 }
 
 .appointment-table col.col-uuid {
@@ -93,9 +91,8 @@
     width: 16%;
 }
 
-
 .appointment-table col.col-doctor {
-    width: 20%;
+    width: 8%;
 }
 
 .appointment-table col.col-doctor-uin {
@@ -103,7 +100,7 @@
 }
 
 .appointment-table col.col-expertise {
-    width: 16%;
+    width: 10%;
 }
 
 .appointment-table col.col-email {
@@ -111,11 +108,11 @@
 }
 
 .appointment-table col.col-reason {
-    width: 22%;
+    width: 10%;
 }
 
 .appointment-table col.col-status {
-    width: 22%;
+    width: 5%;
 }
 
 .appointment-table col.col-created {
@@ -127,12 +124,81 @@
 }
 
 .appointment-table col.col-schedule {
-    width: 20%;
+    width: 10%;
 }
 
 .appointment-table col.col-actions {
     width: 14%;
+}*/
+
+/* ============================================
+             PATIENT UPCOMING APPOINTMENTS
+   ============================================ */
+
+.appointment-table.patient-upcoming col.col-id {
+    width: 12%;
 }
+
+.appointment-table.patient-upcoming col.col-schedule {
+    width: 18%;
+}
+
+.appointment-table.patient-upcoming col.col-doctor {
+    width: 22%;
+}
+
+.appointment-table col.col-doctor-uin {
+    width: 14%;
+}
+
+.appointment-table.patient-upcoming col.col-expertise {
+    width: 12%;
+}
+
+.appointment-table.patient-upcoming col.col-reason {
+    width: 24%;
+}
+
+.appointment-table.patient-upcoming col.col-actions {
+    width: 10%;
+}
+
+/* ============================================
+             PATIENT PAST APPOINTMENTS
+   ============================================ */
+
+.appointment-table.patient-past col.col-id {
+    width: 6%;
+}
+
+.appointment-table.patient-past col.col-doctor {
+    width: 8%;
+}
+
+.appointment-table.patient-past col.col-expertise {
+    width: 10%;
+}
+
+.appointment-table.patient-past col.col-reason {
+    width: 10%;
+}
+
+.appointment-table.patient-past col.col-status {
+    width: 5%;
+}
+
+.appointment-table.patient-past col.col-schedule {
+    width: 10%;
+}
+
+.appointment-table.patient-past col.col-actions {
+    width: 14%;
+}
+
+/* ============================================
+             DOCTOR APPOINTMENTS
+   ============================================ */
+
 
 .appointment-table thead th {
     text-transform: uppercase;
@@ -140,7 +206,7 @@
     font-size: 12px;
     color: #9ca3af;
     font-weight: 600;
-    text-align: left;
+    text-align: center;
     padding: 0 16px 12px;
 }
 
@@ -149,7 +215,7 @@
 }
 
 .appointment-table thead th.th-actions {
-    text-align: left;
+    text-align: center;
 }
 
 .appointment-table tbody tr {
@@ -163,6 +229,7 @@
     padding: 14px 16px;
     color: #4b5563;
     vertical-align: middle;
+    text-align: center;
 }
 
 .appointment-table tbody tr td:not(:last-child) {
@@ -186,7 +253,7 @@
 .quick-actions {
     display: flex;
     gap: 8px;
-    justify-content: flex-start;
+    justify-content: space-evenly;
 }
 
 .appointment-schedule {
