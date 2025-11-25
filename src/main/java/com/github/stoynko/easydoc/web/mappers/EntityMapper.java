@@ -7,6 +7,7 @@ import com.github.stoynko.easydoc.models.User;
 import com.github.stoynko.easydoc.web.dto.request.RegisterPractitionerRequest;
 import com.github.stoynko.easydoc.web.dto.request.RegisterRequest;
 import com.github.stoynko.easydoc.web.dto.response.CloudinaryUploadResult;
+import java.util.HashSet;
 import lombok.experimental.UtilityClass;
 
 import static com.github.stoynko.easydoc.models.enums.AccountRole.PATIENT;
@@ -24,6 +25,7 @@ public class EntityMapper {
                 .emailVerified(false)
                 .profileCompleted(false)
                 .role(PATIENT)
+                .authority(new HashSet<>())
                 .build();
     }
 

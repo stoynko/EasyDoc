@@ -1,5 +1,6 @@
 package com.github.stoynko.easydoc.services;
 
+import com.github.stoynko.easydoc.events.UserContextRefreshEvent;
 import com.github.stoynko.easydoc.exceptions.AlreadyOnboardedException;
 import com.github.stoynko.easydoc.models.PractitionerApplication;
 import com.github.stoynko.easydoc.models.User;
@@ -10,18 +11,19 @@ import com.github.stoynko.easydoc.web.mappers.EntityMapper;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.github.stoynko.easydoc.exceptions.ErrorMessages.ALREADY_ONBOARDED;
+import static com.github.stoynko.easydoc.models.enums.AccountAuthority.CAN_SUBMIT_PRACTITIONER_APPLICATION;
 import static com.github.stoynko.easydoc.models.enums.ApplicationStatus.APPROVED;
 import static com.github.stoynko.easydoc.models.enums.ApplicationStatus.PENDING;
 import static com.github.stoynko.easydoc.models.enums.ApplicationStatus.REJECTED;
-import static com.github.stoynko.easydoc.web.mappers.DtoMapper.getChangePersonalDetailsFrom;
+import static com.github.stoynko.easydoc.web.mappers.DtoMapper.toChangePersonalDetailsFrom;
 
 @Slf4j
 @Service
@@ -31,42 +33,15 @@ public class PractitionerApplicationService {
     private final UserService userService;
     private final CloudinaryService cloudinaryService;
     private final DoctorService doctorService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public PractitionerApplicationService(PractitionerApplicationRepository repository, UserService userService, CloudinaryService cloudinaryService, DoctorService doctorService) {
+    public PractitionerApplicationService(PractitionerApplicationRepository repository, UserService userService, CloudinaryService cloudinaryService, DoctorService doctorService, ApplicationEventPublisher eventPublisher) {
         this.repository = repository;
         this.userService = userService;
         this.cloudinaryService = cloudinaryService;
         this.doctorService = doctorService;
-    }
-
-    public PractitionerApplication getApplicationById(UUID uuid) {
-        Optional<PractitionerApplication> optionalApplication = repository.findById(uuid);
-
-        if (optionalApplication.isEmpty()) {
-            //TODO: ADD CUSTOM EXCEPTION
-            throw new RuntimeException();
-        }
-
-        return optionalApplication.get();
-    }
-
-    @Transactional
-    public void approveApplication(UUID uuid) {
-
-        PractitionerApplication application = getApplicationById(uuid);
-        application.setApplicationStatus(APPROVED);
-        repository.save(application);
-        log.info("- applicationApproved | applicationId: {} timestamp:{}", application.getId(), LocalDateTime.now());
-
-        doctorService.createDoctor(application);
-    }
-
-    public void rejectApplication(UUID uuid) {
-        PractitionerApplication application = getApplicationById(uuid);
-        application.setApplicationStatus(REJECTED);
-        repository.save(application);
-        log.info("- applicationRejected | applicationId: {} timestamp:{}", application.getId(), LocalDateTime.now());
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -88,7 +63,35 @@ public class PractitionerApplicationService {
         repository.save(application);
         log.info("- applicationSubmission | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
 
-        userService.updatePersonalInfo(uuid, getChangePersonalDetailsFrom(request));
+        userService.updatePersonalInfo(uuid, toChangePersonalDetailsFrom(request));
+        userService.revokeAuthority(user.getId(), CAN_SUBMIT_PRACTITIONER_APPLICATION);
+        eventPublisher.publishEvent(new UserContextRefreshEvent(user.getId()));
+    }
+
+    @Transactional
+    public void approveApplication(UUID uuid) {
+
+        PractitionerApplication application = getApplicationById(uuid);
+        application.setApplicationStatus(APPROVED);
+        repository.save(application);
+        log.info("- applicationApproved | applicationId: {} timestamp:{}", application.getId(), LocalDateTime.now());
+
+        doctorService.createDoctor(application);
+    }
+
+    @Transactional
+    public void rejectApplication(UUID uuid) {
+        PractitionerApplication application = getApplicationById(uuid);
+        application.setApplicationStatus(REJECTED);
+        repository.save(application);
+
+        User user = application.getUser();
+        userService.reinstateAuthority(user.getId(), CAN_SUBMIT_PRACTITIONER_APPLICATION);
+        log.info("- applicationRejected | applicationId: {} timestamp:{}", application.getId(), LocalDateTime.now());
+    }
+
+    public PractitionerApplication getApplicationById(UUID uuid) {
+        return repository.findById(uuid).orElseThrow(() -> new RuntimeException());
     }
 
     public List<PractitionerApplication> getAllPendingApplications() {
@@ -99,11 +102,11 @@ public class PractitionerApplicationService {
         return repository.countPractitionerApplicationsByApplicationStatusIs(PENDING);
     }
 
-    public boolean hasSubmittedApplication(UUID id) {
+    public boolean hasPendingApplication(UUID id) {
         return repository.existsByUserIdAndApplicationStatus(id, PENDING);
     }
 
-    //log.info("- roleChange | userId: {} timestamp:{}", user.getId(), Instant.now());
-    //userService.updateUserRoleTo(user, DOCTOR);
-    //contextUpdater.refreshContext(user.getEmailAddress());
+    public boolean hasApprovedApplication(UUID id) {
+        return repository.existsByUserIdAndApplicationStatus(id, APPROVED);
+    }
 }

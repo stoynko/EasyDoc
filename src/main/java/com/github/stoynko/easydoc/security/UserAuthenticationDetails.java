@@ -1,7 +1,9 @@
 package com.github.stoynko.easydoc.security;
 
+import com.github.stoynko.easydoc.models.enums.AccountAuthority;
 import com.github.stoynko.easydoc.models.enums.AccountRole;
 import com.github.stoynko.easydoc.models.enums.AccountStatus;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,12 +35,21 @@ public class UserAuthenticationDetails implements UserDetails{
 
     private AccountRole role;
 
+    private Set<AccountAuthority> accountAuthorities;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
         authorities.add(new SimpleGrantedAuthority("STATUS_" + this.accountStatus.name()));
+
+        if (authorities != null) {
+            for (AccountAuthority authority : accountAuthorities) {
+                authorities.add(new SimpleGrantedAuthority(authority.name()));
+            }
+        }
+
         return authorities;
     }
 

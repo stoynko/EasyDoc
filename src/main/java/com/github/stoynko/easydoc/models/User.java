@@ -2,20 +2,28 @@ package com.github.stoynko.easydoc.models;
 
 import com.github.stoynko.easydoc.models.embedded.CreatedModifiedAt;
 import com.github.stoynko.easydoc.models.embedded.CreatedModifiedBy;
+import com.github.stoynko.easydoc.models.enums.AccountAuthority;
 import com.github.stoynko.easydoc.models.enums.AccountRole;
 import com.github.stoynko.easydoc.models.enums.AccountStatus;
 import com.github.stoynko.easydoc.models.enums.Gender;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,7 +46,7 @@ import static com.github.stoynko.easydoc.models.enums.AccountStatus.ACTIVE;
 @Entity
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+public class User implements Serializable {
 
     @Id
     @Setter(AccessLevel.NONE)
@@ -86,6 +94,12 @@ public class User {
     @Column(name = "account_status", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private AccountStatus accountStatus;
+
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_authorities", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "authorities")
+    private Set<AccountAuthority> authority;
 
     @Embedded
     @Builder.Default

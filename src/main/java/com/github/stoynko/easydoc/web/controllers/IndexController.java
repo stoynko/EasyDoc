@@ -6,6 +6,7 @@ import com.github.stoynko.easydoc.services.UserService;
 import com.github.stoynko.easydoc.web.dto.request.SubmitAccountDetailsRequest;
 import com.github.stoynko.easydoc.web.dto.request.RegisterPractitionerRequest;
 import com.github.stoynko.easydoc.web.dto.request.RegisterRequest;
+import com.github.stoynko.easydoc.web.handler.SecurityCheck;
 import com.github.stoynko.easydoc.web.model.ViewPage;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,12 +27,14 @@ import static com.github.stoynko.easydoc.web.dto.DtoContext.forFragment;
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forPage;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.DOCTOR_LANDING;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.DOCTOR_ONBOARDING;
+import static com.github.stoynko.easydoc.web.model.ViewFragment.SETTINGS_DASHBOARD;
 import static com.github.stoynko.easydoc.web.model.ViewPage.ACCOUNT_ONBOARDING;
 import static com.github.stoynko.easydoc.web.model.ViewPage.CONFIRMATION;
 import static com.github.stoynko.easydoc.web.model.ViewPage.DASHBOARD;
 import static com.github.stoynko.easydoc.web.model.ViewPage.INDEX;
 import static com.github.stoynko.easydoc.web.model.ViewPage.LOGIN;
 import static com.github.stoynko.easydoc.web.model.ViewPage.REGISTER;
+import static com.github.stoynko.easydoc.web.model.ViewPage.SETTINGS;
 
 @Controller
 public class IndexController {
@@ -39,12 +42,14 @@ public class IndexController {
     private final UserService userService;
     private final PractitionerApplicationService applicationService;
     private final PageBuilder pageBuilder;
+    private final SecurityCheck securityCheck;
 
     @Autowired
-    public IndexController(UserService userService, PractitionerApplicationService applicationService, PageBuilder pageBuilder) {
+    public IndexController(UserService userService, PractitionerApplicationService applicationService, PageBuilder pageBuilder, SecurityCheck securityCheck) {
         this.userService = userService;
         this.applicationService = applicationService;
         this.pageBuilder = pageBuilder;
+        this.securityCheck = securityCheck;
     }
 
     @GetMapping("/")
@@ -94,57 +99,9 @@ public class IndexController {
         return modelAndView;
     }
 
-    @GetMapping("/onboarding/account")
-    public ModelAndView getOnboardingAccountPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
-        ModelAndView modelAndView = pageBuilder.buildPage(forPage(ACCOUNT_ONBOARDING, principal));
-        return modelAndView;
-    }
-
-    @PostMapping("/onboarding/account")
-    public ModelAndView submitOnboardingInformation(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                                    @Valid SubmitAccountDetailsRequest request,
-                                                    BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            ModelAndView modelAndView = pageBuilder.buildPage(forPage(ACCOUNT_ONBOARDING, principal));
-            return pageBuilder.addErrors(modelAndView, "submitPersonalDetailsRequest", request, bindingResult);
-        }
-
-        userService.submitPersonalInfo(principal.getId(), request);
-        ModelAndView modelAndView = pageBuilder.buildPage(forPage(ACCOUNT_ONBOARDING, principal));
-        modelAndView.addObject("processState", "success");
-        return modelAndView;
-    }
-
-    @GetMapping("/onboarding/doctors")
-    @PreAuthorize(value = "hasRole('PATIENT')")
-    public ModelAndView getOnboardingPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
-        ModelAndView modelAndView = pageBuilder.buildPage(forFragment(ViewPage.DOCTOR_ONBOARDING, DOCTOR_LANDING, principal));
-        modelAndView.addObject("processState", "landing");
-        return modelAndView;
-    }
-
-    @GetMapping("/onboarding/doctors/apply")
-    @PreAuthorize(value = "hasRole('PATIENT')")
-    public ModelAndView getOnboardingForm(@AuthenticationPrincipal UserAuthenticationDetails principal) {
-        return pageBuilder.buildPage(forFragment(ViewPage.DOCTOR_ONBOARDING, DOCTOR_ONBOARDING, principal));
-    }
-
-    @PostMapping("/onboarding/doctors/apply")
-    @PreAuthorize(value = "hasRole('PATIENT')")
-    public ModelAndView submitOnboardingApplication(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                                    @Valid RegisterPractitionerRequest request,
-                                                    BindingResult bindingResult) throws IOException {
-
-        if (bindingResult.hasErrors()) {
-            ModelAndView modelAndView = pageBuilder.buildPage(forFragment(ViewPage.DOCTOR_ONBOARDING, DOCTOR_ONBOARDING, principal));
-            return pageBuilder.addErrors(modelAndView, "registerPractitionerRequest", request, bindingResult);
-        }
-
-        applicationService.submitApplication(principal.getId(), request);
-        ModelAndView modelAndView = pageBuilder.buildPage(forPage(ViewPage.DOCTOR_ONBOARDING, principal));
-        modelAndView.addObject("processState", "success");
-        return modelAndView;
+    @GetMapping({"/settings", "/settings/dashboard"})
+    public ModelAndView getSettingsDashboardPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
+        return pageBuilder.buildPage(forFragment(SETTINGS, SETTINGS_DASHBOARD, principal));
     }
 
     @GetMapping("/dashboard")

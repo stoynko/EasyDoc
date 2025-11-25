@@ -2,20 +2,23 @@
           xmlns:th="http://www.thymeleaf.org"
           xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
-    <div th:if="${!#strings.isEmpty(userSummary.firstName) or !#strings.isEmpty(userSummary.lastName)}" class="user-profile">
-        <div th:if="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR}" class="user-avatar">
-            <img th:if="${userSummary != null and !#strings.isEmpty(userSummary.profilePhotoUrl)}"
-                 th:src="${userSummary.profilePhotoUrl}" alt="Profile Photo">
-            <!--<th:block th:if="${professionalSummary == null or #strings.isEmpty(professionalSummary.avatarUrl)}">
-                <i class="fas fa-user-md"></i>
-            </th:block>-->
+    <div th:if="${userSummary != null}" class="user-profile">
+        <div class="user-avatar">
+            <img th:if="${!#strings.isEmpty(userSummary.profilePhotoUrl)}"
+                 th:src="${userSummary.profilePhotoUrl}" alt="Profile Photo"/>
+
+            <!-- fallback icon if no photo -->
+            <i th:if="${#strings.isEmpty(userSummary.profilePhotoUrl)}"
+               class="fas fa-user"></i>
         </div>
 
-        <div th:if="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR}" th:text="${'Dr. ' + userSummary.firstName + ' ' + userSummary.lastName}" class="user-name">Dr. John Doe</div>
-        <div th:unless="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR}" th:text="${userSummary.firstName + ' ' + userSummary.lastName}" class="user-name">Dr. John Doe</div>
-        <div th:if="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR
-            and professionalSummary != null}" th:text="${professionalSummary.expertise.displayValue}" class="doctor-expertise">
-            MD
+        <div th:if="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR}"
+             th:text="${'Dr. ' + userSummary.firstName + ' ' + userSummary.lastName}"
+             class="user-name">
+        </div>
+        <div th:unless="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR}"
+             th:text="${userSummary.firstName + ' ' + userSummary.lastName}"
+             class="user-name">
         </div>
     </div>
 
@@ -70,15 +73,6 @@
                     <span>Practitioner Applications</span>
                 </a>
             </li>
-
-            <!--TODO: IMPLEMENT IF SUCH FEATURE WILL BE SUPPORTED-->
-            <!--<li class="nav-item">
-                <a th:href="@{/messages}" class="nav-link"
-                   th:classappend="${currentPath == '/messages'} ? ' active'">
-                    <i class="fas fa-envelope"></i>
-                    <span>Messages</span>
-                </a>
-            </li>-->
 
             <li class="nav-divider"></li>
 
@@ -153,10 +147,9 @@
                 </a>
             </li>
 
-            <!--TODO: SWITCH WHEN THERE IS NO ACTIVE PLAN-->
-
             <!-- PRACTITIONER ONBOARDING -->
-            <li th:if="${!hasSubmittedApplication}" class="nav-item" sec:authorize="hasRole('PATIENT')">
+            <li th:if="${!hasSubmittedApplication}" class="nav-item"
+                sec:authorize="hasRole('PATIENT')">
                 <a th:href="@{/onboarding/doctors}" class="nav-link doctor"
                    th:classappend="${currentPath == '/onboarding/doctors' or currentPath == '/onboarding/doctors/apply'} ? ' active'">
                     <i class="fas fa-user-md"></i>

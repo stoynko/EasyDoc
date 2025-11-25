@@ -72,11 +72,11 @@ public class PatientRoleViewResolver implements RoleViewResolver {
 
             case APPOINTMENTS -> {
                 model.put("upcomingAppointments", appointmentService.getPatientUpcomingAppointments(dtoContext.principal().getId())
-                        .stream().map(DtoMapper::getPatientAppointmentDetailsFrom)
+                        .stream().map(DtoMapper::toPatientAppointmentDetailsFrom)
                         .collect(Collectors.toList()));
 
                 model.put("pastAppointments", appointmentService.getPatientPastAppointments(dtoContext.principal().getId())
-                        .stream().map(DtoMapper::getPatientAppointmentDetailsFrom)
+                        .stream().map(DtoMapper::toPatientAppointmentDetailsFrom)
                         .collect(Collectors.toList()));
             }
 
@@ -99,7 +99,7 @@ public class PatientRoleViewResolver implements RoleViewResolver {
             case DOCTOR_ONBOARDING -> {
                 User user = userService.getUserById(dtoContext.principal().getId());
                 model.put("processState", "formEntry");
-                model.putIfAbsent("registerPractitionerRequest", DtoMapper.getRegisterPractitionerFrom(user));
+                model.putIfAbsent("registerPractitionerRequest", DtoMapper.toRegisterPractitionerFrom(user));
             }
 
             case SETTINGS -> {
@@ -112,9 +112,8 @@ public class PatientRoleViewResolver implements RoleViewResolver {
         }
 
         if (dtoContext.principal() != null) {
-            //model.put("role", dtoContext.principal().getRole());
-            model.put("userSummary", DtoMapper.getUserSummary(userService.getUserById(dtoContext.principal().getId())));
-            model.put("hasSubmittedApplication", practitionerApplicationService.hasSubmittedApplication(dtoContext.principal().getId()));
+            model.put("userSummary", DtoMapper.toUserSummary(userService.getUserById(dtoContext.principal().getId())));
+            model.put("hasSubmittedApplication", practitionerApplicationService.hasPendingApplication(dtoContext.principal().getId()));
         }
 
         return model;

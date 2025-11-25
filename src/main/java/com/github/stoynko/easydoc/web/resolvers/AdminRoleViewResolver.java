@@ -63,8 +63,7 @@ public class AdminRoleViewResolver implements RoleViewResolver{
             }
 
         }
-            //model.put("role", dtoContext.principal().getRole());
-            model.put("userSummary", DtoMapper.getUserSummary(userService.getUserById(dtoContext.principal().getId())));
+            model.put("userSummary", DtoMapper.toUserSummary(userService.getUserById(dtoContext.principal().getId())));
         return model;
     }
 }

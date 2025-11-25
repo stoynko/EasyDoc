@@ -1,30 +1,31 @@
 package com.github.stoynko.easydoc.web.controllers;
 
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
-
 import com.github.stoynko.easydoc.services.DoctorService;
 import com.github.stoynko.easydoc.services.UserService;
-import com.github.stoynko.easydoc.web.dto.request.UpdateProfilePhotoRequest;
+import com.github.stoynko.easydoc.web.dto.DtoContext;
+import com.github.stoynko.easydoc.web.dto.request.DeleteAccountRequest;
+import com.github.stoynko.easydoc.web.dto.request.SubmitAccountDetailsRequest;
+import com.github.stoynko.easydoc.web.dto.request.UpdateAccountDetailsRequest;
 import com.github.stoynko.easydoc.web.dto.request.UpdateContactDetailsRequest;
 import com.github.stoynko.easydoc.web.dto.request.UpdateEmailAddressRequest;
 import com.github.stoynko.easydoc.web.dto.request.UpdatePasswordRequest;
-import com.github.stoynko.easydoc.web.dto.request.UpdateAccountDetailsRequest;
 import com.github.stoynko.easydoc.web.dto.request.UpdateProfessionalDetailsRequest;
-import com.github.stoynko.easydoc.web.dto.request.DeleteAccountRequest;
-import com.github.stoynko.easydoc.web.resolvers.RoleViewResolverRegistry;
+import com.github.stoynko.easydoc.web.dto.request.UpdateProfilePhotoRequest;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forFragment;
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forPage;
@@ -34,30 +35,54 @@ import static com.github.stoynko.easydoc.web.model.ViewFragment.NONE;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.PERSONAL_INFO;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.PROFESSIONAL_INFO;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.SECURITY;
-import static com.github.stoynko.easydoc.web.model.ViewFragment.SETTINGS_DASHBOARD;
+import static com.github.stoynko.easydoc.web.model.ViewPage.ACCOUNT;
+import static com.github.stoynko.easydoc.web.model.ViewPage.ACCOUNT_ONBOARDING;
 import static com.github.stoynko.easydoc.web.model.ViewPage.CONFIRMATION;
 import static com.github.stoynko.easydoc.web.model.ViewPage.NOTIFICATIONS;
 import static com.github.stoynko.easydoc.web.model.ViewPage.SETTINGS;
 
 @Controller
-public class SettingsController {
+@RequiredArgsConstructor
+public class AccountController {
 
     private final PageBuilder pageBuilder;
-    private final RoleViewResolverRegistry viewResolverRegistry;
     private final UserService userService;
     private final DoctorService doctorService;
 
-    @Autowired
-    public SettingsController(PageBuilder pageBuilder, RoleViewResolverRegistry viewResolverRegistry, UserService userService, DoctorService doctorService) {
-        this.pageBuilder = pageBuilder;
-        this.viewResolverRegistry = viewResolverRegistry;
-        this.userService = userService;
-        this.doctorService = doctorService;
+    @GetMapping("/onboarding/account")
+    public ModelAndView getOnboardingAccountPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
+        ModelAndView modelAndView = pageBuilder.buildPage(forPage(ACCOUNT_ONBOARDING, principal));
+        return modelAndView;
     }
 
-    @GetMapping({"/settings", "/settings/dashboard"})
-    public ModelAndView getDashboardPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
-        return pageBuilder.buildPage(forFragment(SETTINGS, SETTINGS_DASHBOARD, principal));
+    @PostMapping("/onboarding/account")
+    public ModelAndView submitOnboardingInformation(@AuthenticationPrincipal UserAuthenticationDetails principal,
+                                                    @Valid SubmitAccountDetailsRequest request,
+                                                    BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            ModelAndView modelAndView = pageBuilder.buildPage(forPage(ACCOUNT_ONBOARDING, principal));
+            return pageBuilder.addErrors(modelAndView, "submitPersonalDetailsRequest", request, bindingResult);
+        }
+
+        userService.submitPersonalInfo(principal.getId(), request);
+        ModelAndView modelAndView = pageBuilder.buildPage(forPage(ACCOUNT_ONBOARDING, principal));
+        modelAndView.addObject("processState", "success");
+        return modelAndView;
+    }
+
+    @GetMapping("/auth/verify-email")
+    public ModelAndView verifyEmail(@RequestParam("token") UUID tokenId,
+                                    @AuthenticationPrincipal UserAuthenticationDetails principal) {
+
+        userService.verifyEmailAddress(tokenId);
+        ModelAndView modelAndView = pageBuilder.buildPage(DtoContext.forPage(CONFIRMATION, principal));
+        return modelAndView.addObject("confirmationMessage", "emailVerificationSuccess");
+    }
+
+    @GetMapping("/account")
+    public ModelAndView getAccountPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
+        return pageBuilder.buildPage(forPage(ACCOUNT, principal));
     }
 
     @GetMapping( "/settings/personal-info")
@@ -67,8 +92,8 @@ public class SettingsController {
 
     @PostMapping("/settings/personal-info/photo")
     public ModelAndView changeAvatar(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                       @Valid UpdateProfilePhotoRequest request,
-                                       BindingResult bindingResult) throws IOException {
+                                     @Valid UpdateProfilePhotoRequest request,
+                                     BindingResult bindingResult) throws IOException {
 
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = pageBuilder.buildPage(forFragment(SETTINGS, PERSONAL_INFO, principal));
@@ -99,8 +124,8 @@ public class SettingsController {
 
     @PostMapping("/settings/personal-info/contacts")
     public ModelAndView changeContactInfo(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                           @Valid UpdateContactDetailsRequest request,
-                                           BindingResult bindingResult) {
+                                          @Valid UpdateContactDetailsRequest request,
+                                          BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = pageBuilder.buildPage(forFragment(SETTINGS, PERSONAL_INFO, principal));
@@ -123,8 +148,8 @@ public class SettingsController {
     @PostMapping( "/settings/professional-info")
     @PreAuthorize(value = "hasRole('DOCTOR')")
     public ModelAndView changeProfessionalInfo(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                              @Valid UpdateProfessionalDetailsRequest request,
-                                              BindingResult bindingResult) {
+                                               @Valid UpdateProfessionalDetailsRequest request,
+                                               BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = pageBuilder.buildPage(forFragment(SETTINGS, PROFESSIONAL_INFO, principal));

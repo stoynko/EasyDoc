@@ -3,6 +3,7 @@ package com.github.stoynko.easydoc.models.embedded;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Getter
 @Embeddable
 @NoArgsConstructor
-public class CreatedModifiedAt {
+public class CreatedModifiedAt implements Serializable {
 
     @NotNull
     @CreationTimestamp

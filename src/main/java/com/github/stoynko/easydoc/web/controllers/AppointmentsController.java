@@ -56,6 +56,7 @@ public class AppointmentsController {
     }
 
     @GetMapping("/appointments/doctor/{doctorId}")
+    @PreAuthorize(value = "@securityCheck.canBookAppointment(principal)")
     public ModelAndView getAppointmentPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                   @PathVariable UUID doctorId) {
 
@@ -65,6 +66,7 @@ public class AppointmentsController {
     }
 
     @GetMapping("/appointments/doctor/{doctorId}/available-times")
+    @PreAuthorize(value = "@securityCheck.canBookAppointment(principal)")
     public String getAvailableSlots(@PathVariable UUID doctorId,
                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                     Model model) {
@@ -77,7 +79,7 @@ public class AppointmentsController {
 
 
     @PostMapping("/appointments/doctor/{doctorId}")
-    //TODO: @PreAuthorize(value = "hasAuthority('STATUS_ACTIVE')")
+    @PreAuthorize(value = "@securityCheck.canBookAppointment(principal)")
     public ModelAndView submitAppointmentPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                               @PathVariable UUID doctorId,
                                               @Valid AppointmentRequest request,
@@ -94,25 +96,6 @@ public class AppointmentsController {
         appointmentService.createAppointment(principal.getId(), doctorId, request);
         ModelAndView modelAndView = pageBuilder.buildPage(forTargetResource(APPOINTMENT, principal, doctorId));
         modelAndView.addObject("processState", "success");
-        return modelAndView;
-    }
-
-    @GetMapping("/doctor/{doctorId}")
-    public ModelAndView getDoctorProfilePage(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                                @PathVariable UUID doctorId) {
-        return pageBuilder.buildPage(forTargetResource(ACCOUNT, principal, doctorId));
-    }
-
-    @GetMapping(value = "/doctors", params = "category")
-    public ModelAndView getDoctorsByCategory(@RequestParam(value = "category", required = false) Expertise expertise,
-                                             @AuthenticationPrincipal UserAuthenticationDetails principal) {
-
-        List<DoctorBriefSummaryResponse> doctors = (expertise == null) ?
-                doctorService.getAllDoctors() : doctorService.getDoctorsByExpertise(expertise);
-
-        ModelAndView modelAndView = pageBuilder.buildPage(forPage(DOCTORS, principal));
-        modelAndView.addObject("doctors", doctors);
-        modelAndView.addObject("category", expertise);
         return modelAndView;
     }
 

@@ -44,17 +44,17 @@ public class DtoAggregator {
             case PERSONAL_INFO -> {
                 model.put(MODEL_ELEMENT_FRAGMENT, PERSONAL_INFO.getFragmentPath());
                 model.putIfAbsent("changeAvatarRequest", new UpdateProfilePhotoRequest());
-                model.putIfAbsent("changePersonalDetailsRequest", DtoMapper.getPersonalDetailsFrom(userService.getUserById(resourceId)));
-                model.putIfAbsent("changeContactDetailsRequest", DtoMapper.getContactDetailsFrom(userService.getUserById(resourceId)));
+                model.putIfAbsent("changePersonalDetailsRequest", DtoMapper.toPersonalDetailsFrom(userService.getUserById(resourceId)));
+                model.putIfAbsent("changeContactDetailsRequest", DtoMapper.toContactDetailsFrom(userService.getUserById(resourceId)));
             }
             case PROFESSIONAL_INFO -> {
                 model.put(MODEL_ELEMENT_FRAGMENT, PROFESSIONAL_INFO.getFragmentPath());
-                model.putIfAbsent("changeProfessionalDetailsRequest", DtoMapper.getProfessionalDetailsFrom(doctorService.getDoctorDetailsByUserId(resourceId)));
+                model.putIfAbsent("changeProfessionalDetailsRequest", DtoMapper.toProfessionalDetailsFrom(doctorService.getDoctorDetailsByUserId(resourceId)));
             }
 
             case SECURITY -> {
                 model.put(MODEL_ELEMENT_FRAGMENT, SECURITY.getFragmentPath());
-                model.putIfAbsent("changeEmailAddressRequest", DtoMapper.getEmailAddressFrom(userService.getUserById(resourceId)));
+                model.putIfAbsent("changeEmailAddressRequest", DtoMapper.toEmailAddressFrom(userService.getUserById(resourceId)));
                 model.putIfAbsent("changePasswordRequest", new UpdatePasswordRequest());
             }
 
@@ -66,7 +66,7 @@ public class DtoAggregator {
             }
 
             case DOCTOR_ONBOARDING -> {
-            model.putIfAbsent("registerPractitionerRequest", DtoMapper.getRegisterPractitionerFrom(userService.getUserById(resourceId)));
+            model.putIfAbsent("registerPractitionerRequest", DtoMapper.toRegisterPractitionerFrom(userService.getUserById(resourceId)));
             model.put("processState", "formEntry");
             }
         }

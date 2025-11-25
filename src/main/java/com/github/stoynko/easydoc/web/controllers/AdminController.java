@@ -1,5 +1,6 @@
 package com.github.stoynko.easydoc.web.controllers;
 
+import com.github.stoynko.easydoc.models.enums.AccountAuthority;
 import com.github.stoynko.easydoc.models.enums.AccountRole;
 import com.github.stoynko.easydoc.models.enums.Expertise;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
@@ -51,34 +52,38 @@ public class AdminController {
         return pageBuilder.buildPage(forPage(USERS, principal));
     }
 
-    @GetMapping(value = "/users", params = "role")
-    public ModelAndView getUsersByRole(@RequestParam(value = "role", required = false) AccountRole role,
-                                             @AuthenticationPrincipal UserAuthenticationDetails principal) {
-
-        List<UserSummaryResponse> users = userService.getAllUsersByRole(role)
-                .stream().map(DtoMapper::toUserSummaryFrom)
-                .collect(Collectors.toList());
-
-        ModelAndView modelAndView = pageBuilder.buildPage(forPage(USERS, principal));
-        modelAndView.addObject("users", users);
-        modelAndView.addObject("userRole", role);
-        return modelAndView;
-    }
-
-    @PostMapping("/users/{uuid}/enable")
+    @PostMapping("/users/{userId}/enable")
     @PreAuthorize(value = "hasRole('ADMIN')")
     public ModelAndView enableAccount(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                      @PathVariable UUID uuid) {
-        userService.updateAccountStatus(uuid, ACTIVE);
-        return new ModelAndView("redirect:/users");
+                                      @PathVariable UUID userId) {
+        userService.updateAccountStatus(userId, ACTIVE);
+        return pageBuilder.buildPage(forPage(USERS, principal));
     }
 
-    @PostMapping("/users/{uuid}/suspend")
+    @PostMapping("/users/{userId}/suspend")
     @PreAuthorize(value = "hasRole('ADMIN')")
     public ModelAndView suspendAccount(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                    @PathVariable UUID uuid) {
-        userService.updateAccountStatus(uuid, SUSPENDED);
-        return new ModelAndView("redirect:/users");
+                                    @PathVariable UUID userId) {
+        userService.updateAccountStatus(userId, SUSPENDED);
+        return pageBuilder.buildPage(forPage(USERS, principal));
+    }
+
+    @PostMapping("/users/{userId}/authorities/revoke/{authority}")
+    @PreAuthorize(value = "hasRole('ADMIN')")
+    public ModelAndView revokeAuthority(@AuthenticationPrincipal UserAuthenticationDetails principal,
+                                               @PathVariable UUID userId,
+                                               @PathVariable AccountAuthority authority) {
+        userService.revokeAuthority(userId, authority);
+        return pageBuilder.buildPage(forPage(USERS, principal));
+    }
+
+    @PostMapping("/users/{userId}/authorities/reinstate/{authority}")
+    @PreAuthorize(value = "hasRole('ADMIN')")
+    public ModelAndView reinstateAuthority(@AuthenticationPrincipal UserAuthenticationDetails principal,
+                                               @PathVariable UUID userId,
+                                               @PathVariable AccountAuthority authority) {
+        userService.reinstateAuthority(userId, authority);
+        return pageBuilder.buildPage(forPage(USERS, principal));
     }
 
     @GetMapping("/applications")

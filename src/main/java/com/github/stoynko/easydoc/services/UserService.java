@@ -11,12 +11,12 @@ import com.github.stoynko.easydoc.exceptions.UserExistsWithEmailException;
 import com.github.stoynko.easydoc.exceptions.UserExistsWithPinException;
 import com.github.stoynko.easydoc.models.EmailVerificationToken;
 import com.github.stoynko.easydoc.models.User;
+import com.github.stoynko.easydoc.models.enums.AccountAuthority;
 import com.github.stoynko.easydoc.models.enums.AccountRole;
 import com.github.stoynko.easydoc.models.enums.AccountStatus;
 import com.github.stoynko.easydoc.repositories.UserRepository;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.web.dto.request.*;
-import com.github.stoynko.easydoc.web.dto.response.UserSummaryResponse;
 import com.github.stoynko.easydoc.web.mappers.EntityMapper;
 import jakarta.validation.Valid;
 
@@ -37,6 +37,8 @@ import java.util.UUID;
 import static com.github.stoynko.easydoc.exceptions.ErrorMessages.ACCOUNT_DUPLICATE_EMAIL;
 import static com.github.stoynko.easydoc.exceptions.ErrorMessages.ACCOUNT_NOT_FOUND;
 import static com.github.stoynko.easydoc.exceptions.ErrorMessages.CREDENTIALS_PASSWORD_INVALID;
+import static com.github.stoynko.easydoc.models.enums.AccountAuthority.CAN_BOOK_APPOINTMENT;
+import static com.github.stoynko.easydoc.models.enums.AccountAuthority.CAN_SUBMIT_PRACTITIONER_APPLICATION;
 import static com.github.stoynko.easydoc.models.enums.AccountRole.ADMIN;
 import static com.github.stoynko.easydoc.models.enums.AccountRole.DOCTOR;
 import static com.github.stoynko.easydoc.models.enums.AccountStatus.ACTIVE;
@@ -89,12 +91,15 @@ public class UserService implements UserDetailsService {
 
         EmailVerificationToken token = emailVerificationService.getValidToken(tokenId);
         User user = token.getUser();
+
         user.setEmailVerified(true);
+        user.getAuthority().add(CAN_BOOK_APPOINTMENT);
+        user.getAuthority().add(CAN_SUBMIT_PRACTITIONER_APPLICATION);
+
         updateAccountStatus(user);
 
         emailVerificationService.markTokenAsUsed(token);
-        //eventPublisher.publishEvent(new UserContextRefreshEvent(user.getEmailAddress()));
-
+        eventPublisher.publishEvent(new UserContextRefreshEvent(user.getId()));
         log.info("-emailVerification | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
@@ -126,7 +131,7 @@ public class UserService implements UserDetailsService {
                 new UsernameNotFoundException(ACCOUNT_NOT_FOUND.getErrorMessage()));
 
         return new UserAuthenticationDetails(user.getId(), user.getEmailAddress(),
-                user.getPasswordHash(),user.getAccountStatus(), user.getRole());
+                user.getPasswordHash(),user.getAccountStatus(), user.getRole(), user.getAuthority());
     }
 
     @Transactional
@@ -147,7 +152,7 @@ public class UserService implements UserDetailsService {
         repository.save(user);
         log.info("-submitPersonalInfo | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
 
-        eventPublisher.publishEvent(new UserContextRefreshEvent(user.getEmailAddress()));
+        eventPublisher.publishEvent(new UserContextRefreshEvent(user.getId()));
     }
 
     public void updateEmailAddress(UUID uuid, UpdateEmailAddressRequest request) {
@@ -249,6 +254,26 @@ public class UserService implements UserDetailsService {
         log.info("-accountDeleted | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
+    public List<User> getUsersByRole(AccountRole role) {
+        return repository.findAllByRole(role);
+    }
+
+    public void revokeAuthority(UUID uuid, AccountAuthority authority) {
+        User user = getUserById(uuid);
+        user.getAuthority().remove(authority);
+        repository.save(user);
+        log.info("-authorityRevoked | userId: {} authority: {} timestamp:{}",
+                user.getId(), authority.name(), LocalDateTime.now());
+    }
+
+    public void reinstateAuthority(UUID uuid, AccountAuthority authority) {
+        User user = getUserById(uuid);
+        user.getAuthority().add(authority);
+        repository.save(user);
+        log.info("-authorityReinstated | userId: {} authority: {} timestamp:{}",
+                user.getId(), authority.name(), LocalDateTime.now());
+    }
+
     public List<User> getAllUsersExceptAdmins() {
         return repository.findAllByRoleNot(ADMIN);
     }
@@ -263,9 +288,5 @@ public class UserService implements UserDetailsService {
 
     public List<User> getAllUsersByRole(AccountRole role) {
        return (role == null) ? getAllUsersExceptAdmins() : getUsersByRole(role);
-    }
-
-    public List<User> getUsersByRole(AccountRole role) {
-        return repository.findAllByRole(role);
     }
 }

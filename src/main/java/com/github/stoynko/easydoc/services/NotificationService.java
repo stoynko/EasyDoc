@@ -39,7 +39,7 @@ public class NotificationService {
             var helper = new MimeMessageHelper(mimeMessage, "UTF-8");
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(htmlBody, true); // true => HTML
+            helper.setText(htmlBody, true);
             mailSender.send(mimeMessage);
         } catch (Exception e) {
             // TODO: log / handle

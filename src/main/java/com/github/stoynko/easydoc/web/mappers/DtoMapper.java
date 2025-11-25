@@ -18,12 +18,13 @@ import com.github.stoynko.easydoc.web.dto.response.PendingPractitionerApplicatio
 import com.github.stoynko.easydoc.web.dto.response.UserSummaryResponse;
 import lombok.experimental.UtilityClass;
 
+import static com.github.stoynko.easydoc.models.enums.AccountAuthority.CAN_BOOK_APPOINTMENT;
 import static com.github.stoynko.easydoc.utilities.ValidationUtilities.extractName;
 
 @UtilityClass
 public class DtoMapper {
 
-    public UpdateAccountDetailsRequest getPersonalDetailsFrom(User user) {
+    public UpdateAccountDetailsRequest toPersonalDetailsFrom(User user) {
         return UpdateAccountDetailsRequest.builder()
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
@@ -32,19 +33,19 @@ public class DtoMapper {
                 .build();
     }
 
-    public UpdateContactDetailsRequest getContactDetailsFrom(User user) {
+    public UpdateContactDetailsRequest toContactDetailsFrom(User user) {
         return UpdateContactDetailsRequest.builder()
                 .phoneNumber(user.getPhoneNumber())
                 .build();
     }
 
-    public UpdateEmailAddressRequest getEmailAddressFrom(User user) {
+    public UpdateEmailAddressRequest toEmailAddressFrom(User user) {
         return UpdateEmailAddressRequest.builder()
                 .currentEmailAddress(user.getEmailAddress())
                 .build();
     }
 
-    public RegisterPractitionerRequest getRegisterPractitionerFrom(User user) {
+    public RegisterPractitionerRequest toRegisterPractitionerFrom(User user) {
         return RegisterPractitionerRequest.builder()
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
@@ -53,16 +54,17 @@ public class DtoMapper {
                 .build();
     }
 
-    public PatientSummaryResponse getUserSummary(User user) {
+    public PatientSummaryResponse toUserSummary(User user) {
         return PatientSummaryResponse.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName() != null ? user.getFirstName() : "")
                 .lastName(user.getLastName() != null ? user.getLastName() : "")
+                .profilePhotoUrl("")
                 .gender(user.getGender())
                 .build();
     }
 
-    public UpdateProfessionalDetailsRequest getProfessionalDetailsFrom(Doctor doctor) {
+    public UpdateProfessionalDetailsRequest toProfessionalDetailsFrom(Doctor doctor) {
         return UpdateProfessionalDetailsRequest.builder()
                 .expertise(doctor.getExpertise())
                 .yearsExperience(doctor.getYearsExperience())
@@ -71,7 +73,7 @@ public class DtoMapper {
                 .build();
     }
 
-    public static UpdateAccountDetailsRequest getChangePersonalDetailsFrom(RegisterPractitionerRequest request) {
+    public static UpdateAccountDetailsRequest toChangePersonalDetailsFrom(RegisterPractitionerRequest request) {
         return UpdateAccountDetailsRequest.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -96,6 +98,7 @@ public class DtoMapper {
                 .accountRole(user.getRole())
                 .accountStatus(user.getAccountStatus())
                 .emailAddress(user.getEmailAddress())
+                .canBookAppointment(user.getAuthority().contains(CAN_BOOK_APPOINTMENT))
                 .creationDate(user.getCreatedModifiedAt().getCreatedAt())
                 .build();
     }
@@ -128,7 +131,7 @@ public class DtoMapper {
                 .build();
     }
 
-    public static PatientAppointmentResponse getPatientAppointmentDetailsFrom(Appointment appointment) {
+    public static PatientAppointmentResponse toPatientAppointmentDetailsFrom(Appointment appointment) {
         return PatientAppointmentResponse.builder()
                 .appointmentId(appointment.getId())
                 .appointmentPublicId(appointment.getPublicId())
@@ -142,7 +145,7 @@ public class DtoMapper {
                 .build();
     }
 
-    public static DoctorAppointmentResponse getDoctorAppointmentDetailsFrom(Appointment appointment) {
+    public static DoctorAppointmentResponse toDoctorAppointmentDetailsFrom(Appointment appointment) {
 
         User patient = appointment.getPatient();
 

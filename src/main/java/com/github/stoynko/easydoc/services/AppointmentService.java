@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.github.stoynko.easydoc.exceptions.ErrorMessages.APPOINTMENT_DATE_INVALID;
+import static com.github.stoynko.easydoc.exceptions.ErrorMessages.APPOINTMENT_NOT_FOUND;
 import static com.github.stoynko.easydoc.exceptions.ErrorMessages.APPOINTMENT_TIME_INVALID;
 import static com.github.stoynko.easydoc.exceptions.ErrorMessages.APPOINTMENT_TIME_OUTSIDE_HOURS;
 import static com.github.stoynko.easydoc.models.enums.AppointmentStatus.CANCELLED;
@@ -157,7 +158,7 @@ public class AppointmentService {
 
     private Appointment getAppointmentById(UUID id) {
         return repository.findAppointmentById(id)
-                .orElseThrow(() -> new AppointmentDoesNotExistException(ErrorMessages.APPOINTMENT_NOT_FOUND));
+                .orElseThrow(() -> new AppointmentDoesNotExistException(APPOINTMENT_NOT_FOUND));
 
     }
 

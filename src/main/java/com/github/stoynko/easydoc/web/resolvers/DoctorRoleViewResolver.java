@@ -56,11 +56,11 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
 
             case APPOINTMENTS -> {
                 model.put("upcomingAppointments", appointmentService.getDoctorUpcomingAppointments(dtoContext.principal().getId())
-                        .stream().map(DtoMapper::getDoctorAppointmentDetailsFrom)
+                        .stream().map(DtoMapper::toDoctorAppointmentDetailsFrom)
                         .collect(Collectors.toList()));
 
                 model.put("pastAppointments", appointmentService.getDoctorPastAppointments(dtoContext.principal().getId())
-                        .stream().map(DtoMapper::getDoctorAppointmentDetailsFrom)
+                        .stream().map(DtoMapper::toDoctorAppointmentDetailsFrom)
                         .collect(Collectors.toList()));
             }
 
@@ -89,7 +89,6 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
             Doctor doctor = doctorService.getDoctorDetailsByUserId(dtoContext.principal().getId());
             model.put("doctorSummary", DtoMapper.toDoctorDetailedInfoFrom(doctor));
             model.put("userSummary", DtoMapper.toDoctorDetailedInfoFrom(doctor));
-            //model.put("role", dtoContext.principal().getRole());
         }
 
         return model;

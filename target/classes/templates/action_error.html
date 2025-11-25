@@ -24,49 +24,43 @@
 
 <div class="workspace-container">
 
-    <!-- SIDEBAR NAVIGATION -->
-    <th:block sec:authorize="isAuthenticated() and !hasAuthority('STATUS_INCOMPLETE')">">
-        <aside th:if="${#strings.contains(currentPath ?: '', '/settings')}"
-               th:insert="~{fragments/components/sidebar_navigation :: settings_navigation}"
-               class="sidebar">
-        </aside>
+    <th:block th:switch="${errorMessage}">
 
-        <aside th:if="${!#strings.contains(currentPath ?: '', '/settings') or #strings.contains(currentPath ?: '', '/onboarding')}"
-               th:insert="~{fragments/components/sidebar_navigation :: workspace_navigation}"
-               class="sidebar">
-        </aside>
+        <th:block th:case="registrationFailed">
+            <th:block th:insert="~{fragments/error_messages :: registration_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="tokenVerificationFailure">
+            <th:block th:insert="~{fragments/error_messages :: token_verification_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="onboardingAccountInfoSubmitFailure">
+            <th:block th:insert="~{fragments/error_messages :: onboarding_account_info_submit_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="onboardingDoctorInfoSubmitFailure">
+            <th:block th:insert="~{fragments/error_messages :: onboarding_doctor_info_submit_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="emailVerificationCheckFailure">
+            <th:block th:insert="~{fragments/error_messages :: email_verification_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="authorityCheckFailure">
+            <th:block th:insert="~{fragments/error_messages :: authority_check_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="canBookCheckFailure">
+            <th:block th:insert="~{fragments/error_messages :: can_book_check_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="canSubmitApplicationCheckFailure">
+            <th:block th:insert="~{fragments/error_messages :: can_submit_application_check_failure}"></th:block>
+        </th:block>
+
+
     </th:block>
 
-
-    <!-- FRAGMENT DISPLAY -->
-    <div class="main-content">
-        <th:block th:switch="${errorMessage}">
-
-            <th:block th:case="registrationFailed">
-                <th:block th:insert="~{fragments/error_messages :: registration_failure}"></th:block>
-            </th:block>
-
-            <th:block th:case="emailVerificationFailed">
-                <th:block th:insert="~{fragments/error_messages :: email_verification_failure}"></th:block>
-            </th:block>
-
-            <th:block th:case="onboardingAccountInfoSubmitFailure">
-                <th:block th:insert="~{fragments/error_messages :: onboarding_account_info-submit_failure}"></th:block>
-            </th:block>
-
-            <th:block th:case="onboardingDoctorInfoSubmitFailure">
-                <th:block th:insert="~{fragments/error_messages :: onboarding_doctor_info_submit_failure}"></th:block>
-            </th:block>
-
-            <th:block th:case="emailVerificationFailure">
-                <th:block th:insert="~{fragments/error_messages :: email_verification_failure}"></th:block>
-            </th:block>
-
-
-
-
-        </th:block>
-    </div>
 
 </div>
 </body>

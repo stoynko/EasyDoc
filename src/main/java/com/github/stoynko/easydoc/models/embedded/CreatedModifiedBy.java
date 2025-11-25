@@ -2,6 +2,7 @@ package com.github.stoynko.easydoc.models.embedded;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Getter
 @Embeddable
 @NoArgsConstructor
-public class CreatedModifiedBy {
+public class CreatedModifiedBy implements Serializable {
 
     @CreatedBy
     @Column(name = "created_by", updatable = false)

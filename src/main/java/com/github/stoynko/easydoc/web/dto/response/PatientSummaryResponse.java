@@ -20,6 +20,8 @@ public class PatientSummaryResponse {
 
     private String emailAddress;
 
+    private String profilePhotoUrl;
+
     private String firstName;
 
     private String lastName;

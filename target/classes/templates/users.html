@@ -29,8 +29,6 @@
 
         <div class="dashboard-card">
 
-            <div class="dashboard-card-header">
-
                 <h2 th:if="${!#lists.isEmpty(users)}"
                     th:with="count=${#lists.size(users)}"
                     class="section-heading">
@@ -44,11 +42,6 @@
                     </span>
                 </h2>
 
-                <div th:unless="${#lists.isEmpty(users)}"
-                     th:insert="~{fragments/components/categories_filter :: user-roles}"
-                     class="category-filter-container">
-                </div>
-            </div>
 
             <div th:if="${#lists.isEmpty(users)}" class="view-card-empty-container">
 
@@ -104,6 +97,30 @@
                         <td th:text="${user.accountRole}" class="user-role">Placeholder Role</td>
 
                         <td class="quick-actions">
+                            <form th:if="${user.canBookAppointment and user.accountStatus != T(com.github.stoynko.easydoc.models.enums.AccountStatus).DELETED}"
+                                  th:action="@{/users/{userId}/authorities/revoke/{authority}(userId=${user.id}, authority='CAN_BOOK_APPOINTMENT')}"
+                                  th:method="POST"
+                                  class="inline-form">
+
+                                <!-- SPRING SECURITY CSRF, if enabled -->
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                                <button type="submit" class="action-btn cancel" title="Activate user">
+                                    <i class="fas fa-calendar-times"></i>
+                                </button>
+                            </form>
+                            <form th:if="${!user.canBookAppointment and user.accountStatus != T(com.github.stoynko.easydoc.models.enums.AccountStatus).DELETED}"
+                                  th:action="@{/users/{userId}/authorities/reinstate/{authority}(userId=${user.id}, authority='CAN_BOOK_APPOINTMENT')}"
+                                  th:method="POST"
+                                  class="inline-form">
+
+                                <!-- SPRING SECURITY CSRF, if enabled -->
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                                <button type="submit" class="action-btn enable" title="Activate user">
+                                    <i class="fas fa-calendar-check"></i>
+                                </button>
+                            </form>
                             <form th:if="${user.accountStatus == T(com.github.stoynko.easydoc.models.enums.AccountStatus).SUSPENDED}"
                                   th:action="@{/users/{uuid}/enable(uuid=${user.id})}"
                                   th:method="POST"
@@ -116,8 +133,9 @@
                                     <i class="fas fa-user-check"></i>
                                 </button>
                             </form>
-                            <form th:if="${user.accountStatus == T(com.github.stoynko.easydoc.models.enums.AccountStatus).ACTIVE}"
-                                  th:action="@{/users/{uuid}/suspend(uuid=${user.id})}"
+                            <form th:if="${user.accountStatus != T(com.github.stoynko.easydoc.models.enums.AccountStatus).SUSPENDED
+                                         and user.accountStatus != T(com.github.stoynko.easydoc.models.enums.AccountStatus).DELETED}"
+                                  th:action="@{/users/{userId}/suspend(userId=${user.id})}"
                                   th:method="POST"
                                   class="inline-form">
 
