@@ -114,6 +114,7 @@
                                    name="dateOfBirth"
                                    th:field="*{dateOfBirth}"
                                    th:value="${#temporals.format(changePersonalDetailsRequest.dateOfBirth, 'yyyy-MM-dd')}"
+                                   th:attr="min=${'1930-01-01'}, max=${#temporals.format(#temporals.createNow().minusYears(18),'yyyy-MM-dd')}"
                                    required>
                             <p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="form-error">Placeholder Error</p>
                         </div>

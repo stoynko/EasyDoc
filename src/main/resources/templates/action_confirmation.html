@@ -87,6 +87,9 @@
                     <th:block th:insert="~{fragments/success_messages :: appointment_mark_noshow_success}"></th:block>
                 </th:block>
 
+                <th:block th:case="reportCreationSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: medical_report_creation_success}"></th:block>
+                </th:block>
 
             </th:block>
         </div>

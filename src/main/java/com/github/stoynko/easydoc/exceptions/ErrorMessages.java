@@ -26,6 +26,8 @@ public enum ErrorMessages {
     APPOINTMENT_TIME_OUTSIDE_HOURS("The time for the appointment cannot be outside the specified working hours"),
     APPOINTMENT_TIME_INVALID("The date for the appointment cannot be in the past"),
 
+    REPORT_NOT_FOUND("Report with this id does not exist"),
+
     MISSING_AUTHORITY("You do not have the necessary authority to access this page/resource"),
 
     BOOKING_SUSPENDED("You are currently unable to schedule appointments. Please try again later and if the issue persists, you are welcome to get in touch with our support team"),

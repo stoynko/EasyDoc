@@ -16,9 +16,7 @@
 </head>
 <body data-fragment="body">
 
-<th:block data-fragment="scripts">
-    <script th:src="@{/js/modal.js}"></script>
-</th:block>
+<th:block data-fragment="scripts"></th:block>
 
 <!-- HEADER-->
 <header th:insert="~{fragments/components/header :: header_auth}"></header>
@@ -32,8 +30,8 @@
 
             <th:block sec:authorize="hasRole('PATIENT')">
 
-            <!-- UPCOMING APPOINTMENTS-->
-            <div class="dashboard-card">
+                <!-- UPCOMING APPOINTMENTS-->
+                <div class="dashboard-card">
 
                 <h2 th:if="${!#lists.isEmpty(upcomingAppointments)}"
                     th:with="count=${#lists.size(upcomingAppointments)}"
@@ -147,8 +145,8 @@
 
             </div>
 
-            <!-- PAST APPOINTMENTS-->
-            <div class="dashboard-card">
+                <!-- PAST APPOINTMENTS-->
+                <div class="dashboard-card">
 
                 <h2 th:if="${!#lists.isEmpty(pastAppointments)}"
                     th:with="count=${#lists.size(pastAppointments)}"
@@ -255,9 +253,10 @@
                 </div>
             </div>
 
-        </th:block>
+             </th:block>
 
             <th:block sec:authorize="hasRole('DOCTOR')">
+
             <!-- UPCOMING APPOINTMENTS-->
             <div class="dashboard-card">
 
@@ -336,46 +335,32 @@
                                 class="visit-reason">Placeholder Reason
                             </td>
 
-                            <td class="quick-actions" data-label="Actions">
-                                <div style="flex: 1; width: 100%;">
-                                    <button type="submit"
-                                            class="btn-primary"
-                                            onclick="openAppointmentModal()"
-                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
-                                        <i class="fas fa-hospital-user"></i>
-                                    </button>
-                                </div>
-                                <form th:action="@{/appointments/{id}/report(id=${appointment.appointmentId})}"
-                                      th:method="POST" style="flex: 1; width: 100%;">
+                            <td class="quick-actions">
+                                <form th:action="@{/appointments/{appointmentId}/review(appointmentId=${appointment.appointmentId},
+                                                                                        action='READ')}"
+                                      th:method="GET" style="flex: 1; width: 100%;">
 
-                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                   <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
 
                                     <button type="submit"
                                             class="btn-primary"
                                             style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
-                                        <i class="fas fa-file-medical"></i>
+                                        <i class="fas fa-expand"></i>
+                                        View
                                     </button>
                                 </form>
-                                <form th:action="@{/appointments/{id}/prescription(id=${appointment.appointmentId})}"
-                                      th:method="POST" style="flex: 1; width: 100%;">
 
-                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-                                    <button type="submit"
-                                            class="btn-primary"
-                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
-                                        <i class="fas fa-file-prescription"></i>
-                                    </button>
-                                </form>
                                 <form th:action="@{/appointments/{appointmentId}/no-show(appointmentId=${appointment.appointmentId})}"
                                       th:method="POST" style="flex: 1; width: 100%;">
 
-                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                    <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
 
                                     <button type="submit"
                                             class="btn-primary warning"
                                             style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
                                         <i class="fas fa-calendar-times"></i>
+                                        No-Show
                                     </button>
                                 </form>
                             </td>
@@ -481,13 +466,20 @@
 <div class="modal-overlay" id="appointment-modal">
     <div class="modal-content">
         <button class="modal-close" onclick="closeAppointmentModal()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"></path>
             </svg>
         </button>
 
-        <h3 class="modal-title">Appointment Details</h3>
-
+        <div class="form-group appointment-form-group-flex">
+            <label for="appointment-notes" class="appointment-label-no-shrink">Appointment Details</label>
+            <textarea id="appointment-notes"
+                      name="reason"
+                      class="appointment-textarea-flex"
+                      readonly></textarea>
+        </div>
     </div>
 </div>
 

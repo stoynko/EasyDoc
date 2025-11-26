@@ -30,7 +30,14 @@ public class DoctorAppointmentResponse {
 
     private AppointmentReason appointmentReason;
 
+    private String appointmentAdditionalNotes;
+
     private AppointmentStatus appointmentStatus;
 
     private LocalDateTime startsAt;
+
+    private boolean hasReport;
+
+    private boolean hasPrescription;
+
 }

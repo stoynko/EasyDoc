@@ -70,7 +70,7 @@ public class PatientRoleViewResolver implements RoleViewResolver {
 
             case PRESCRIPTIONS -> model.put("prescriptions", null);
 
-            case APPOINTMENTS -> {
+            case APPOINTMENTS_TABLE -> {
                 model.put("upcomingAppointments", appointmentService.getPatientUpcomingAppointments(dtoContext.principal().getId())
                         .stream().map(DtoMapper::toPatientAppointmentDetailsFrom)
                         .collect(Collectors.toList()));
@@ -80,7 +80,7 @@ public class PatientRoleViewResolver implements RoleViewResolver {
                         .collect(Collectors.toList()));
             }
 
-            case APPOINTMENT -> {
+            case APPOINTMENT_CREATION -> {
                 model.put("processState", "formEntry");
                 Doctor doctor = doctorService.getDoctorByDoctorId(dtoContext.resourceId());
                 model.putIfAbsent("doctorSummary", DtoMapper.toDoctorBriefInfoFrom(doctor));

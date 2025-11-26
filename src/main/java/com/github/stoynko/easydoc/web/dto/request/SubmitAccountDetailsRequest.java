@@ -1,8 +1,11 @@
 package com.github.stoynko.easydoc.web.dto.request;
 
+import com.github.stoynko.easydoc.annotation.ValidBirthDate;
 import com.github.stoynko.easydoc.models.enums.Gender;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,13 +28,15 @@ public class SubmitAccountDetailsRequest {
     private String firstName;
 
     @NotBlank(message = "Please enter your last name")
-    @Size(max = 100, message = "Please enter at most 100 characters")
+    @Size(max = 100, message = "Please enter at most 15 characters")
     private String lastName;
 
     @NotBlank(message = "Please enter your personal identification number")
-    @Size(max = 100, message = "Please enter at most 15 characters")
+    @Size(max = 10, message = "Please enter at most 10 characters")
+    @Pattern(regexp = "\\d+", message = "PIN must contain digits only")
     private String pin;
 
+    @ValidBirthDate
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull(message = "Please enter your date of birth")
     private LocalDate dateOfBirth;

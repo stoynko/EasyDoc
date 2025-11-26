@@ -3,6 +3,7 @@ package com.github.stoynko.easydoc.web.controllers;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 
 import com.github.stoynko.easydoc.web.dto.DtoContext;
+import com.github.stoynko.easydoc.web.model.ViewPage;
 import com.github.stoynko.easydoc.web.resolvers.RoleViewResolverRegistry;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forPage;
-import static com.github.stoynko.easydoc.web.model.ViewPage.MEDICAL_REPORTS;
+import static com.github.stoynko.easydoc.web.model.ViewPage.MEDICAL_REPORT_VIEW;
 
 @Controller
 public class ReportsController {
@@ -28,11 +29,6 @@ public class ReportsController {
 
     @GetMapping("/reports")
     public ModelAndView getReportsPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
-        return pageBuilder.buildPage(forPage(MEDICAL_REPORTS, principal));
-    }
-
-    @GetMapping("/report")
-    public ModelAndView getReportCreation(@AuthenticationPrincipal UserAuthenticationDetails principal) {
-        return pageBuilder.buildPage(forPage(MEDICAL_REPORTS, principal));
+        return pageBuilder.buildPage(forPage(MEDICAL_REPORT_VIEW, principal));
     }
 }

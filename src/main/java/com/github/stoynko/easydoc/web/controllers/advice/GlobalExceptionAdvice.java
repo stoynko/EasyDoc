@@ -1,5 +1,6 @@
 package com.github.stoynko.easydoc.web.controllers.advice;
 
+import com.github.stoynko.easydoc.exceptions.AccountIncompleteException;
 import com.github.stoynko.easydoc.exceptions.AlreadyOnboardedException;
 import com.github.stoynko.easydoc.exceptions.ApplicationAlreadyExistsException;
 import com.github.stoynko.easydoc.exceptions.BookingSuspendedException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forPage;
+import static com.github.stoynko.easydoc.web.model.ViewPage.ACCOUNT_ONBOARDING;
 import static com.github.stoynko.easydoc.web.model.ViewPage.DOCTOR_ONBOARDING;
 import static com.github.stoynko.easydoc.web.model.ViewPage.ERROR;
 
@@ -94,11 +96,20 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(ApplicationAlreadyExistsException.class)
     public ModelAndView handleApplicationAlreadyExistsException (@AuthenticationPrincipal UserAuthenticationDetails principal,
                                                          ApplicationAlreadyExistsException exception) {
+        ModelAndView modelAndView = pageBuilder.buildPage(forPage(ACCOUNT_ONBOARDING, principal));
+        return modelAndView;
+    }
+
+    @ExceptionHandler(AccountIncompleteException.class)
+    public ModelAndView handleAccountIncompleteException (@AuthenticationPrincipal UserAuthenticationDetails principal,
+                                                          AccountIncompleteException exception) {
         ModelAndView modelAndView = pageBuilder.buildPage(forPage(ERROR, principal));
         modelAndView.addObject("errorMessage", "canSubmitApplicationCheckFailure");
         modelAndView.addObject("errorMessageDetails", exception.getMessage());
         return modelAndView;
     }
-
     //TODO: Handle 413 - MaxUploadSizeExceededException when uploading avatar with larger size
 }
+
+
+/*UnsatisfiedServletRequestParameterException*/

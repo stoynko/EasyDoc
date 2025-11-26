@@ -15,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -56,6 +57,13 @@ public class Appointment {
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
 
+    @OneToOne
+    @JoinColumn(name = "report_id", unique = true)
+    private Report report;
+
+    @Column(name = "prescription_id", unique = true)
+    private UUID prescriptionId;
+
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status", nullable = false)
     private AppointmentStatus status;
@@ -67,7 +75,7 @@ public class Appointment {
     @Column(name = "date", nullable = false)
     private LocalDateTime startsAt;
 
-    @Column(name = "additional_notes", nullable = true, columnDefinition = "TEXT")
+    @Column(name = "additional_notes", columnDefinition = "TEXT")
     private String additionalNotes;
 
     @Embedded
@@ -77,4 +85,12 @@ public class Appointment {
     @Embedded
     @Builder.Default
     private CreatedModifiedAt createdModifiedAt = new CreatedModifiedAt();
+
+    public boolean hasReport() {
+        return report != null;
+    }
+
+    public boolean hasPrescription() {
+        return report != null;
+    }
 }

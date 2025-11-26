@@ -49,7 +49,7 @@
 
                     <div class="form-group">
                         <label for="pin">Personal Identification Number</label>
-                        <input th:field="*{pin}" type="text" id="pin" name="pin" maxlength="15"
+                        <input th:field="*{pin}" type="text" id="pin" name="pin" maxlength="10"
                                required>
                         <p th:if="${#fields.hasErrors('pin')}" th:errors="*{pin}" class="form-error">Placeholder Error</p>
                     </div>
@@ -60,6 +60,8 @@
                                id="dateOfBirth"
                                name="dateOfBirth"
                                th:field="*{dateOfBirth}"
+                               th:attr="min=${'1930-01-01'}, max=${#temporals.format(
+                                        #temporals.createNow().minusYears(18),'yyyy-MM-dd')}"
                                required>
                         <p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="form-error">Placeholder Error</p>
                     </div>

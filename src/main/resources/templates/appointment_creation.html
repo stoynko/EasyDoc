@@ -15,6 +15,10 @@
 </head>
 <body data-fragment="body">
 
+<th:block data-fragment="scripts">
+    <script th:src="@{/js/timeslots.js}"></script>
+</th:block>
+
 <!-- HEADER-->
 <header th:insert="~{fragments/components/header :: header_auth}"></header>
 
@@ -144,63 +148,6 @@
 
     </main>
 </div>
-
-<th:block data-fragment="scripts">
-    <script>
-        function initializeTimeSlots() {
-            const timeSlotButtons = document.querySelectorAll('.time-slot-btn');
-            const selectedTimeInput = document.getElementById('selected-time');
-            
-            timeSlotButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Prevent clicking unavailable slots
-                    if (this.classList.contains('unavailable')) {
-                        return;
-                    }
-                    
-                    // Remove active class from all buttons
-                    document.querySelectorAll('.time-slot-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked button
-                    this.classList.add('active');
-                    
-                    // Set the selected time value
-                    if (selectedTimeInput) {
-                        selectedTimeInput.value = this.getAttribute('data-time');
-                    }
-                });
-            });
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeTimeSlots();
-            
-            // Clear selected time when date changes
-            const dateInput = document.getElementById('date');
-            if (dateInput) {
-                dateInput.addEventListener('change', function() {
-                    const selectedTimeInput = document.getElementById('selected-time');
-                    if (selectedTimeInput) {
-                        selectedTimeInput.value = '';
-                    }
-                    // Clear active state from all time slot buttons
-                    document.querySelectorAll('.time-slot-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                });
-            }
-        });
-        
-        // Reinitialize after HTMX swaps content
-        document.body.addEventListener('htmx:afterSwap', function(event) {
-            if (event.detail.target.id === 'time-slots-container') {
-                initializeTimeSlots();
-            }
-        });
-    </script>
-</th:block>
 
 </body>
 </html>

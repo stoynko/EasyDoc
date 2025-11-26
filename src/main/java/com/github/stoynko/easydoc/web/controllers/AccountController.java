@@ -212,13 +212,14 @@ public class AccountController {
     }
 
     @GetMapping( "/settings/delete")
-    @PreAuthorize(value = "hasAnyRole('PATIENT', 'DOCTOR')")
+    @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR')")
     public ModelAndView getDeleteAccountPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
         return pageBuilder.buildPage(forFragment(SETTINGS, DELETE_ACCOUNT, principal));
     }
 
     @PostMapping("/settings/delete")
-    @PreAuthorize(value = "hasAnyRole('PATIENT', 'DOCTOR')")
+    @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR'," +
+            "@securityCheck.isAccountActive())")
     public ModelAndView deleteAccount(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                       @Valid DeleteAccountRequest request,
                                       BindingResult bindingResult) {

@@ -156,17 +156,16 @@ public class AppointmentService {
         log.info("-appointmentCancellation | appointment:{} timestamp:{}", appointment.getId(),  LocalDateTime.now());
     }
 
-    private Appointment getAppointmentById(UUID id) {
-        return repository.findAppointmentById(id)
-                .orElseThrow(() -> new AppointmentDoesNotExistException(APPOINTMENT_NOT_FOUND));
-
-    }
-
     public void markAsNoShow(UUID appointmentId, UserAuthenticationDetails principal) {
         Appointment appointment = getAppointmentById(appointmentId);
         appointment.setStatus(NO_SHOW);
         repository.save(appointment);
         log.info("-appointmentNoShow | appointment: {} timestamp: {}", appointment.getId(),  LocalDateTime.now());
+    }
+
+    public Appointment getAppointmentById(UUID id) {
+        return repository.findAppointmentById(id)
+                .orElseThrow(() -> new AppointmentDoesNotExistException(APPOINTMENT_NOT_FOUND));
     }
 
     /*public List<Appointment> getUpcomingAppointments(UUID doctorUserId) {

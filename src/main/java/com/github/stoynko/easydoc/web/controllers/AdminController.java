@@ -1,14 +1,9 @@
 package com.github.stoynko.easydoc.web.controllers;
 
 import com.github.stoynko.easydoc.models.enums.AccountAuthority;
-import com.github.stoynko.easydoc.models.enums.AccountRole;
-import com.github.stoynko.easydoc.models.enums.Expertise;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.services.PractitionerApplicationService;
 import com.github.stoynko.easydoc.services.UserService;
-import com.github.stoynko.easydoc.web.dto.response.DoctorBriefSummaryResponse;
-import com.github.stoynko.easydoc.web.dto.response.UserSummaryResponse;
-import com.github.stoynko.easydoc.web.mappers.DtoMapper;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,18 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.github.stoynko.easydoc.models.enums.AccountStatus.ACTIVE;
 import static com.github.stoynko.easydoc.models.enums.AccountStatus.SUSPENDED;
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forPage;
-import static com.github.stoynko.easydoc.web.dto.DtoContext.forTargetResource;
-import static com.github.stoynko.easydoc.web.model.ViewPage.DOCTORS;
 import static com.github.stoynko.easydoc.web.model.ViewPage.PRACTITIONER_APPLICATIONS;
 import static com.github.stoynko.easydoc.web.model.ViewPage.USERS;
 
@@ -95,7 +85,7 @@ public class AdminController {
     @PostMapping("/applications/{uuid}/approve")
     @PreAuthorize(value = "hasRole('ADMIN')")
     public ModelAndView approvePractitionerApplication(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                            @PathVariable UUID uuid) {
+                                                       @PathVariable UUID uuid) {
 
         practitionerApplicationService.approveApplication(uuid);
         return new ModelAndView("redirect:/applications");
@@ -104,7 +94,7 @@ public class AdminController {
     @PostMapping("/applications/{uuid}/reject")
     @PreAuthorize(value = "hasRole('ADMIN')")
     public ModelAndView rejectPractitionerApplication(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                            @PathVariable UUID uuid) {
+                                                      @PathVariable UUID uuid) {
 
         practitionerApplicationService.rejectApplication(uuid);
         return new ModelAndView("redirect:/applications");

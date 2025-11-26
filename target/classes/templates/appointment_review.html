@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">Users Management</title>
+    <th:block data-fragment="head"></th:block>
+</head>
+<body data-fragment="body">
+
+<!-- HEADER-->
+<header th:insert="~{fragments/components/header :: header_auth}"></header>
+
+<div class="workspace-container">
+
+    <!-- SIDEBAR -->
+    <aside th:insert="~{fragments/components/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+
+        <div class="view-card onboarding-hero">
+
+            <div class="onboarding-copy">
+                <h1 class="view-card-title">Appointment</h1>
+                <p class="view-card-subtitle">Review, create report and prescription</p>
+            </div>
+        </div>
+
+        <!--<div class="form-group">
+            <div class="form-actions right-align">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i>
+                    Save Report
+                </button>
+            </div>
+        </div>-->
+
+        <div class="dashboard-card">
+
+            <div class="register-form">
+
+                    <div class="dashboard-card-header">
+
+                        <span class="dashboard-card-header breadcrumb">
+                            <a th:href="@{/appointments}" class="breadcrumb-link">Appointments </a>
+                            <i class="fas fa-caret-right"></i>
+                            <span th:text="${' ' + appointmentDetails.appointmentPublicId}">Placeholder Crumb</span>
+                        </span>
+
+                        <!-- TODO: ENABLE ONLY FOR APPOINTMENTS WITH REPORT -->
+                        <div class="dashboard-card-header submit-button">
+                            <form th:action="@{/appointments/{appointmentId}/complete(appointmentId=${appointmentDetails.appointmentId})}"
+                                  class="complete-appointment-form">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-upload"></i>
+                                    Complete Appointment
+                                </button>
+                             </form>
+                        </div>
+                    </div>
+
+
+                <!-- PATIENT DETAILS -->
+                <div class="view-card">
+
+                    <div class="entity-card-content">
+
+                        <div class="entity-section">
+
+                            <div class="entity-fields fields-inline">
+
+                                <div class="entity-field field-inline">
+                                    <label class="entity-field-label">Patient PIN</label>
+                                    <div th:text="${appointmentDetails.patientPin}" class="entity-field-value"></div>
+                                </div>
+
+                                <div class="entity-field field-inline">
+                                    <label class="entity-field-label">Patient's Name</label>
+                                    <div th:text="${appointmentDetails.patientFirstName + ' ' + appointmentDetails.patientLastName}"
+                                         class="entity-field-value"></div>
+                                </div>
+
+                                <div class="entity-field field-inline">
+                                    <label class="entity-field-label">Appointment Reason</label>
+                                    <div th:text="${appointmentDetails.appointmentReason.getDisplayValue()}"
+                                         class="entity-field-value"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div th:unless="${#strings.trim(appointmentDetails.additionalNotes).isEmpty()}"
+                             class="entity-section">
+
+                            <div class="entity-fields">
+
+                                <div class="entity-field">
+                                    <label class="entity-field-label">Additional Notes</label>
+                                    <textarea th:text="${appointmentDetails.additionalNotes}"
+                                              class="entity-field-value entity-textarea" rows="2" readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <!-- MEDICAL REPORT -->
+                <div class="view-card">
+
+                    <form th:action="@{/appointments/{appointmentId}/report/submit(appointmentId=${appointmentId})}"
+                          th:object="${medicalReport}"
+                          th:method="POST" id="medical-report-form" class="add-form">
+
+                        <div class="view-card-header">
+                            <h3 class="view-card-title" style="text-align: center">Medical Report</h3>
+
+                            <div class="view-card-actions">
+
+                                <button th:if="reportExists" type="submit" class="btn-primary"
+                                        form="medical-report-form">
+                                    <i class="fas fa-edit"></i>
+                                    Save Report
+                                </button>
+                                <button th:unless="reportExists" type="submit" class="btn-primary"
+                                        form="medical-report-form">
+                                    <i class="fas fa-save"></i>
+                                    Save Report
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- DIAGNOSIS -->
+                        <!-- DIAGNOSIS -->
+                        <div class="entity-card-content">
+                            <div class="entity-section">
+                                <h3 class="entity-section-title">Diagnosis</h3>
+
+                                <div class="entity-fields fields-inline">
+
+                                    <!-- DIAGNOSIS SEARCH -->
+                                    <div sec:authorize="hasRole('DOCTOR')"
+                                         class="entity-field field-inline"
+                                         th:object="${diagnosisSearchRequest}">
+                                        <div class="form-group search-input-group">
+                                            <input th:field="*{keyword}"
+                                                   id="diagnosisKeyword"
+                                                   placeholder="Search by keyword"/>
+
+                                            <button type="button"
+                                                    class="search-btn-diagnosis"
+                                                    th:hx-get="@{/search/diagnosis}"
+                                                    hx-target="#diagnosis-selector"
+                                                    hx-include="#diagnosisKeyword"
+                                                    hx-trigger="click">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+
+                                            <p th:if="${#fields.hasErrors('keyword')}"
+                                               th:errors="*{keyword}"
+                                               class="form-error">Placeholder Error</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- DIAGNOSIS SELECTOR -->
+                                    <div class="entity-field field-inline">
+                                        <div id="diagnosis-selector"
+                                             th:insert="~{fragments/components/diagnosis_selector :: diagnosis_selector}"
+                                             class="form-group"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MEDICAL HISTORY-->
+                        <div class="entity-card-content">
+
+                            <div class="entity-section">
+
+                                <h3 class="entity-section-title">Medical History</h3>
+
+                                <div class="entity-fields">
+
+                                    <!-- ANAMNESIS -->
+                                    <div class="entity-field">
+                                        <label class="entity-field-label">Anamnesis <span
+                                                class="required">*</span></label>
+                                        <div class="form-group">
+                                            <textarea th:field="*{anamnesis}" th:readonly="${readOnly}"
+                                                      id="anamnesis" name="anamnesis"
+                                                      placeholder="Describe the patient's current symptoms and complaints"
+                                                      rows="3">-</textarea>
+                                            <p th:if="${#fields.hasErrors('anamnesis')}" th:errors="*{anamnesis}" class="form-error"></p>
+                                        </div>
+                                    </div>
+
+                                    <!-- ACCOMPANYING ILLNESSES -->
+                                    <div class="entity-field">
+                                        <label class="entity-field-label">Accompanying illnesses</label>
+                                        <div class="form-group">
+                                            <textarea th:field="*{accompanyingIllnesses}" th:readonly="${readOnly}"
+                                                      id="accompanying-illnesses" name="accompanyingIllnesses"
+                                                      placeholder="Describe the patient's medical history"
+                                                      rows="3">-</textarea>
+                                            <p th:if="${#fields.hasErrors('accompanyingIllnesses')}"
+                                               th:errors="*{accompanyingIllnesses}" class="form-error"></p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="entity-section">
+
+                                <h3 class="entity-section-title">Consultation Summary</h3>
+
+                                <div class="entity-fields">
+
+                                    <!-- STATUS AT EXAMINATION-->
+                                    <div class="entity-field">
+
+                                        <label class="entity-field-label">Status At Examination</label>
+
+                                        <div class="form-group">
+                                            <textarea th:field="*{statusAtExam}" th:readonly="${readOnly}"
+                                                      id="status-at-exam" name="statusAtExam"
+                                                      placeholder="Outline the patient's current status i.e. pulmo, cor etc"
+                                                      rows="3"></textarea>
+                                            <p th:if="${#fields.hasErrors('statusAtExam')}"
+                                               th:errors="*{statusAtExam}" class="form-error"></p>
+                                        </div>
+
+
+                                    </div>
+
+                                    <!-- CLINICAL FINDINGS-->
+                                    <div class="entity-field">
+                                        <label class="entity-field-label">Clinical Findings</label>
+                                        <div class="form-group">
+                                            <textarea th:field="*{clinicalFindings}" th:readonly="${readOnly}"
+                                                      id="clinical-findings" name="clinicalFindings"
+                                                      placeholder="Outline any clinical findings i.e. laboratory tests and/or diagnostic imaging"
+                                                      rows="3">-</textarea>
+                                            <p th:if="${#fields.hasErrors('clinicalFindings')}"
+                                               th:errors="*{clinicalFindings}" class="form-error"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- CONSULTATION -->
+                        <div class="entity-card-content">
+
+                            <div class="entity-section">
+
+                                <h3 class="entity-section-title">Treatment Plan</h3>
+
+                                <div class="entity-fields">
+
+                                    <!-- CARE RECOMMENDATIONS -->
+                                    <div class="entity-field">
+                                        <label class="entity-field-label">Care Recommendations</label>
+                                        <div class="form-group">
+                                            <textarea th:field="*{careRecommendations}" th:readonly="${readOnly}"
+                                                      id="care-recommendations" name="careRecommendations"
+                                                      placeholder="Provide recommendations for the patient's continuous treatment"
+                                                      rows="3">-</textarea>
+                                            <p th:if="${#fields.hasErrors('careRecommendations')}"
+                                               th:errors="*{careRecommendations}" class="form-error"></p>
+                                        </div>
+                                    </div>
+
+                                    <!-- MEDICAMENT TREATMENT -->
+                                    <div class="entity-field">
+                                        <label class="entity-field-label">Medicament Treatment</label>
+                                        <div class="form-group">
+                                            <textarea th:field="*{medicamentTreatment}" th:readonly="${readOnly}"
+                                                      id="medicament-treatment" name="medicamentTreatment"
+                                                      placeholder="Describe the prescribed medicaments and how to intake"
+                                                      rows="3"></textarea>
+                                            <p th:if="${#fields.hasErrors('medicamentTreatment')}"
+                                               th:errors="*{medicamentTreatment}" class="form-error"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

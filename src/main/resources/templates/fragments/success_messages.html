@@ -259,3 +259,20 @@
         </div>
     </section>
 </th:block>
+
+<th:block th:fragment="medical_report_creation_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Medical Report Created Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/appointments/{appointmentId}/review(appointmentId=${appointmentId})}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> Back To Appointment
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>

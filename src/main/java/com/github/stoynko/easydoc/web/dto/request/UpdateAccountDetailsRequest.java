@@ -1,5 +1,6 @@
 package com.github.stoynko.easydoc.web.dto.request;
 
+import com.github.stoynko.easydoc.annotation.ValidBirthDate;
 import com.github.stoynko.easydoc.models.enums.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class UpdateAccountDetailsRequest {
     @Size(max = 100, message = "Please enter at most 100 characters")
     private String lastName;
 
+    @ValidBirthDate
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull(message = "Please enter your date of birth")
     private LocalDate dateOfBirth;

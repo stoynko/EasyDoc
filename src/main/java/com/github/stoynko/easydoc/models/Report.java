@@ -43,22 +43,26 @@ public class Report {
     @JoinColumn(name = "appointment_id", nullable = false)
     private Appointment appointment;
 
-    @Column(name = "accompanying_illnesses", nullable = false)
+    @Column(name = "accompanying_illnesses", columnDefinition = "TEXT", length = 200)
     private String accompanyingIllnesses;
 
-    @Column(name = "anamnesis")
+    @Column(name = "anamnesis", nullable = false, columnDefinition = "TEXT", length = 500)
     private String anamnesis;
 
-    @Column(name = "status_at_exam")
+    @Column(name = "status_at_exam", nullable = false, columnDefinition = "TEXT", length = 500)
     private String statusAtExam;
 
-    @Column(name = "diagnostic_procedures")
-    private String diagnosticProdecures;
+    @Column(name = "clinical_findings", columnDefinition = "TEXT", length = 1000)
+    private String clinicalFindings;
 
-    @Column(name = "recommendations")
-    private String recommendations;
+    @Column(name = "care_recommendations", columnDefinition = "TEXT", length = 500)
+    private String careRecommendations;
 
-    private String prescription;
+    @Column(name = "medicament_treatment", columnDefinition = "TEXT", length = 500)
+    private String medicamentTreatment;
+
+    @Column(name = "diagnosis", nullable = false, length = 100)
+    private String diagnosis;
 
     @Embedded
     @Builder.Default
