@@ -22,6 +22,8 @@ import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -50,6 +52,7 @@ import static com.github.stoynko.easydoc.utilities.ValidationUtilities.normalize
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
     private final UserRepository repository;
@@ -57,23 +60,14 @@ public class UserService implements UserDetailsService {
     private final EmailVerificationService emailVerificationService;
     private final ApplicationEventPublisher eventPublisher;
 
-
     public static final String ACCOUNT_DELETION_CONFIGURATION = "I confirm the deletion of my account";
-
-    @Autowired
-    public UserService(UserRepository repository, PasswordEncoder passwordEncoder, EmailVerificationService emailVerificationService, ApplicationEventPublisher eventPublisher) {
-        this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
-        this.emailVerificationService = emailVerificationService;
-        this.eventPublisher = eventPublisher;
-    }
 
     @Transactional
     public void registerAccount(@Valid RegisterRequest registerRequest) {
 
         String emailAddress = normalizeEmailAddress(registerRequest.getEmailAddress());
         if (repository.existsByEmailAddress(emailAddress)) {
-            throw new UserExistsWithEmailException(ACCOUNT_DUPLICATE_EMAIL);
+            throw new UserExistsWithEmailException();
         }
 
         String hashedPassword = passwordEncoder.encode(registerRequest.getPassword());
@@ -160,15 +154,15 @@ public class UserService implements UserDetailsService {
         User user = getUserById(uuid);
 
         if (user.getEmailAddress().equals(request.getNewEmailAddress())) {
-            throw new UserExistsWithEmailException(ACCOUNT_DUPLICATE_EMAIL);
+            throw new UserExistsWithEmailException();
         }
 
         if (repository.existsByEmailAddress(request.getNewEmailAddress())) {
-            throw new UserExistsWithEmailException(ACCOUNT_DUPLICATE_EMAIL);
+            throw new UserExistsWithEmailException();
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new CredentialsException(CREDENTIALS_PASSWORD_INVALID);
+            throw new CredentialsException();
         }
 
         user.setEmailAddress(request.getNewEmailAddress());
@@ -187,11 +181,11 @@ public class UserService implements UserDetailsService {
         User user = getUserById(uuid);
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
-            throw new CredentialsException(CREDENTIALS_PASSWORD_INVALID);
+            throw new CredentialsException();
         }
 
         if (!request.getNewPassword().equals(request.getConfirmNewPassword())) {
-            throw new CredentialsException(CREDENTIALS_PASSWORD_INVALID);
+            throw new CredentialsException();
         }
 
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
@@ -242,11 +236,11 @@ public class UserService implements UserDetailsService {
         User user = getUserById(uuid);
 
         if (!passwordEncoder.matches(request.getPasswordConfirmation(), user.getPasswordHash())) {
-            throw new CredentialsException(CREDENTIALS_PASSWORD_INVALID);
+            throw new CredentialsException();
         }
 
         if (!ACCOUNT_DELETION_CONFIGURATION.equals(request.getConfirmationInput())) {
-            throw new InvalidInputException(ErrorMessages.INPUT_INVALID);
+            throw new InvalidInputException();
         }
 
         updateAccountStatus(user.getId(), DELETED);

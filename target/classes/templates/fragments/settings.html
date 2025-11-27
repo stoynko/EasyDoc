@@ -73,7 +73,7 @@
     </div>
 
     <div class="dashboard-card">
-        <div class="register-form">
+        <div class="entity-form">
             <form sec:authorize="hasRole('DOCTOR')" th:object="${changeAvatarRequest}" th:action="@{/settings/personal-info/photo}" th:method="POST" class="view-card" enctype="multipart/form-data">
                     <h3 class="view-card-title">Profile Photo</h3>
                     <p class="view-card-subtitle">Upload a clear, front-facing photo. PNG or JPG files up to 10 MB are supported.</p>
@@ -169,7 +169,7 @@
     </div>
 
     <div class="dashboard-card">
-        <div class="register-form">
+        <div class="entity-form">
             <form th:object="${changeProfessionalDetailsRequest}" th:action="@{/settings/professional-info}" th:method="POST" class="view-card">
 
                 <div class="form-group">
@@ -227,7 +227,7 @@
 
     <div class="dashboard-card">
 
-            <div class="register-form">
+            <div class="entity-form">
 
                 <form th:object="${changeEmailAddressRequest}" th:action="@{/settings/security/email}" th:method="POST" class="view-card">
 
@@ -333,9 +333,9 @@
 
     <div class="dashboard-card">
 
-        <div class="register-form">
+        <div class="entity-form">
 
-            <form class="register-form" th:action="@{/settings/notifications}" method="post">
+            <form class="entity-form" th:action="@{/settings/notifications}" method="post">
 
                 <div class="view-card">
                     <h3 class="view-card-title">Digest Frequency</h3>
@@ -427,7 +427,7 @@
     <div class="dashboard-card">
 
 
-      <div class="register-form">
+      <div class="entity-form">
 
             <div class="onboarding-pricing">
 
@@ -515,7 +515,7 @@
 
     <div class="dashboard-card">
 
-        <div class="register-form">
+        <div class="entity-form">
 
             <form th:object="${deleteAccountRequest}" th:action="@{/settings/delete}" th:method="POST" class="view-card">
 

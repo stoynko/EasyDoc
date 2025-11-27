@@ -336,25 +336,44 @@
                             </td>
 
                             <td class="quick-actions">
-                                <form th:action="@{/appointments/{appointmentId}/review(appointmentId=${appointment.appointmentId},
-                                                                                        action='READ')}"
+
+                                <form th:action="@{/appointments/{appointmentId}/report(appointmentId=${appointment.appointmentId})}"
                                       th:method="GET" style="flex: 1; width: 100%;">
-
-                                   <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
-
                                     <button type="submit"
                                             class="btn-primary"
                                             style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
-                                        <i class="fas fa-expand"></i>
-                                        View
+                                        <i class="fas fa-file-medical"></i>
+                                        Report
                                     </button>
                                 </form>
 
+                                <form th:action="@{/appointments/{appointmentId}/prescription(appointmentId=${appointment.appointmentId})}"
+                                      th:method="GET" style="flex: 1; width: 100%;">
+                                    <button type="submit"
+                                            class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-prescription"></i>
+                                        Prescription
+                                    </button>
+                                </form>
 
-                                <form th:action="@{/appointments/{appointmentId}/no-show(appointmentId=${appointment.appointmentId})}"
+                                <!-- FINALIZE REPORT BUTTON -->
+                                <!-- TODO: ENABLE ONLY FOR APPOINTMENTS WITH REPORT -->
+
+
+                                <form th:if="${appointment.hasReport}"
+                                      th:action="@{/appointments/{appointmentId}/conclude(appointmentId=${appointment.appointmentId})}"
                                       th:method="POST" style="flex: 1; width: 100%;">
+                                        <button type="submit" class="btn-primary confirm" style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                            <i class="fas fa-upload"></i>
+                                            Complete
+                                        </button>
+                                </form>
 
-                                    <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+
+                                <form th:if="${!appointment.hasReport}"
+                                      th:action="@{/appointments/{appointmentId}/no-show(appointmentId=${appointment.appointmentId})}"
+                                      th:method="POST" style="flex: 1; width: 100%;">
 
                                     <button type="submit"
                                             class="btn-primary warning"

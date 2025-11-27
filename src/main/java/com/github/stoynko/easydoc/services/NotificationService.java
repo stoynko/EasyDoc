@@ -1,19 +1,17 @@
 package com.github.stoynko.easydoc.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class NotificationService {
 
     private final JavaMailSender mailSender;
 
-    public NotificationService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
-    }
-
-    public void sendVerificationEmail(String to, String verificationLink) {
+    public void sendVerificationEmail(String recipient, String verificationLink) {
         String subject = "Welcome to EasyDoc account";
 
         String htmlBody = """
@@ -30,7 +28,24 @@ public class NotificationService {
             <p><a href="%s">%s</a></p>
             """.formatted(verificationLink, verificationLink, verificationLink);
 
-        sendHtmlEmail(to, subject, htmlBody);
+        sendHtmlEmail(recipient, subject, htmlBody);
+    }
+
+    public void sendAppointmentCompletedEmail(String recipient, String reportLink) {
+        String subject = "Appointment Completed";
+
+        String htmlBody = """
+            <p>Your appointment with doctor "Placeholder Name" on "Placeholder Date" has been marked as completed.</p>
+            <p>
+              <a href="%s"
+                 style="display:inline-block;padding:10px 18px;background:#2563eb;
+                        color:#ffffff;text-decoration:none;border-radius:4px;">
+                Medical Report
+              </a>
+            </p>
+            """.formatted(reportLink);
+
+        sendHtmlEmail(recipient, subject, htmlBody);
     }
 
     private void sendHtmlEmail(String to, String subject, String htmlBody) {

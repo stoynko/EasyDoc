@@ -269,8 +269,39 @@
             </div>
 
             <div class="form-actions">
-                <a th:href="@{/appointments/{appointmentId}/review(appointmentId=${appointmentId})}" class="btn-register">
-                    <i class="fas fa-sign-in-alt"></i> Back To Appointment
+                <a th:href="@{/appointments/{appointmentId}/prescription(appointmentId=${appointmentId})}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> Issue Prescription
+                </a>
+
+                <!--<a th:href="@{/appointments/{appointmentId}/conclude(appointmentId=${appointmentId})}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> Complete Appointment
+                </a>-->
+
+                <form th:action="@{/appointments/{appointmentId}/conclude(appointmentId=${appointmentId})}" th:method="POST"
+                    <button class="btn-primary confirm">
+                        <i class="fas fa-sign-in-alt"></i> Complete Appointment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="medical_report_edit_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Medical Report Edited Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/appointments/{appointmentId}/prescription(appointmentId=${appointmentId})}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> Issue Prescription
+                </a>
+
+                <a th:href="@{/appointments/{appointmentId}/conclude(appointmentId=${appointmentId})}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> Complete Appointment
                 </a>
             </div>
         </div>

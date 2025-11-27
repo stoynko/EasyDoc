@@ -1,11 +1,9 @@
-package com.github.stoynko.easydoc.web.utilities;
+package com.github.stoynko.easydoc.validators;
 
 import com.github.stoynko.easydoc.annotation.ValidBirthDate;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
-import org.springframework.cglib.core.Local;
-
 
 public class BirthDateValidator implements ConstraintValidator<ValidBirthDate, LocalDate> {
 

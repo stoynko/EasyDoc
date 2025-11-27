@@ -1,10 +1,9 @@
 package com.github.stoynko.easydoc.security;
 
 import com.github.stoynko.easydoc.events.UserContextRefreshEvent;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -16,16 +15,10 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class SecurityContextUpdater {
 
-    private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
-
-    @Autowired
-    public SecurityContextUpdater(AuthenticationManager authenticationManager, UserDetailsService userDetailsService) {
-        this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
-    }
 
     @EventListener
     public void handleUserContextRefresh(UserContextRefreshEvent event) {

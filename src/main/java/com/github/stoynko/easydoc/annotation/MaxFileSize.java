@@ -1,6 +1,6 @@
 package com.github.stoynko.easydoc.annotation;
 
-import com.github.stoynko.easydoc.web.utilities.FileSizeValidator;
+import com.github.stoynko.easydoc.validators.FileSizeValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import java.lang.annotation.ElementType;

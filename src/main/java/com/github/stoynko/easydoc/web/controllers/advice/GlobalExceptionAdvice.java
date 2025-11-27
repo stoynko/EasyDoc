@@ -11,7 +11,7 @@ import com.github.stoynko.easydoc.exceptions.UserExistsWithEmailException;
 import com.github.stoynko.easydoc.exceptions.UserExistsWithPinException;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,14 +23,10 @@ import static com.github.stoynko.easydoc.web.model.ViewPage.DOCTOR_ONBOARDING;
 import static com.github.stoynko.easydoc.web.model.ViewPage.ERROR;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionAdvice {
 
     private final PageBuilder pageBuilder;
-
-    @Autowired
-    public GlobalExceptionAdvice(PageBuilder pageBuilder) {
-        this.pageBuilder = pageBuilder;
-    }
 
     @ExceptionHandler(UserExistsWithEmailException.class)
     public ModelAndView handleEmailAlreadyExistsException(UserExistsWithEmailException exception) {

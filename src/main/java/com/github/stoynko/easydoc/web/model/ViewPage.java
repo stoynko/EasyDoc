@@ -7,11 +7,10 @@ public enum ViewPage {
     LOGIN("login"),
     DASHBOARD("dashboard"),
     APPOINTMENTS_TABLE("appointments_table"),
-    APPOINTMENT_REVIEW("appointment_review"),
     APPOINTMENT_CREATION("appointment_creation"),
-    PRESCRIPTIONS("prescriptions"),
     MEDICAL_REPORT_VIEW("report_review"),
-    /*MEDICAL_REPORT_CREATION("report_creation"),*/
+    PRESCRIPTIONS_TABLE("prescriptions"),
+    PRESCRIPTION_VIEW("prescription_review"),
     DOCTORS("doctors"),
     ACCOUNT_ONBOARDING("onboarding_account"),
     DOCTOR_ONBOARDING("onboarding_doctors"),

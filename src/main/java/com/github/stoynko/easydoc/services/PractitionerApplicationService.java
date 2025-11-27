@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -27,6 +29,7 @@ import static com.github.stoynko.easydoc.web.mappers.DtoMapper.toChangePersonalD
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PractitionerApplicationService {
 
     private final PractitionerApplicationRepository repository;
@@ -35,26 +38,17 @@ public class PractitionerApplicationService {
     private final DoctorService doctorService;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Autowired
-    public PractitionerApplicationService(PractitionerApplicationRepository repository, UserService userService, CloudinaryService cloudinaryService, DoctorService doctorService, ApplicationEventPublisher eventPublisher) {
-        this.repository = repository;
-        this.userService = userService;
-        this.cloudinaryService = cloudinaryService;
-        this.doctorService = doctorService;
-        this.eventPublisher = eventPublisher;
-    }
-
     @Transactional
     public void submitApplication(UUID uuid, RegisterPractitionerRequest request) throws IOException {
 
         User user = userService.getUserById(uuid);
 
         if (repository.existsPractitionerApplicationByUin(request.getUin())) {
-            throw new AlreadyOnboardedException(ALREADY_ONBOARDED);
+            throw new AlreadyOnboardedException();
         }
 
         if (repository.existsPractitionerApplicationByUser(user)) {
-            throw new AlreadyOnboardedException(ALREADY_ONBOARDED);
+            throw new AlreadyOnboardedException();
         }
 
         CloudinaryUploadResult uploadResult = cloudinaryService.uploadPhoto(request.getProfilePhoto(), "doctors");

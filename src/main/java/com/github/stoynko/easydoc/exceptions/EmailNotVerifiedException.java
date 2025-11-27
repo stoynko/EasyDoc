@@ -6,7 +6,4 @@ public class EmailNotVerifiedException extends RuntimeException {
         super(ErrorMessages.ACCOUNT_UNVERIFIED.getErrorMessage());
     }
 
-    public EmailNotVerifiedException(ErrorMessages errorMessage) {
-        super(errorMessage.getErrorMessage());
-    }
 }

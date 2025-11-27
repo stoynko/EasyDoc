@@ -6,7 +6,4 @@ public class AccountIncompleteException extends RuntimeException {
         super(ErrorMessages.ACCOUNT_INCOMPLETE.getErrorMessage());
     }
 
-    public AccountIncompleteException(ErrorMessages errorMessage) {
-        super(errorMessage.getErrorMessage());
-    }
 }

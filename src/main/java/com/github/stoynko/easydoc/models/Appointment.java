@@ -25,10 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.UUID;
 
 @Setter
@@ -62,7 +59,7 @@ public class Appointment {
     private Report report;
 
     @Column(name = "prescription_id", unique = true)
-    private UUID prescriptionId;
+    private UUID prescription;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -91,6 +88,6 @@ public class Appointment {
     }
 
     public boolean hasPrescription() {
-        return report != null;
+        return prescription != null;
     }
 }

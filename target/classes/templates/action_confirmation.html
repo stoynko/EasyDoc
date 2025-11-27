@@ -91,6 +91,12 @@
                     <th:block th:insert="~{fragments/success_messages :: medical_report_creation_success}"></th:block>
                 </th:block>
 
+                <th:block th:case="reportEditSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: medical_report_edit_success}"></th:block>
+                </th:block>
+
+
+
             </th:block>
         </div>
 

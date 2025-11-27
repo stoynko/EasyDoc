@@ -11,6 +11,8 @@ import com.github.stoynko.easydoc.web.model.ViewFragment;
 
 import java.util.Map;
 import java.util.UUID;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.DELETE_ACCOUNT;
@@ -20,19 +22,12 @@ import static com.github.stoynko.easydoc.web.model.ViewFragment.SECURITY;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.SETTINGS_DASHBOARD;
 
 @Component
+@RequiredArgsConstructor
 public class DtoAggregator {
 
     public static final String MODEL_ELEMENT_FRAGMENT = "fragmentPath";
     private final UserService userService;
     private final DoctorService doctorService;
-    private final AppointmentService appointmentService;
-
-    @Autowired
-    public DtoAggregator(UserService userService, DoctorService doctorService, AppointmentService appointmentService) {
-        this.userService = userService;
-        this.doctorService = doctorService;
-        this.appointmentService = appointmentService;
-    }
 
     public Map<String, Object> aggregateDtoForFragment(Map<String, Object> model, ViewFragment viewFragment, UUID resourceId) {
 

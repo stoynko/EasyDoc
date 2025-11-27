@@ -48,7 +48,7 @@
 
                 <div class="dashboard-card" id="schedule-appointment-form">
 
-                    <form th:object="${appointmentRequest}" th:action="@{/appointments/doctor/{doctorId}(doctorId=${doctorSummary.id})}" th:method="POST" class="add-form">
+                    <form th:object="${appointmentRequest}" th:action="@{/appointments/doctor/{doctorId}(doctorId=${doctorSummary.id})}" th:method="POST" class="entity-form">
 
                         <!-- Doctor Information Display -->
                         <div class="doctor-info-section">

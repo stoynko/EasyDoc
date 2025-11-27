@@ -21,8 +21,10 @@ com/github/stoynko/easydoc/web/dto/request/UpdateAccountDetailsRequest.class
 com/github/stoynko/easydoc/web/dto/response/PatientAppointmentResponse.class
 com/github/stoynko/easydoc/config/RedisConfiguration.class
 com/github/stoynko/easydoc/web/dto/DtoAggregator$1.class
+com/github/stoynko/easydoc/client/Icd10Client.class
 com/github/stoynko/easydoc/web/dto/response/PatientSummaryResponse.class
 com/github/stoynko/easydoc/services/AppointmentService.class
+com/github/stoynko/easydoc/web/dto/response/Icd10SearchResult.class
 com/github/stoynko/easydoc/web/dto/request/UpdatePasswordRequest$UpdatePasswordRequestBuilder.class
 com/github/stoynko/easydoc/web/dto/response/UserSummaryResponse.class
 com/github/stoynko/easydoc/web/controllers/advice/GlobalExceptionAdvice.class
@@ -48,9 +50,11 @@ com/github/stoynko/easydoc/exceptions/ErrorMessages.class
 com/github/stoynko/easydoc/models/User.class
 com/github/stoynko/easydoc/config/AuditingConfiguration.class
 com/github/stoynko/easydoc/models/Report$ReportBuilder.class
+com/github/stoynko/easydoc/config/HttpConfig.class
 com/github/stoynko/easydoc/exceptions/UserDoesNotExistException.class
 com/github/stoynko/easydoc/web/model/ViewAction.class
 com/github/stoynko/easydoc/web/resolvers/AdminRoleViewResolver.class
+com/github/stoynko/easydoc/web/dto/request/MedicalReportRequest.class
 com/github/stoynko/easydoc/web/dto/response/CloudinaryUploadResult.class
 com/github/stoynko/easydoc/models/enums/AppointmentReason.class
 com/github/stoynko/easydoc/services/CloudinaryService.class
@@ -114,7 +118,6 @@ com/github/stoynko/easydoc/web/dto/request/UpdateProfilePhotoRequest.class
 com/github/stoynko/easydoc/events/AppointmentScheduledEvent.class
 com/github/stoynko/easydoc/web/dto/request/UpdateContactDetailsRequest$UpdateContactDetailsRequestBuilder.class
 com/github/stoynko/easydoc/web/dto/request/AppointmentRequest$AppointmentRequestBuilder.class
-com/github/stoynko/easydoc/web/dto/request/CreateMedicalReportRequest.class
 com/github/stoynko/easydoc/services/EmailVerificationService.class
 com/github/stoynko/easydoc/web/dto/response/DoctorDetailedSummaryResponse.class
 com/github/stoynko/easydoc/web/utilities/FileSizeValidator.class

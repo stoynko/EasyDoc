@@ -6,7 +6,4 @@ public class AccountSuspendedException extends RuntimeException {
         super(ErrorMessages.ACCOUNT_SUSPENDED.getErrorMessage());
     }
 
-    public AccountSuspendedException(ErrorMessages errorMessage) {
-        super(errorMessage.getErrorMessage());
-    }
 }

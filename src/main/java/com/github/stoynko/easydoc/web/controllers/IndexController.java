@@ -3,17 +3,14 @@ package com.github.stoynko.easydoc.web.controllers;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.services.PractitionerApplicationService;
 import com.github.stoynko.easydoc.services.UserService;
-import com.github.stoynko.easydoc.web.dto.request.SubmitAccountDetailsRequest;
-import com.github.stoynko.easydoc.web.dto.request.RegisterPractitionerRequest;
 import com.github.stoynko.easydoc.web.dto.request.RegisterRequest;
 import com.github.stoynko.easydoc.web.handler.SecurityCheck;
-import com.github.stoynko.easydoc.web.model.ViewPage;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -21,14 +18,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
-
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forFragment;
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forPage;
-import static com.github.stoynko.easydoc.web.model.ViewFragment.DOCTOR_LANDING;
-import static com.github.stoynko.easydoc.web.model.ViewFragment.DOCTOR_ONBOARDING;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.SETTINGS_DASHBOARD;
-import static com.github.stoynko.easydoc.web.model.ViewPage.ACCOUNT_ONBOARDING;
 import static com.github.stoynko.easydoc.web.model.ViewPage.CONFIRMATION;
 import static com.github.stoynko.easydoc.web.model.ViewPage.DASHBOARD;
 import static com.github.stoynko.easydoc.web.model.ViewPage.INDEX;
@@ -37,20 +29,13 @@ import static com.github.stoynko.easydoc.web.model.ViewPage.REGISTER;
 import static com.github.stoynko.easydoc.web.model.ViewPage.SETTINGS;
 
 @Controller
+@RequiredArgsConstructor
 public class IndexController {
 
     private final UserService userService;
     private final PractitionerApplicationService applicationService;
     private final PageBuilder pageBuilder;
     private final SecurityCheck securityCheck;
-
-    @Autowired
-    public IndexController(UserService userService, PractitionerApplicationService applicationService, PageBuilder pageBuilder, SecurityCheck securityCheck) {
-        this.userService = userService;
-        this.applicationService = applicationService;
-        this.pageBuilder = pageBuilder;
-        this.securityCheck = securityCheck;
-    }
 
     @GetMapping("/")
     public ModelAndView getIndexPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {

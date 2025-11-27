@@ -5,6 +5,7 @@ import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.services.PractitionerApplicationService;
 import com.github.stoynko.easydoc.services.UserService;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,18 +24,12 @@ import static com.github.stoynko.easydoc.web.model.ViewPage.PRACTITIONER_APPLICA
 import static com.github.stoynko.easydoc.web.model.ViewPage.USERS;
 
 @Controller
+@RequiredArgsConstructor
 public class AdminController {
 
     private final PageBuilder pageBuilder;
     private final UserService userService;
     private final PractitionerApplicationService practitionerApplicationService;
-
-    @Autowired
-    public AdminController(PageBuilder pageBuilder, UserService userService, PractitionerApplicationService practitionerApplicationService) {
-        this.pageBuilder = pageBuilder;
-        this.userService = userService;
-        this.practitionerApplicationService = practitionerApplicationService;
-    }
 
     @GetMapping("/users")
     @PreAuthorize(value = "hasRole('ADMIN')")

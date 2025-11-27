@@ -1,14 +1,12 @@
 package com.github.stoynko.easydoc.web.controllers;
 
-import com.github.stoynko.easydoc.client.Icd10Client;
 import com.github.stoynko.easydoc.models.Appointment;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.services.AppointmentService;
 import com.github.stoynko.easydoc.services.ReportService;
 import com.github.stoynko.easydoc.web.dto.request.AppointmentRequest;
-import com.github.stoynko.easydoc.web.dto.request.CreateMedicalReportRequest;
+import com.github.stoynko.easydoc.web.dto.request.MedicalReportRequest;
 import com.github.stoynko.easydoc.web.dto.response.AppointmentTimeSlotResponse;
-import com.github.stoynko.easydoc.web.dto.response.Icd10SearchResult;
 import com.github.stoynko.easydoc.web.model.ViewAction;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import jakarta.validation.Valid;
@@ -36,9 +34,9 @@ import static com.github.stoynko.easydoc.web.dto.DtoContext.forTargetResourceWit
 import static com.github.stoynko.easydoc.web.model.ViewAction.READ;
 import static com.github.stoynko.easydoc.web.model.ViewPage.APPOINTMENTS_TABLE;
 import static com.github.stoynko.easydoc.web.model.ViewPage.APPOINTMENT_CREATION;
-import static com.github.stoynko.easydoc.web.model.ViewPage.APPOINTMENT_REVIEW;
 import static com.github.stoynko.easydoc.web.model.ViewPage.CONFIRMATION;
-
+import static com.github.stoynko.easydoc.web.model.ViewPage.MEDICAL_REPORT_VIEW;
+import static com.github.stoynko.easydoc.web.model.ViewPage.PRESCRIPTION_VIEW;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,7 +45,6 @@ public class AppointmentsController {
     private final PageBuilder pageBuilder;
     private final AppointmentService appointmentService;
     private final ReportService reportService;
-    private final Icd10Client icd10Client;
 
     @GetMapping("/appointments")
     public ModelAndView getAppointmentsPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
@@ -96,6 +93,13 @@ public class AppointmentsController {
         return "fragments/components/time_slots :: time-slots";
     }
 
+    @PostMapping("/appointments/{appointmentId}/conclude")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ModelAndView concludeAppointment(@PathVariable UUID appointmentId) {
+        appointmentService.concludeAppointment(appointmentId);
+        return new ModelAndView("redirect:/appointments");
+    }
+
     @PostMapping("/appointments/{appointmentId}/cancel")
     public ModelAndView cancelAppointment(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                          @PathVariable UUID appointmentId) {
@@ -115,38 +119,26 @@ public class AppointmentsController {
     }
 
     @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR')")
-    @GetMapping("/appointments/{appointmentId}/review")
-    public ModelAndView viewAppointmentPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
+    @GetMapping("/appointments/{appointmentId}/report")
+    public ModelAndView viewReportPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                             @PathVariable UUID appointmentId,
                                             @RequestParam(name = "action", required = false, defaultValue = "READ") ViewAction action) {
         if (principal.getRole() == PATIENT) {
             action = READ;
         }
-        ModelAndView modelAndView = pageBuilder.buildPage(forTargetResourceWithAction(APPOINTMENT_REVIEW, principal, appointmentId, action));
+        ModelAndView modelAndView = pageBuilder.buildPage(forTargetResourceWithAction(MEDICAL_REPORT_VIEW, principal, appointmentId, action));
         return modelAndView;
-    }
-
-    @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping("search/diagnosis")
-    public String searchDiagnosis(@RequestParam("keyword") String keyword, Model model) {
-
-
-
-        System.out.println(keyword);
-
-        Icd10SearchResult result = icd10Client.search(keyword, 100);
-        return null;
     }
 
     @PreAuthorize("hasRole('DOCTOR')")
     @PostMapping("/appointments/{appointmentId}/report/submit")
     public ModelAndView createMedicalReport(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                             @PathVariable UUID appointmentId,
-                                            @Valid CreateMedicalReportRequest request,
+                                            @Valid MedicalReportRequest request,
                                             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            ModelAndView modelAndView = pageBuilder.buildPage(forTargetResource(APPOINTMENT_REVIEW, principal, appointmentId));
+            ModelAndView modelAndView = pageBuilder.buildPage(forTargetResource(MEDICAL_REPORT_VIEW, principal, appointmentId));
             ModelAndView modelAndView1 = pageBuilder.addErrors(modelAndView, "medicalReport", request, bindingResult);
             return modelAndView1;
         }
@@ -155,56 +147,68 @@ public class AppointmentsController {
         boolean medicalReportExists = appointment.hasReport();
 
         if (medicalReportExists) {
-            reportService.editMedicalReport(appointmentId, request);
+            reportService.editMedicalReport(appointment, request);
         } else {
-            reportService.createMedicalReport(appointmentId, request);
+            reportService.createMedicalReport(appointment, request);
         }
 
         ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
         modelAndView.addObject("appointmentId", appointmentId);
         return modelAndView.addObject("confirmationMessage", "reportCreationSuccess");
     }
+
+    @PreAuthorize("hasRole('DOCTOR')")
+    @PostMapping("/appointments/{appointmentId}/report/edit")
+    public ModelAndView editMedicalReport(@AuthenticationPrincipal UserAuthenticationDetails principal,
+                                            @PathVariable UUID appointmentId,
+                                            @Valid MedicalReportRequest request,
+                                            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            ModelAndView modelAndView = pageBuilder.buildPage(forTargetResource(MEDICAL_REPORT_VIEW, principal, appointmentId));
+            pageBuilder.addErrors(modelAndView, "medicalReport", request, bindingResult);
+            return modelAndView;
+        }
+
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+        boolean medicalReportExists = appointment.hasReport();
+
+        if (medicalReportExists) {
+            reportService.editMedicalReport(appointment, request);
+        } else {
+            reportService.createMedicalReport(appointment, request);
+        }
+
+        ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
+        modelAndView.addObject("appointmentId", appointmentId);
+        return modelAndView.addObject("confirmationMessage", "reportEditSuccess");
+    }
+
+    @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR')")
+    @GetMapping("/appointments/{appointmentId}/prescription")
+    public ModelAndView viewAppointmentPrescriptionPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
+                                            @PathVariable UUID appointmentId,
+                                            @RequestParam(name = "action", required = false, defaultValue = "READ") ViewAction action) {
+        if (principal.getRole() == PATIENT) {
+            action = READ;
+        }
+        ModelAndView modelAndView = pageBuilder.buildPage(forTargetResourceWithAction(PRESCRIPTION_VIEW, principal, appointmentId, action));
+        return modelAndView;
+    }
+
+    @PostMapping("/appointments/{appointmentId}/prescription/create")
+    public ModelAndView createPrescription(@AuthenticationPrincipal UserAuthenticationDetails principal, @PathVariable UUID appointmentId) {
+
+        ModelAndView modelAndView = pageBuilder.buildPage(forTargetResource(PRESCRIPTION_VIEW, principal, appointmentId));
+        return modelAndView;
+    }
+
+    @PreAuthorize("hasRole('DOCTOR')")
+    @GetMapping("search/diagnosis")
+    public String searchDiagnosis(@RequestParam("keyword") String keyword, Model model) {
+        model.addAttribute("diagnosisList", reportService.findDiagnosisByKeyword(keyword));
+        return "fragments/components/diagnosis_selector :: diagnosis_selector";
+    }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*@PostMapping("/appointments/{appointmentId}/report")
-public ModelAndView getReportPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                  @PathVariable UUID appointmentId) {
-
-    ModelAndView modelAndView = pageBuilder.buildPage(forTargetResource(MEDICAL_REPORT_VIEW, principal, appointmentId));
-    return modelAndView;
-}*/
-
-/*
-    @PostMapping("/appointments/{appointmentId}/view")
-    public ModelAndView viewAppointmentDetails(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                                @PathVariable UUID appointmentId) {
-
-        appointmentService.markAsNoShow(appointmentId, principal);
-        ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
-        return modelAndView.addObject("confirmationMessage", "appointmentMarkNoShow");
-    }*/
-
-    /*@PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping("/appointments/{appointmentId}/report/submit")
-    public ModelAndView getMedicalReportCreationPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                              @PathVariable UUID appointmentId) {
-
-        ModelAndView modelAndView = pageBuilder.buildPage(forTargetResource(MEDICAL_REPORT_CREATION, principal, appointmentId));
-        return modelAndView;
-    }*/
 

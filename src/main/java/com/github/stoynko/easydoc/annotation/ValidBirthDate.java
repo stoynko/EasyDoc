@@ -1,6 +1,6 @@
 package com.github.stoynko.easydoc.annotation;
 
-import com.github.stoynko.easydoc.web.utilities.BirthDateValidator;
+import com.github.stoynko.easydoc.validators.BirthDateValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import java.lang.annotation.Documented;

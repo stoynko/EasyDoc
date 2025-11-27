@@ -1,8 +1,10 @@
 package com.github.stoynko.easydoc.exceptions;
 
+import static com.github.stoynko.easydoc.exceptions.ErrorMessages.INPUT_INVALID;
+
 public class InvalidInputException extends RuntimeException {
 
-  public InvalidInputException(ErrorMessages errorMessage) {
-    super(errorMessage.getErrorMessage());
+  public InvalidInputException() {
+    super(INPUT_INVALID.getErrorMessage());
   }
 }

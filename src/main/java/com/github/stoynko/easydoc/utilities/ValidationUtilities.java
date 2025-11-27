@@ -22,16 +22,4 @@ public class ValidationUtilities {
         }
         return fullName;
     }
-
-/* TODO: DELETE IF NOT USED
-
-    public static boolean hasText(String string) {
-        return string != null && !string.trim().isBlank();
-    }
-
-    public static boolean isBlank(String string) {
-        return string == null || string.trim().isBlank();
-    }
-*/
-
 }

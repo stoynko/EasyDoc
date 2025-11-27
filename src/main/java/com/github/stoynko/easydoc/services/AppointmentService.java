@@ -1,7 +1,7 @@
 package com.github.stoynko.easydoc.services;
 
+import com.github.stoynko.easydoc.events.AppointmentCompletedEvent;
 import com.github.stoynko.easydoc.exceptions.AppointmentDoesNotExistException;
-import com.github.stoynko.easydoc.exceptions.ErrorMessages;
 import com.github.stoynko.easydoc.exceptions.InvalidTimeException;
 import com.github.stoynko.easydoc.exceptions.PastDateException;
 import com.github.stoynko.easydoc.models.Appointment;
@@ -12,6 +12,7 @@ import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.web.dto.request.AppointmentRequest;
 
 import com.github.stoynko.easydoc.web.dto.response.AppointmentTimeSlotResponse;
+import com.github.stoynko.easydoc.web.mappers.EntityMapper;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,8 +23,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import static com.github.stoynko.easydoc.exceptions.ErrorMessages.APPOINTMENT_DATE_INVALID;
@@ -34,26 +36,21 @@ import static com.github.stoynko.easydoc.models.enums.AppointmentStatus.CANCELLE
 import static com.github.stoynko.easydoc.models.enums.AppointmentStatus.COMPLETED;
 import static com.github.stoynko.easydoc.models.enums.AppointmentStatus.CONFIRMED;
 import static com.github.stoynko.easydoc.models.enums.AppointmentStatus.NO_SHOW;
-import static com.github.stoynko.easydoc.utilities.GenerationalUtilities.extractDigits;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AppointmentService {
 
     private final AppointmentRepository repository;
     private final DoctorService doctorService;
     private final UserService userService;
+    private final ApplicationEventPublisher eventPublisher;
 
     private static final LocalTime START_TIME = LocalTime.of(8, 0);
     private static final LocalTime END_TIME = LocalTime.of(15, 40);
     private static final int EXAMINATION_INTERVAL = 20;
 
-    @Autowired
-    public AppointmentService(AppointmentRepository repository, DoctorService doctorService, UserService userService) {
-        this.repository = repository;
-        this.doctorService = doctorService;
-        this.userService = userService;
-    }
 
     public void createAppointment(UUID patientId, UUID doctorId, AppointmentRequest request) {
 
@@ -69,15 +66,10 @@ public class AppointmentService {
             throw new AppointmentAlreadyExistsException();
         }*/
 
-        Appointment appointment = Appointment.builder()
-                .publicId(extractDigits(UUID.randomUUID().toString()))
-                .patient(userService.getUserById(patientId))
-                .doctor(doctorService.getDoctorByDoctorId(doctorId))
-                .startsAt(LocalDateTime.of(request.getDate(), request.getTime()))
-                .appointmentReason(request.getAppointmentReason())
-                .additionalNotes(request.getAdditionalNotes())
-                .status(CONFIRMED)
-                .build();
+        User patient = userService.getUserById(patientId);
+        Doctor doctor = doctorService.getDoctorByDoctorId(doctorId);
+
+        Appointment appointment = EntityMapper.toAppointmentEntity(request, patient, doctor);
 
         repository.save(appointment);
     }
@@ -105,16 +97,16 @@ public class AppointmentService {
     private void validateDateAndTime(LocalDate date, LocalTime time) {
 
         if (date.isBefore(LocalDate.now())) {
-            throw new PastDateException(APPOINTMENT_DATE_INVALID);
+            throw new PastDateException();
         }
 
         if (time.isBefore(START_TIME) || time.isAfter(END_TIME)) {
-            throw new InvalidTimeException(APPOINTMENT_TIME_OUTSIDE_HOURS);
+            throw new InvalidTimeException();
         }
 
         int minutesFromStart = (int) Duration.between(START_TIME, time).toMinutes();
         if (minutesFromStart % EXAMINATION_INTERVAL != 0) {
-            throw new InvalidTimeException(APPOINTMENT_TIME_INVALID);
+            throw new InvalidTimeException();
         }
     }
 
@@ -149,6 +141,14 @@ public class AppointmentService {
         return result;
     }
 
+    public void concludeAppointment(UUID appointmentId) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        appointment.setStatus(COMPLETED);
+        saveAppointment(appointment);
+        log.info("-appointmentCompleted | appointment:{} timestamp:{}", appointment.getId(),  LocalDateTime.now());
+        eventPublisher.publishEvent(new AppointmentCompletedEvent(appointment.getPatient().getEmailAddress(), appointmentId));
+    }
+
     public void cancelAppointment(UUID appointmentId, UserAuthenticationDetails principal) {
         Appointment appointment = getAppointmentById(appointmentId);
         appointment.setStatus(CANCELLED);
@@ -165,13 +165,10 @@ public class AppointmentService {
 
     public Appointment getAppointmentById(UUID id) {
         return repository.findAppointmentById(id)
-                .orElseThrow(() -> new AppointmentDoesNotExistException(APPOINTMENT_NOT_FOUND));
+                .orElseThrow(() -> new AppointmentDoesNotExistException());
     }
 
-    /*public List<Appointment> getUpcomingAppointments(UUID doctorUserId) {
-        Doctor doctor = doctorService.getDoctorById(doctorUserId);
-        LocalDateTime now = LocalDateTime.
-        List<Appointment> appointments = repository.
-                findByDoctorAndStatusAndStartsAtGreaterThanEqualOrderByStartsAtAsc(doctor, CONFIRMED, now);
-    }*/
+    public void saveAppointment(Appointment appointment) {
+        repository.save(appointment);
+    }
 }

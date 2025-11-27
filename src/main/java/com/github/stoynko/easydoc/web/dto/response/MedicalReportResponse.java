@@ -10,4 +10,20 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 public class MedicalReportResponse {
+
+    private String diagnosis;
+
+    private String icdCode;
+
+    private String anamnesis;
+
+    private String statusAtExam;
+
+    private String accompanyingIllnesses;
+
+    private String clinicalFindings;
+
+    private String careRecommendations;
+
+    private String medicamentTreatment;
 }

@@ -1,4 +1,4 @@
-package com.github.stoynko.easydoc.web.utilities;
+package com.github.stoynko.easydoc.validators;
 
 import com.github.stoynko.easydoc.annotation.MaxFileSize;
 import jakarta.validation.ConstraintValidator;

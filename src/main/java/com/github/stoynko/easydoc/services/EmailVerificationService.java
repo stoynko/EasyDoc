@@ -4,21 +4,17 @@ import com.github.stoynko.easydoc.exceptions.InvalidTokenException;
 import com.github.stoynko.easydoc.models.EmailVerificationToken;
 import com.github.stoynko.easydoc.models.User;
 import com.github.stoynko.easydoc.repositories.EmailVerificationTokenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class EmailVerificationService {
 
     private final EmailVerificationTokenRepository tokenRepository;
-
-    @Autowired
-    public EmailVerificationService(EmailVerificationTokenRepository tokenRepository) {
-        this.tokenRepository = tokenRepository;
-    }
 
     public EmailVerificationToken createTokenForUser(User user) {
         String tokenValue = UUID.randomUUID().toString();

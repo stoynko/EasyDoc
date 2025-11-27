@@ -5,6 +5,7 @@ import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,16 +24,12 @@ import static com.github.stoynko.easydoc.models.enums.AccountStatus.INCOMPLETE;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class SuccessHandler implements AuthenticationSuccessHandler {
 
     private final RedirectStrategy redirect = new DefaultRedirectStrategy();
     private final RequestCache requestCache = new HttpSessionRequestCache();
     private final UserService userService;
-
-    @Autowired
-    public SuccessHandler(UserService userService) {
-        this.userService = userService;
-    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,

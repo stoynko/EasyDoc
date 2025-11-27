@@ -102,9 +102,6 @@
                                   th:method="POST"
                                   class="inline-form">
 
-                                <!-- SPRING SECURITY CSRF, if enabled -->
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
                                 <button type="submit" class="action-btn cancel" title="Activate user">
                                     <i class="fas fa-calendar-times"></i>
                                 </button>

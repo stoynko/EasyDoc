@@ -8,7 +8,6 @@ public enum ErrorMessages {
     ACCOUNT_VERIFICATION_EXPIRED("Your verification link has expired. Please request a new one."),
     ACCOUNT_UNVERIFIED("To unlock the complete functionality of your account, please verify your email address using the link sent to your inbox"),
     ACCOUNT_SUSPENDED("Your account has been suspended temporarily. Please contact our customer support."),
-    //ACCOUNT_LOCKED("Your account has been locked due to multiple failed attempts. Try again later or reset your password."),
     ACCOUNT_INCOMPLETE("You have not submitted your personal details. Please proceed in doing so via the settings panel to be able to unlock the complete functionality of your account"),
     ACCOUNT_INVALID_STATUS("We encountered an error processing your request. Please try again later or contact our support team"),
 

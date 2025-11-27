@@ -3,7 +3,7 @@ package com.github.stoynko.easydoc.web.utilities;
 import com.github.stoynko.easydoc.web.dto.DtoContext;
 import com.github.stoynko.easydoc.web.resolvers.RoleViewResolver;
 import com.github.stoynko.easydoc.web.resolvers.RoleViewResolverRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,14 +13,11 @@ import java.util.Map;
 import static com.github.stoynko.easydoc.models.enums.AccountRole.PATIENT;
 
 @Component
+@RequiredArgsConstructor
 public class PageBuilder {
 
     private final RoleViewResolverRegistry viewResolverRegistry;
 
-    @Autowired
-    public PageBuilder(RoleViewResolverRegistry viewResolverRegistry) {
-        this.viewResolverRegistry = viewResolverRegistry;
-    }
 
     public ModelAndView buildPage(DtoContext dtoContext) {
 

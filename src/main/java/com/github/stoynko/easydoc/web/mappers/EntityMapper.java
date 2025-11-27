@@ -1,18 +1,26 @@
 package com.github.stoynko.easydoc.web.mappers;
 
+import com.github.stoynko.easydoc.models.Appointment;
 import com.github.stoynko.easydoc.models.Doctor;
 import com.github.stoynko.easydoc.models.PractitionerApplication;
+import com.github.stoynko.easydoc.models.Report;
 import com.github.stoynko.easydoc.models.User;
 
+import com.github.stoynko.easydoc.web.dto.request.AppointmentRequest;
+import com.github.stoynko.easydoc.web.dto.request.MedicalReportRequest;
 import com.github.stoynko.easydoc.web.dto.request.RegisterPractitionerRequest;
 import com.github.stoynko.easydoc.web.dto.request.RegisterRequest;
 import com.github.stoynko.easydoc.web.dto.response.CloudinaryUploadResult;
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
 import static com.github.stoynko.easydoc.models.enums.AccountRole.PATIENT;
 import static com.github.stoynko.easydoc.models.enums.AccountStatus.INCOMPLETE;
 import static com.github.stoynko.easydoc.models.enums.ApplicationStatus.PENDING;
+import static com.github.stoynko.easydoc.models.enums.AppointmentStatus.CONFIRMED;
+import static com.github.stoynko.easydoc.utilities.GenerationalUtilities.extractDigits;
 
 @UtilityClass
 public class EntityMapper {
@@ -55,6 +63,32 @@ public class EntityMapper {
                 .professionalHighlights(request.getProfessionalHighlights())
                 .spokenLanguages(request.getSpokenLanguages())
                 .applicationStatus(PENDING)
+                .build();
+    }
+
+    public static Appointment toAppointmentEntity(AppointmentRequest request, User patient, Doctor doctor) {
+        return Appointment.builder()
+                .publicId(extractDigits(UUID.randomUUID().toString()))
+                .patient(patient)
+                .doctor(doctor)
+                .startsAt(LocalDateTime.of(request.getDate(), request.getTime()))
+                .appointmentReason(request.getAppointmentReason())
+                .additionalNotes(request.getAdditionalNotes())
+                .status(CONFIRMED)
+                .build();
+    }
+
+    public static Report ToReportEntity(MedicalReportRequest request, Appointment appointment) {
+        return Report.builder()
+                .publicId(extractDigits(UUID.randomUUID().toString()))
+                .appointment(appointment)
+                .accompanyingIllnesses(request.getAccompanyingIllnesses())
+                .anamnesis(request.getAnamnesis())
+                .statusAtExam(request.getStatusAtExam())
+                .clinicalFindings(request.getClinicalFindings())
+                .careRecommendations(request.getCareRecommendations())
+                .medicamentTreatment(request.getMedicamentTreatment())
+                .diagnosis(request.getDiagnosis())
                 .build();
     }
 }

@@ -15,7 +15,7 @@ import com.github.stoynko.easydoc.web.dto.request.RegisterRequest;
 import com.github.stoynko.easydoc.web.dto.request.SubmitAccountDetailsRequest;
 import com.github.stoynko.easydoc.web.mappers.DtoMapper;
 import com.github.stoynko.easydoc.web.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import static com.github.stoynko.easydoc.models.enums.AccountRole.PATIENT;
 
 @Component
+@RequiredArgsConstructor
 public class PatientRoleViewResolver implements RoleViewResolver {
 
     private final DtoAggregator dtoAggregator;
@@ -33,15 +34,6 @@ public class PatientRoleViewResolver implements RoleViewResolver {
     private final DoctorService doctorService;
     private final AppointmentService appointmentService;
     private final PractitionerApplicationService practitionerApplicationService;
-
-    @Autowired
-    public PatientRoleViewResolver(DtoAggregator dtoAggregator, UserService userService, DoctorService doctorService, AppointmentService appointmentService, PractitionerApplicationService practitionerApplicationService) {
-        this.dtoAggregator = dtoAggregator;
-        this.userService = userService;
-        this.doctorService = doctorService;
-        this.appointmentService = appointmentService;
-        this.practitionerApplicationService = practitionerApplicationService;
-    }
 
     @Override
     public AccountRole getSupportedRole() {
@@ -68,7 +60,10 @@ public class PatientRoleViewResolver implements RoleViewResolver {
 
             case DOCTORS -> model.put("doctors", doctorService.getAllDoctors());
 
-            case PRESCRIPTIONS -> model.put("prescriptions", null);
+            case PRESCRIPTION_VIEW -> {
+
+            }
+            case PRESCRIPTIONS_TABLE -> model.put("prescriptions", null);
 
             case APPOINTMENTS_TABLE -> {
                 model.put("upcomingAppointments", appointmentService.getPatientUpcomingAppointments(dtoContext.principal().getId())

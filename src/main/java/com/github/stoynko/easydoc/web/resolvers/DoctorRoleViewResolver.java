@@ -1,23 +1,16 @@
 package com.github.stoynko.easydoc.web.resolvers;
 
-import com.github.stoynko.easydoc.exceptions.ReportDoesNotExistException;
 import com.github.stoynko.easydoc.models.Appointment;
-import com.github.stoynko.easydoc.models.Report;
-import com.github.stoynko.easydoc.models.enums.AppointmentStatus;
-import com.github.stoynko.easydoc.services.ReportService;
 import com.github.stoynko.easydoc.models.Doctor;
 import com.github.stoynko.easydoc.models.enums.AccountRole;
 import com.github.stoynko.easydoc.services.AppointmentService;
 import com.github.stoynko.easydoc.services.DoctorService;
-import com.github.stoynko.easydoc.services.UserService;
 import com.github.stoynko.easydoc.web.dto.DtoAggregator;
 import com.github.stoynko.easydoc.web.dto.DtoContext;
-import com.github.stoynko.easydoc.web.dto.request.CreateMedicalReportRequest;
-import com.github.stoynko.easydoc.web.dto.request.DiagnosisSearchRequest;
+import com.github.stoynko.easydoc.web.dto.request.MedicalReportRequest;
 import com.github.stoynko.easydoc.web.mappers.DtoMapper;
-import com.github.stoynko.easydoc.web.model.ViewAction;
 import com.github.stoynko.easydoc.web.model.ViewFragment;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -26,24 +19,15 @@ import java.util.stream.Collectors;
 
 import static com.github.stoynko.easydoc.models.enums.AccountRole.DOCTOR;
 import static com.github.stoynko.easydoc.web.model.ViewAction.READ;
+import static com.github.stoynko.easydoc.web.model.ViewAction.WRITE;
 
 @Component
+@RequiredArgsConstructor
 public class DoctorRoleViewResolver implements RoleViewResolver {
 
     private final DtoAggregator dtoAggregator;
     private final DoctorService doctorService;
-    private final UserService userService;
     private final AppointmentService appointmentService;
-    private final ReportService reportService;
-
-    @Autowired
-    public DoctorRoleViewResolver(DtoAggregator dtoAggregator, DoctorService doctorService, UserService userService, AppointmentService appointmentService, ReportService reportService) {
-        this.dtoAggregator = dtoAggregator;
-        this.doctorService = doctorService;
-        this.userService = userService;
-        this.appointmentService = appointmentService;
-        this.reportService = reportService;
-    }
 
     @Override
     public AccountRole getSupportedRole() {
@@ -72,37 +56,44 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
                         .collect(Collectors.toList()));
             }
 
-            case APPOINTMENT_REVIEW -> {
+            case MEDICAL_REPORT_VIEW -> {
                 Appointment appointment = appointmentService.getAppointmentById(dtoContext.resourceId());
                 model.put("appointmentDetails", DtoMapper.toDoctorAppointmentSummaryResponse(appointment));
+                model.put("reportExists", appointment.hasReport());
+                model.put("action", (appointment.hasReport() && dtoContext.action() == READ) ? READ : WRITE);
 
-                Report medicalReport;
-
-                try {
-                    medicalReport = reportService.getById(dtoContext.resourceId());
-                } catch (ReportDoesNotExistException exception) {
-                    medicalReport = null;
+                if (appointment.hasReport()) {
+                    model.put("medicalReport", DtoMapper.toMedicalReportResponseFrom(appointment.getReport()));
+                } else {
+                    model.put("medicalReport", new MedicalReportRequest());
                 }
 
-                model.put("reportExists", medicalReport != null);
-                model.put("readOnly", dtoContext.action() == READ && medicalReport != null);
-
-                if (medicalReport != null) {
-                    model.put("medicalReport", DtoMapper.toMedicalReportRequestFrom(medicalReport));
+               /* if (appointment.hasReport() && dtoContext.action() == READ) {
+                    model.put("medicalReport", DtoMapper.toMedicalReportResponseFrom(appointment.getReport()));
+                } else if (appointment.hasReport() && dtoContext.action() == WRITE) {
+                    model.put("medicalReport", DtoMapper.toMedicalReportResponseFrom(appointment.getReport()));
                 } else {
-                    model.put("diagnosisSearchRequest", new DiagnosisSearchRequest());
-                    model.put("medicalReport", new CreateMedicalReportRequest());
-                }
-
-/*                if (appointment.getStatus() == AppointmentStatus.CONFIRMED) {
-
-                } else {
-                    model.put("appointmentMedicalReport", null);
-                    model.put("appointmentPrescription", null);
+                    model.put("medicalReport", new MedicalReportRequest());
                 }*/
             }
 
-            case PRESCRIPTIONS -> {
+            case PRESCRIPTION_VIEW -> {
+                Appointment appointment = appointmentService.getAppointmentById(dtoContext.resourceId());
+                model.put("appointmentDetails", DtoMapper.toDoctorAppointmentSummaryResponse(appointment));
+
+                boolean prescriptionExists = false;
+
+                model.put("prescriptionExists", !prescriptionExists);
+                model.put("readOnly", dtoContext.action() == READ && prescriptionExists);
+
+                if (prescriptionExists) {
+                    model.put("prescription", null);
+                } else {
+                    model.put("prescription", null);
+                }
+            }
+
+            case PRESCRIPTIONS_TABLE -> {
 
                 model.put("prescriptions", null);
             }

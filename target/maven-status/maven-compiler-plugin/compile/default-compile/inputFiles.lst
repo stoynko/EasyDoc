@@ -1,9 +1,11 @@
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/EasyDoc.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/annotation/MaxFileSize.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/annotation/ValidBirthDate.java
+/Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/client/Icd10Client.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/config/AuditingConfiguration.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/config/BeanConfiguration.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/config/CloudinaryConfiguration.java
+/Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/config/HttpConfig.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/config/RedisConfiguration.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/config/WebConfiguration.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/events/AppointmentCancelledEvent.java
@@ -81,10 +83,10 @@
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/DtoAggregator.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/DtoContext.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/request/AppointmentRequest.java
-/Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/request/CreateMedicalReportRequest.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/request/DeleteAccountRequest.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/request/DiagnosisSearchRequest.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/request/LoginRequest.java
+/Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/request/MedicalReportRequest.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/request/RegisterPractitionerRequest.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/request/RegisterRequest.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/request/SubmitAccountDetailsRequest.java
@@ -100,6 +102,7 @@
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/response/DoctorAppointmentSummaryResponse.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/response/DoctorBriefSummaryResponse.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/response/DoctorDetailedSummaryResponse.java
+/Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/response/Icd10SearchResult.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/response/MedicalReportResponse.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/response/PatientAppointmentResponse.java
 /Users/yani/Development/SoftUni/Java/Final Project/Repository/EasyDoc/src/main/java/com/github/stoynko/easydoc/web/dto/response/PatientBriefSummaryResponse.java

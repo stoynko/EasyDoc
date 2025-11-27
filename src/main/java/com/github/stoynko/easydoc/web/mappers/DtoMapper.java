@@ -5,7 +5,6 @@ import com.github.stoynko.easydoc.models.Doctor;
 import com.github.stoynko.easydoc.models.PractitionerApplication;
 import com.github.stoynko.easydoc.models.Report;
 import com.github.stoynko.easydoc.models.User;
-import com.github.stoynko.easydoc.models.enums.AppointmentReason;
 import com.github.stoynko.easydoc.web.dto.request.UpdateContactDetailsRequest;
 import com.github.stoynko.easydoc.web.dto.request.UpdateEmailAddressRequest;
 import com.github.stoynko.easydoc.web.dto.request.UpdateAccountDetailsRequest;
@@ -20,7 +19,6 @@ import com.github.stoynko.easydoc.web.dto.response.PatientAppointmentResponse;
 import com.github.stoynko.easydoc.web.dto.response.PatientSummaryResponse;
 import com.github.stoynko.easydoc.web.dto.response.PendingPractitionerApplicationResponse;
 import com.github.stoynko.easydoc.web.dto.response.UserSummaryResponse;
-import java.time.Instant;
 import lombok.experimental.UtilityClass;
 
 import static com.github.stoynko.easydoc.models.enums.AccountAuthority.CAN_BOOK_APPOINTMENT;
@@ -200,10 +198,15 @@ public class DtoMapper {
                 .build();
     }
 
-    public static MedicalReportResponse toMedicalReportRequestFrom(Report medicalReport) {
+    public static MedicalReportResponse toMedicalReportResponseFrom(Report report) {
         return MedicalReportResponse.builder()
-
-
+                .diagnosis(report.getDiagnosis())
+                .anamnesis(report.getAnamnesis())
+                .statusAtExam(report.getStatusAtExam())
+                .accompanyingIllnesses(report.getAccompanyingIllnesses())
+                .clinicalFindings(report.getClinicalFindings())
+                .careRecommendations(report.getCareRecommendations())
+                .medicamentTreatment(report.getMedicamentTreatment())
                 .build();
     }
 }
