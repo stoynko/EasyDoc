@@ -9,7 +9,7 @@ public enum ViewPage {
     APPOINTMENTS_TABLE("appointments_table"),
     APPOINTMENT_CREATION("appointment_creation"),
     MEDICAL_REPORT_VIEW("report_review"),
-    PRESCRIPTIONS_TABLE("prescriptions"),
+    PRESCRIPTIONS_TABLE("prescriptions_table"),
     PRESCRIPTION_VIEW("prescription_review"),
     DOCTORS("doctors"),
     ACCOUNT_ONBOARDING("onboarding_account"),

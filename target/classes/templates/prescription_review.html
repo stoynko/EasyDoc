@@ -10,17 +10,23 @@
 <head>
     <meta charset="UTF-8">
     <title data-fragment="title">Users Management</title>
-    <th:block data-fragment="head"></th:block>
+    <th:block data-fragment="head">
+        <link rel="stylesheet" th:href="@{/css/prescriptions.css}">
+    </th:block>
 </head>
 <body data-fragment="body">
 
+<th:block data-fragment="scripts">
+    <script th:src="@{/js/modal.js}"></script>
+</th:block>
+
 <!-- HEADER-->
-<header th:insert="~{fragments/components/header :: header_auth}"></header>
+<header th:insert="~{fragments/header :: header_auth}"></header>
 
 <div class="workspace-container">
 
     <!-- SIDEBAR -->
-    <aside th:insert="~{fragments/components/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
 
     <div class="main-content">
 
@@ -30,203 +36,123 @@
 
                 <!-- BREADCRUMB -->
                 <span class="breadcrumb">
-                   <a th:href="@{/appointments}" class="breadcrumb-link">Appointments </a>
+                   <a th:href="@{/appointments}" class="breadcrumb-link">My Appointments </a>
                    <i class="fas fa-caret-right"></i>
                    <span th:text="${' ' + appointmentDetails.appointmentPublicId}">Placeholder Crumb</span>
                </span>
 
-                <!-- PATIENT DETAILS -->
-                <div class="view-card">
+                <!--PATIENT & APPOINTMENT SUMMARY CARD-->
+                <section class="card-summary">
 
-                    <h3 class="view-card-title" style="text-align: center">Patient's Details</h3>
-
-                    <div class="entity-card-content">
-
-                        <div class="entity-section">
-
-                            <div class="entity-fields fields-inline">
-
-                                <div class="entity-field field-inline">
-                                    <label class="entity-field-label">Patient PIN</label>
-                                    <div th:text="${appointmentDetails.patientPin}" class="entity-field-value"></div>
-                                </div>
-
-                                <div class="entity-field field-inline">
-                                    <label class="entity-field-label">Patient's Name</label>
-                                    <div th:text="${appointmentDetails.patientFirstName + ' ' + appointmentDetails.patientLastName}"
-                                         class="entity-field-value"></div>
-                                </div>
-
-                                <div class="entity-field field-inline">
-                                    <label class="entity-field-label">Appointment Reason</label>
-                                    <div th:text="${appointmentDetails.appointmentReason.getDisplayValue()}"
-                                         class="entity-field-value"></div>
-                                </div>
-                            </div>
+                    <div class="card-summary-main">
+                        <div class="card-summary-item">
+                            <span class="card-summary-label">Patient</span>
+                            <span th:text="${appointmentDetails.patientFirstName + ' ' + appointmentDetails.patientLastName}" class="card-summary-value">Placeholder Name</span>
+                            <span class="card-summary-meta"><i class="fas fa-id-card"></i> <span th:text="${appointmentDetails.patientPin}">Placeholder Id</span></span>
+                            <span class="card-summary-meta"><i class="fas fa-envelope"></i> <span th:text="${appointmentDetails.patientEmail}">Placeholder Email</span></span>
+                            <span th:if="${!#strings.isEmpty(appointmentDetails.patientPhoneNumber)}" class="card-summary-meta"><i class="fas fa-phone"></i> <span th:text="${appointmentDetails.patientPhoneNumber}">Placeholder Phone Number</span></span>
                         </div>
-
-                        <div th:unless="${#strings.trim(appointmentDetails.additionalNotes).isEmpty()}"
-                             class="entity-section">
-
-                            <div class="entity-fields">
-
-                                <div class="entity-field">
-                                    <label class="entity-field-label">Additional Notes</label>
-                                    <textarea th:text="${appointmentDetails.additionalNotes}"
-                                              class="entity-field-value entity-textarea" rows="2" readonly></textarea>
-                                </div>
-                            </div>
+                        <div class="card-summary-item card-summary-item-meta">
+                            <span class="card-summary-label">Appointment Details</span>
+                            <span th:text="${appointmentDetails.appointmentReason.getDisplayValue()}" class="card-summary-value">Placeholder Reason</span>
+                            <textarea th:text="${appointmentDetails.additionalNotes}" class="card-summary-meta card-summary-meta-textarea" rows="4" readonly>Placeholder Reason</textarea>
                         </div>
+                    </div>
+
+                    <div class="card-summary-actions">
+                        <!--<form th:action="@{/appointments/{appointmentId}/prescription/create(appointmentId=${appointmentId})}" th:method="POST">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i>
+                                Create Prescription
+                            </button>
+                        </form>-->
+
+                        <!--<form th:action="@{/appointments/{appointmentId}/prescription/export(appointmentId=${appointmentId})}" th:method="POST">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-file-download"></i>
+                                Download PDF
+                            </button>
+                        </form>-->
 
                     </div>
-                </div>
+
+                    <div class="card-status-block">
+                        <span class="card-status-label">Status</span>
+                        <span class="card-status-value">DRAFT</span>
+
+                        <form th:action="@{/appointments/{appointmentId}/prescription/create(appointmentId=${appointmentId})}" th:method="POST">
+                            <button type="submit" class="btn-primary btn-minimal">
+                                <i class="fas fa-cloud"></i>Submit
+                            </button>
+                        </form>
+                        <!--<span class="card-status-meta">Issued on <strong>07 Nov 2025</strong></span>
+                        <span class="card-status-meta">Valid until <strong>21 Dec 2025</strong></span>-->
+                    </div>
+
+                </section>
 
                 <!-- PRESCRIPTION -->
                 <div class="view-card">
-
                     <div class="view-card-header">
-                        <h3 class="view-card-title" style="text-align: center">Prescription</h3>
-
+                        <h3 class="view-card-title">Prescription</h3>
                         <div class="view-card-actions">
-                            <form th:action="@{/appointments/{appointmentId}/prescription/create(appointmentId=${appointmentId})}" th:method="POST">
-                                <button type="submit" class="btn-primary">
-                                    <i class="fas fa-save"></i>
-                                    Create Prescription
-                                </button>
-                            </form>
+                            <button type="button" class="btn-primary" onclick="openModal()">
+                                <i class="fas fa-prescription-bottle-alt"></i>Add
+                            </button>
                         </div>
                     </div>
 
+                    <div class="medicaments-list">
 
-                    <!-- ADD MEDICAMENT ENTRY -->
-                    <form th:action="@{/}" th:method="POST" class="entity-form">
-
-                            <div class="view-card-actions">
-                                <button  type="submit" class="btn-primary">
-                                    <i class="fas fa-edit"></i>
-                                    Add Medicament
-                                </button>
-                            </div>
-
-                        <!-- MEDICAMENT PRESCRIPTION-->
-                        <div class="entity-card-content">
-
-                            <div class="entity-section">
-
-                                <h3 class="entity-section-title">Medicament Details</h3>
-
-                                <div class="entity-fields">
-
-                                    <!-- MEDICAMENT TYPE -->
-                                    <div class="entity-field">
-                                        <label class="entity-field-label">Medicament Type <span
-                                                class="required">*</span></label>
-                                        <div class="form-group">
-                                            <select>
-                                                <option>Antibiotics</option>
-                                                <option>Antispasmodics</option>
-                                            </select>
-                                            <!--<p th:if="${#fields.hasErrors('frequency')}" th:errors="*{frequency}" class="form-error"></p>-->
-                                        </div>
-                                    </div>
-
-                                    <!-- MEDICAMENT NAME -->
-                                    <div class="entity-field">
-                                        <label class="entity-field-label">Medicament</label>
-                                        <div class="form-group">
-                                            <select>
-                                                <option>Augmentin</option>
-                                                <option>Zinat</option>
-                                            </select>
-                                            <!--<p th:if="${#fields.hasErrors('frequency')}" th:errors="*{frequency}" class="form-error"></p>-->
-                                        </div>
-                                    </div>
-
-                                    <!-- FREQUENCY -->
-                                    <div class="entity-field">
-                                        <label class="entity-field-label">Dosage Form</label>
-                                        <div class="form-group">
-                                            <select id="dosage-form" name="dosageForm">
-                                                <option>Select the dosage delivery form</option>
-                                                <option>Oral</option>
-                                                <option>Topical</option>
-                                                <option>Inhalation</option>
-                                                <option>Injection</option>
-                                                <option>Suppositories</option>
-                                                <option>Suppositories</option>
-                                                <option>Other</option>
-                                            </select>
-                                            <!--<p th:if="${#fields.hasErrors('dosageForm')}" th:errors="*{dosageForm}" class="form-error"></p>-->
-                                        </div>
-                                    </div>
-
+                        <article class="medicament-card">
+                            <div class="medicament-card-header">
+                                <div class="medicament-main">
+                                    <span class="medicament-category">Antibiotic</span>
+                                    <h3 class="medicament-name">Amoxicillin 500mg</h3>
+                                    <p class="medicament-purpose">Primary medication to treat infection.</p>
+                                </div>
+                                <div class="medicament-icon" aria-hidden="true">
+                                    <i class="fas fa-virus-slash"></i>
                                 </div>
                             </div>
-
-                            <div class="entity-section">
-
-                                <h3 class="entity-section-title">Treatment Details</h3>
-
-                                <div class="entity-fields">
-
-                                    <!-- FREQUENCY -->
-                                    <div class="entity-field">
-                                        <label class="entity-field-label">Intake Frequency</label>
-                                        <div class="form-group">
-                                            <input id="frequency" name="frequency" placeholder="Specify the intake frequency">
-                                            <!--<p th:if="${#fields.hasErrors('frequency')}" th:errors="*{frequency}" class="form-error"></p>-->
-                                        </div>
-                                    </div>
-
-                                    <!-- DOSAGE -->
-                                    <div class="entity-field">
-                                        <label class="entity-field-label">Intake Dosage</label>
-                                        <div class="form-group">
-                                            <input id="dosage" name="dosage" placeholder="Specify the dosage i.e. 500mg">
-                                            <!--<p th:if="${#fields.hasErrors('dosage')}" th:errors="*{dosage}" class="form-error"></p>-->
-                                        </div>
-                                    </div>
-
-                                    <!-- TREATMENT DURATION -->
-                                    <div class="entity-field">
-                                        <label class="entity-field-label">Treatment Duration</label>
-                                        <div class="form-group">
-                                            <input id="treatment-duration" name="treatmentDuration" placeholder="Specify the duration for intake">
-                                            <!--<p th:if="${#fields.hasErrors('treatmentDuration')}" th:errors="*{treatmentDuration}" class="form-error"></p>-->
-                                        </div>
-                                    </div>
+                            <div class="medicament-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Dosage</span>
+                                    <span class="detail-value">1 capsule twice daily</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Administration</span>
+                                    <span class="detail-value">Take with water after meals</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Duration</span>
+                                    <span class="detail-value">14 days</span>
                                 </div>
                             </div>
-
-                        </div>
-
-                        <!-- ADDITIONAL INSTRUCTIONS -->
-                        <div class="entity-card-content">
-
-                            <div class="entity-section">
-                                <div class="entity-fields">
-
-                                    <!-- ADDITIONAL INSTRUCTIONS -->
-                                    <div class="entity-field">
-                                        <label class="entity-field-label">Additional Instructions</label>
-                                        <div class="form-group">
-                                            <textarea id="additional-instructions" name="additionalInstructions"
-                                                      placeholder="Outline any clinical findings i.e. laboratory tests and/or diagnostic imaging"
-                                                      rows="2"></textarea>
-                                            <!--<p th:if="${#fields.hasErrors('additionalInstructions')}" th:errors="*{additionalInstructions}" class="form-error"></p>-->
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="medicament-notes">
+                                <span class="detail-label">Additional notes</span>
+                                <p class="detail-value">Monitor for allergic reactions and report immediately.</p>
                             </div>
+                        </article>
 
-                        </div>
-                    </form>
+                    </div>
+
+                    <div class="medicament-empty">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                        <p>No medications have been added for this prescription</p>
+                    </div>
 
                 </div>
             </div>
         </div>
     </div>
 </div>
-</body>
-</html>
 
+<div id="medicament-modal" class="modal-overlay">
+    <div class="modal-content">
+
+        <div th:replace="~{fragments/medicament_creation :: medicament_creation}"></div>
+    </div>
+</div>
+
+</body>

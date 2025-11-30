@@ -2,6 +2,7 @@ package com.github.stoynko.easydoc.models;
 
 import com.github.stoynko.easydoc.models.embedded.CreatedModifiedAt;
 import com.github.stoynko.easydoc.models.embedded.CreatedModifiedBy;
+import com.github.stoynko.easydoc.models.enums.DocumentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -42,6 +43,9 @@ public class Report {
     @ManyToOne
     @JoinColumn(name = "appointment_id", nullable = false)
     private Appointment appointment;
+
+    @Column(name = "document_status", nullable = false)
+    private DocumentStatus documentStatus;
 
     @Column(name = "accompanying_illnesses", columnDefinition = "TEXT", length = 200)
     private String accompanyingIllnesses;

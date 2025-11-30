@@ -127,26 +127,6 @@
                 </a>
             </li>
 
-            <!-- PREFERENCES DETAILS -->
-            <li class="nav-item">
-                <a th:href="@{/settings/preferences}" class="nav-link"
-                   th:classappend="${currentPath == '/settings/preferences'} ? ' active'">
-                    <i class="fas fa-sliders-h"></i>
-                    <span>Preferences</span>
-                </a>
-            </li>
-
-            <!--TODO: SWITCH WHEN THERE IS ACTIVE PLAN-->
-
-            <!-- PRACTITIONER MEMBERSHIP -->
-            <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
-                <a th:href="@{/settings/membership}" class="nav-link doctor"
-                   th:classappend="${currentPath == '/settings/membership'} ? ' active'">
-                    <i class="fas fa-credit-card"></i>
-                    <span>Membership &amp; Billing </span>
-                </a>
-            </li>
-
             <!-- PRACTITIONER ONBOARDING -->
             <li th:if="${!hasSubmittedApplication}" class="nav-item"
                 sec:authorize="hasRole('PATIENT')">

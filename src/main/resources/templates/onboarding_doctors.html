@@ -5,6 +5,7 @@
                                     ~{::th:block[@data-fragment='head']},
                                     ~{::th:block[@data-fragment='scripts']}
       )}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
     <head>
         <meta charset="UTF-8">
         <title data-fragment="title">EasyDoc</title>
@@ -17,13 +18,13 @@
     <body data-fragment="body">
 
         <!-- HEADER-->
-        <header sec:authorize="isAuthenticated()" th:insert="~{fragments/components/header :: header_auth}"></header>
-        <header sec:authorize="isAnonymous()" th:insert="~{fragments/components/header :: header}"></header>
+        <header sec:authorize="isAuthenticated()" th:insert="~{fragments/header :: header_auth}"></header>
+        <header sec:authorize="isAnonymous()" th:insert="~{fragments/header :: header}"></header>
 
         <div sec:authorize="isAuthenticated()" class="workspace-container">
 
             <!-- SIDEBAR NAVIGATION -->
-            <aside th:insert="~{fragments/components/sidebar_navigation :: settings_navigation}" class="sidebar"></aside>
+            <aside th:insert="~{fragments/sidebar_navigation :: settings_navigation}" class="sidebar"></aside>
 
             <main class="main-content">
                 <th:block th:switch="${processState}">
@@ -57,7 +58,7 @@
                                         <li><i class="fas fa-check-circle"></i> Email notifications</li>
                                         <li><i class="fas fa-check-circle"></i> Public profile page</li>
                                     </ul>
-                                    <a th:href="@{/subscribe/starter}" class="btn-primary">Get started</a>
+                                    <div class="btn-primary">Get started</div>
                                 </article>
                                 <article class="onboarding-price-card featured">
                                     <h3>Plus</h3>
@@ -71,7 +72,7 @@
                                         <li><i class="fas fa-check-circle"></i> Featured profile</li>
                                         <li><i class="fas fa-check-circle"></i> Support via ticket</li>
                                     </ul>
-                                    <a th:href="@{/subscribe/plus}" class="btn-primary">Get started</a>
+                                    <div class="btn-primary">Get started</div>
                                 </article>
                                 <article class="onboarding-price-card featured">
                                     <h3>Pro</h3>
@@ -83,7 +84,7 @@
                                         <li><i class="fas fa-check-circle"></i> Priority support via phone</li>
                                         <li><i class="fas fa-check-circle"></i> Custom Integrations</li>
                                     </ul>
-                                    <a th:href="@{/subscribe/pro}" class="btn-primary">Get started</a>
+                                    <div class="btn-primary">Get started</div>
                                 </article>
                             </div>
                         </section>

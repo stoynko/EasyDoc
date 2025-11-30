@@ -53,6 +53,7 @@ public class Doctor {
     @Column(name = "uin", nullable = false, unique = true)
     private String uin;
 
+    //TODO: CHANGE TO ENUMERATED AFTER DB DROP
     //@Enumerated(value = EnumType.STRING)
     @Column(name = "expertise", nullable = false)
     private Expertise expertise;

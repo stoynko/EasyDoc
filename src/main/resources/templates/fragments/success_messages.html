@@ -273,11 +273,7 @@
                     <i class="fas fa-sign-in-alt"></i> Issue Prescription
                 </a>
 
-                <!--<a th:href="@{/appointments/{appointmentId}/conclude(appointmentId=${appointmentId})}" class="btn-register">
-                    <i class="fas fa-sign-in-alt"></i> Complete Appointment
-                </a>-->
-
-                <form th:action="@{/appointments/{appointmentId}/conclude(appointmentId=${appointmentId})}" th:method="POST"
+                <form th:action="@{/appointments/{appointmentId}/conclude(appointmentId=${appointmentId})}" th:method="POST">
                     <button class="btn-primary confirm">
                         <i class="fas fa-sign-in-alt"></i> Complete Appointment
                     </button>

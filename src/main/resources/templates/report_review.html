@@ -15,12 +15,12 @@
 <body data-fragment="body">
 
 <!-- HEADER-->
-<header th:insert="~{fragments/components/header :: header_auth}"></header>
+<header th:insert="~{fragments/header :: header_auth}"></header>
 
 <div class="workspace-container">
 
     <!-- SIDEBAR -->
-    <aside th:insert="~{fragments/components/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
 
     <div class="main-content">
 
@@ -36,63 +36,56 @@
                         </span>
 
                 <!-- PATIENT DETAILS -->
-                <div class="view-card">
+                <section class="card-summary">
 
-                    <h3 class="view-card-title" style="text-align: center">Patient's Details</h3>
-
-                    <div class="entity-card-content">
-
-                        <div class="entity-section">
-
-                            <div class="entity-fields fields-inline">
-
-                                <div class="entity-field field-inline">
-                                    <label class="entity-field-label">Patient PIN</label>
-                                    <div th:text="${appointmentDetails.patientPin}" class="entity-field-value"></div>
-                                </div>
-
-                                <div class="entity-field field-inline">
-                                    <label class="entity-field-label">Patient's Name</label>
-                                    <div th:text="${appointmentDetails.patientFirstName + ' ' + appointmentDetails.patientLastName}"
-                                         class="entity-field-value"></div>
-                                </div>
-
-                                <div class="entity-field field-inline">
-                                    <label class="entity-field-label">Appointment Reason</label>
-                                    <div th:text="${appointmentDetails.appointmentReason.getDisplayValue()}"
-                                         class="entity-field-value"></div>
-                                </div>
+                        <div class="card-summary-main">
+                            <div class="card-summary-item">
+                                <span class="card-summary-label">Patient</span>
+                                <span th:text="${appointmentDetails.patientFirstName + ' ' + appointmentDetails.patientLastName}" class="card-summary-value">Placeholder Name</span>
+                                <span class="card-summary-meta"><i class="fas fa-id-card"></i> <span th:text="${appointmentDetails.patientPin}">Placeholder Id</span></span>
+                                <span class="card-summary-meta"><i class="fas fa-envelope"></i> <span th:text="${appointmentDetails.patientEmail}">Placeholder Email</span></span>
+                                <span th:if="${!#strings.isEmpty(appointmentDetails.patientPhoneNumber)}" class="card-summary-meta"><i class="fas fa-phone"></i> <span th:text="${appointmentDetails.patientPhoneNumber}">Placeholder Phone Number</span></span>
+                            </div>
+                            <div class="card-summary-item card-summary-item-meta">
+                                <span class="card-summary-label">Appointment Details</span>
+                                <span th:text="${appointmentDetails.appointmentReason.getDisplayValue()}" class="card-summary-value">Placeholder Reason</span>
+                                <textarea th:text="${appointmentDetails.additionalNotes}" class="card-summary-meta card-summary-meta-textarea" rows="4" readonly>Placeholder Reason</textarea>
                             </div>
                         </div>
 
-                        <div th:if="${appointmentDetails.additionalNotes != null and
-                                    !#strings.isEmpty(#strings.trim(appointmentDetails.additionalNotes))}"
-                             class="entity-section">
+                        <div class="card-summary-actions">
+                            <!--<form th:action="@{/appointments/{appointmentId}/prescription/create(appointmentId=${appointmentId})}" th:method="POST">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save"></i>
+                                    Create Prescription
+                                </button>
+                            </form>-->
 
-                            <div class="entity-fields">
+                            <!--<form th:action="@{/appointments/{appointmentId}/prescription/add(appointmentId=${appointmentId})}" th:method="POST">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save"></i>
+                                    Add Medicament
+                                </button>
+                            </form>-->
 
-                                <div class="entity-field">
-                                    <label class="entity-field-label">Additional Notes</label>
-                                    <textarea th:text="${appointmentDetails.additionalNotes}"
-                                              class="entity-field-value entity-textarea" rows="2" readonly></textarea>
-                                </div>
-                            </div>
+                            <!--<form th:action="@{/appointments/{appointmentId}/prescription/export(appointmentId=${appointmentId})}" th:method="POST">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-file-download"></i>
+                                    Download PDF
+                                </button>
+                            </form>-->
+
                         </div>
 
-                    </div>
-                </div>
+                        <!-- DOCUMENT STATUS -->
+                        <div class="card-status-block">
+                            <span class="card-status-label">Status</span>
+                            <span th:text="${documentStatus}" class="card-status-value">Placeholder Status</span>
+                            <span class="card-status-meta">Issued on <strong>07 Nov 2025</strong></span>
+                            <span class="card-status-meta">Valid until <strong>21 Dec 2025</strong></span>
 
-                <!-- MEDICAL REPORT -->
-
-                <!-- READ ONLY -->
-                <div th:if="${action == T(com.github.stoynko.easydoc.web.model.ViewAction).READ}" class="view-card">
-
-                    <div class="view-card-header">
-                        <h3 class="view-card-title" style="text-align: center">Medical Report</h3>
-
-                        <div class="view-card-actions">
-
-                            <form th:action="@{/appointments/{appointmentId}/report(appointmentId=${appointmentId})}"
+                            <form th:if="${reportExists and action == T(com.github.stoynko.easydoc.web.model.ViewAction).READ}"
+                                  th:action="@{/appointments/{appointmentId}/report(appointmentId=${appointmentId})}"
                                   th:method="GET">
                                 <input type="hidden" name="action" value="WRITE"/>
                                 <button type="submit" class="btn-primary">
@@ -100,6 +93,34 @@
                                     Edit Report
                                 </button>
                             </form>
+
+                            <button th:if="${action == T(com.github.stoynko.easydoc.web.model.ViewAction).WRITE}"
+                                    type="submit" class="btn-primary" form="report-submission-form">
+                                <i class="fas fa-save"></i>
+                                Save Report
+                            </button>
+
+                            <!--<form th:action="@{/appointments/{appointmentId}/prescription/create(appointmentId=${appointmentId})}" th:method="POST">
+                                <button type="submit" class="btn-primary btn-minimal">
+                                    <i class="fas fa-cloud"></i>Submit
+                                </button>
+                            </form>-->
+                            <!--<span class="card-status-meta">Issued on <strong>07 Nov 2025</strong></span>
+                            <span class="card-status-meta">Valid until <strong>21 Dec 2025</strong></span>-->
+                        </div>
+
+                </section>
+
+
+                <!-- MEDICAL REPORT -->
+
+                <!-- READ ONLY -->
+                <div th:if="${reportExists and action == T(com.github.stoynko.easydoc.web.model.ViewAction).READ}" class="view-card">
+
+                    <div class="view-card-header">
+                        <h3 class="view-card-title" style="text-align: center">Medical Report</h3>
+
+                        <div class="view-card-actions">
                         </div>
                     </div>
 
@@ -201,18 +222,15 @@
 
                 <!-- EDIT / WRITE -->
                 <div th:if="${action == T(com.github.stoynko.easydoc.web.model.ViewAction).WRITE}" class="view-card">
-                    <form th:action="@{/appointments/{appointmentId}/report/edit(appointmentId=${appointmentId})}"
-                          th:object="${medicalReport}" th:method="POST" class="entity-form">
+                    <form th:action="@{/appointments/{appointmentId}/report/submit(appointmentId=${appointmentId})}"
+                          th:object="${medicalReport}" th:method="POST" id="report-submission-form" class="entity-form">
 
                         <div class="view-card-header">
                             <h3 class="view-card-title" style="text-align: center">Medical Report</h3>
 
                             <div class="view-card-actions">
 
-                                <button type="submit" class="btn-primary">
-                                    <i class="fas fa-save"></i>
-                                    Save Report
-                                </button>
+
                             </div>
                         </div>
 
@@ -247,7 +265,7 @@
                                     <!-- DIAGNOSIS SELECTOR -->
                                     <div class="entity-field field-inline">
                                         <div id="diagnosis-selector"
-                                             th:insert="~{fragments/components/diagnosis_selector :: diagnosis_selector}"
+                                             th:insert="~{fragments/diagnosis_selector :: diagnosis_selector}"
                                              class="form-group">
                                         </div>
                                     </div>

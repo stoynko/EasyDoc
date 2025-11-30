@@ -25,7 +25,6 @@
     margin-bottom: var(--spacing-md);
 }
 
-
 .appointment-wrapper {
     background: white;
     border-radius: 20px;
@@ -54,7 +53,6 @@
     color: #6b7280;
 }
 
-/* Form Styles */
 .appointment-form {
     display: flex;
     flex-direction: column;
@@ -71,65 +69,8 @@
     border-collapse: separate;
     border-spacing: 0 12px;
     font-size: 14px;
-    /*table-layout: fixed;*/
     margin-top: var(--spacing-lg);
 }
-/*
-.appointment-table col.col-id {
-    width: 6%;
-}
-
-.appointment-table col.col-uuid {
-    width: 25%;
-}
-
-.appointment-table col.col-patient {
-    width: 16%;
-}
-
-.appointment-table col.col-patient-id {
-    width: 16%;
-}
-
-.appointment-table col.col-doctor {
-    width: 8%;
-}
-
-.appointment-table col.col-doctor-uin {
-    width: 16%;
-}
-
-.appointment-table col.col-expertise {
-    width: 10%;
-}
-
-.appointment-table col.col-email {
-    width: 20%;
-}
-
-.appointment-table col.col-reason {
-    width: 10%;
-}
-
-.appointment-table col.col-status {
-    width: 5%;
-}
-
-.appointment-table col.col-created {
-    width: 22%;
-}
-
-.appointment-table col.col-role {
-    width: 22%;
-}
-
-.appointment-table col.col-schedule {
-    width: 10%;
-}
-
-.appointment-table col.col-actions {
-    width: 14%;
-}*/
 
 /* ============================================
              PATIENT UPCOMING APPOINTMENTS
@@ -198,7 +139,6 @@
 /* ============================================
              DOCTOR APPOINTMENTS
    ============================================ */
-
 
 .appointment-table thead th {
     text-transform: uppercase;
@@ -419,7 +359,6 @@
     color: var(--color-text-muted);
 }
 
-/* Appointment Form Layout Styles */
 .doctor-info-content {
     display: flex;
     flex-direction: row;

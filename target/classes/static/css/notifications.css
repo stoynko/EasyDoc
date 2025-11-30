@@ -162,11 +162,6 @@
   justify-content: flex-end;
 }
 
-.btn-small {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  font-size: var(--font-size-sm);
-}
-
 .is-unread td {
   background: var(--color-primary-bg);
   box-shadow: 0 10px 24px rgba(37, 99, 235, 0.16);

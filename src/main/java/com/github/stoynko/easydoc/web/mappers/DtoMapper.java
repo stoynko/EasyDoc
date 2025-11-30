@@ -176,6 +176,7 @@ public class DtoMapper {
                 .appointmentPublicId(appointment.getPublicId())
                 .patientPin(patient.getPersonalIdentificationNumber())
                 .patientEmail(patient.getEmailAddress())
+                .patientPhoneNumber(patient.getPhoneNumber())
                 .patientFirstName(patient.getFirstName())
                 .patientLastName(patient.getLastName())
                 .appointmentReason(appointment.getAppointmentReason())

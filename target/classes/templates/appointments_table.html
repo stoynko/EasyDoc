@@ -19,12 +19,12 @@
 <th:block data-fragment="scripts"></th:block>
 
 <!-- HEADER-->
-<header th:insert="~{fragments/components/header :: header_auth}"></header>
+<header th:insert="~{fragments/header :: header_auth}"></header>
 
     <div class="workspace-container">
 
     <!-- SIDEBAR -->
-        <aside th:insert="~{fragments/components/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+        <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
 
         <main class="main-content">
 
@@ -308,7 +308,6 @@
                         </thead>
                         <tbody>
 
-
                         <tr th:each="appointment : ${upcomingAppointments}">
 
                             <td th:text="${appointment.appointmentPublicId}"
@@ -343,7 +342,6 @@
                                             class="btn-primary"
                                             style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
                                         <i class="fas fa-file-medical"></i>
-                                        Report
                                     </button>
                                 </form>
 
@@ -353,20 +351,15 @@
                                             class="btn-primary"
                                             style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
                                         <i class="fas fa-prescription"></i>
-                                        Prescription
                                     </button>
                                 </form>
 
                                 <!-- FINALIZE REPORT BUTTON -->
-                                <!-- TODO: ENABLE ONLY FOR APPOINTMENTS WITH REPORT -->
-
-
                                 <form th:if="${appointment.hasReport}"
                                       th:action="@{/appointments/{appointmentId}/conclude(appointmentId=${appointment.appointmentId})}"
                                       th:method="POST" style="flex: 1; width: 100%;">
-                                        <button type="submit" class="btn-primary confirm" style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <button type="submit" class="btn-primary" style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
                                             <i class="fas fa-upload"></i>
-                                            Complete
                                         </button>
                                 </form>
 
@@ -480,27 +473,6 @@
 
         </main>
     </div>
-
-
-<div class="modal-overlay" id="appointment-modal">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeAppointmentModal()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none"
-                 viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-
-        <div class="form-group appointment-form-group-flex">
-            <label for="appointment-notes" class="appointment-label-no-shrink">Appointment Details</label>
-            <textarea id="appointment-notes"
-                      name="reason"
-                      class="appointment-textarea-flex"
-                      readonly></textarea>
-        </div>
-    </div>
-</div>
 
 </body>
 </html>

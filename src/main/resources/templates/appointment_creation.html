@@ -20,17 +20,16 @@
 </th:block>
 
 <!-- HEADER-->
-<header th:insert="~{fragments/components/header :: header_auth}"></header>
+<header th:insert="~{fragments/header :: header_auth}"></header>
 
 <div class="workspace-container">
 
     <!-- SIDEBAR -->
-    <aside th:insert="~{fragments/components/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
 
 
     <!-- MAIN CONTENT-->
     <main class="main-content">
-
 
         <th:block th:switch="${processState}">
 
@@ -50,7 +49,7 @@
 
                     <form th:object="${appointmentRequest}" th:action="@{/appointments/doctor/{doctorId}(doctorId=${doctorSummary.id})}" th:method="POST" class="entity-form">
 
-                        <!-- Doctor Information Display -->
+                        <!-- DOCTOR INFORMATION DISPLAY -->
                         <div class="doctor-info-section">
 
                             <span class="breadcrumb">
@@ -63,7 +62,7 @@
                             <input type="hidden" name="doctorId" th:value="${doctorSummary.id}" required>
                         </div>
 
-                        <!-- Date and Times Card -->
+                        <!-- DATE AND TIMES -->
                         <div class="summary-card">
                             <div class="form-row appointment-form-row">
                                 <div class="view-card appointment-card">
@@ -87,7 +86,7 @@
                                         <label class="appointment-label-no-shrink">Available Times</label>
 
                                         <div id="time-slots-container" class="time-slots-container appointment-time-container">
-                                            <th:block th:insert="~{fragments/components/time_slots :: time-slots}"></th:block>
+                                            <th:block th:insert="~{fragments/time_slots :: time-slots}"></th:block>
                                         </div>
 
                                         <input th:field="*{time}" type="hidden" id="selected-time" name="time">
@@ -95,7 +94,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Reason and Notes Card -->
+                                <!-- REASON AND NOTES -->
                                 <div class="view-card appointment-card">
 
                                     <div class="form-group appointment-form-group-no-shrink">
@@ -124,8 +123,7 @@
 
                         <div class="form-actions">
                             <button type="submit" class="btn-primary appointment-submit-button">
-                                <i class="fas fa-calendar-check"></i>
-                                Book Appointment
+                                <i class="fas fa-calendar-check"></i>Book Appointment
                             </button>
                         </div>
                     </form>
@@ -143,8 +141,6 @@
 
             <th:block th:case="*"></th:block>
         </th:block>
-
-
 
     </main>
 </div>

@@ -6,6 +6,7 @@ import com.github.stoynko.easydoc.models.PractitionerApplication;
 import com.github.stoynko.easydoc.models.Report;
 import com.github.stoynko.easydoc.models.User;
 
+import com.github.stoynko.easydoc.models.enums.DocumentStatus;
 import com.github.stoynko.easydoc.web.dto.request.AppointmentRequest;
 import com.github.stoynko.easydoc.web.dto.request.MedicalReportRequest;
 import com.github.stoynko.easydoc.web.dto.request.RegisterPractitionerRequest;
@@ -20,6 +21,7 @@ import static com.github.stoynko.easydoc.models.enums.AccountRole.PATIENT;
 import static com.github.stoynko.easydoc.models.enums.AccountStatus.INCOMPLETE;
 import static com.github.stoynko.easydoc.models.enums.ApplicationStatus.PENDING;
 import static com.github.stoynko.easydoc.models.enums.AppointmentStatus.CONFIRMED;
+import static com.github.stoynko.easydoc.models.enums.DocumentStatus.ISSUED;
 import static com.github.stoynko.easydoc.utilities.GenerationalUtilities.extractDigits;
 
 @UtilityClass
@@ -82,6 +84,7 @@ public class EntityMapper {
         return Report.builder()
                 .publicId(extractDigits(UUID.randomUUID().toString()))
                 .appointment(appointment)
+                .documentStatus(ISSUED)
                 .accompanyingIllnesses(request.getAccompanyingIllnesses())
                 .anamnesis(request.getAnamnesis())
                 .statusAtExam(request.getStatusAtExam())

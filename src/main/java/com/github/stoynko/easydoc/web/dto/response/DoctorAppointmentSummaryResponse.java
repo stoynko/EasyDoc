@@ -21,11 +21,13 @@ public class DoctorAppointmentSummaryResponse {
 
     private String patientPin;
 
-    private String patientEmail;
-
     private String patientFirstName;
 
     private String patientLastName;
+
+    private String patientEmail;
+
+    private String patientPhoneNumber;
 
     private AppointmentReason appointmentReason;
 

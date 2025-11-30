@@ -3,6 +3,7 @@ package com.github.stoynko.easydoc.web.resolvers;
 import com.github.stoynko.easydoc.models.Appointment;
 import com.github.stoynko.easydoc.models.Doctor;
 import com.github.stoynko.easydoc.models.enums.AccountRole;
+import com.github.stoynko.easydoc.models.enums.DocumentStatus;
 import com.github.stoynko.easydoc.services.AppointmentService;
 import com.github.stoynko.easydoc.services.DoctorService;
 import com.github.stoynko.easydoc.web.dto.DtoAggregator;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.github.stoynko.easydoc.models.enums.AccountRole.DOCTOR;
+import static com.github.stoynko.easydoc.models.enums.DocumentStatus.DRAFT;
 import static com.github.stoynko.easydoc.web.model.ViewAction.READ;
 import static com.github.stoynko.easydoc.web.model.ViewAction.WRITE;
 
@@ -58,23 +60,19 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
 
             case MEDICAL_REPORT_VIEW -> {
                 Appointment appointment = appointmentService.getAppointmentById(dtoContext.resourceId());
-                model.put("appointmentDetails", DtoMapper.toDoctorAppointmentSummaryResponse(appointment));
+
                 model.put("reportExists", appointment.hasReport());
                 model.put("action", (appointment.hasReport() && dtoContext.action() == READ) ? READ : WRITE);
 
-                if (appointment.hasReport()) {
-                    model.put("medicalReport", DtoMapper.toMedicalReportResponseFrom(appointment.getReport()));
-                } else {
+                model.put("appointmentDetails", DtoMapper.toDoctorAppointmentSummaryResponse(appointment));
+                if (!appointment.hasReport()) {
                     model.put("medicalReport", new MedicalReportRequest());
+                    model.put("documentStatus", DRAFT);
+                } else {
+                    model.put("medicalReport", DtoMapper.toMedicalReportResponseFrom(appointment.getReport()));
+                    model.put("documentStatus", appointment.getReport().getDocumentStatus());
                 }
 
-               /* if (appointment.hasReport() && dtoContext.action() == READ) {
-                    model.put("medicalReport", DtoMapper.toMedicalReportResponseFrom(appointment.getReport()));
-                } else if (appointment.hasReport() && dtoContext.action() == WRITE) {
-                    model.put("medicalReport", DtoMapper.toMedicalReportResponseFrom(appointment.getReport()));
-                } else {
-                    model.put("medicalReport", new MedicalReportRequest());
-                }*/
             }
 
             case PRESCRIPTION_VIEW -> {

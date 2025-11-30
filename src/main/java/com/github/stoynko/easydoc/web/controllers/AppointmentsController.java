@@ -90,7 +90,7 @@ public class AppointmentsController {
 
         List<AppointmentTimeSlotResponse> slots = appointmentService.getTimeSlotsFor(doctorId, date);
         model.addAttribute("timeSlots", slots);
-        return "fragments/components/time_slots :: time-slots";
+        return "fragments/time_slots :: time-slots";
     }
 
     @PostMapping("/appointments/{appointmentId}/conclude")
@@ -139,33 +139,6 @@ public class AppointmentsController {
 
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = pageBuilder.buildPage(forTargetResource(MEDICAL_REPORT_VIEW, principal, appointmentId));
-            ModelAndView modelAndView1 = pageBuilder.addErrors(modelAndView, "medicalReport", request, bindingResult);
-            return modelAndView1;
-        }
-
-        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
-        boolean medicalReportExists = appointment.hasReport();
-
-        if (medicalReportExists) {
-            reportService.editMedicalReport(appointment, request);
-        } else {
-            reportService.createMedicalReport(appointment, request);
-        }
-
-        ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
-        modelAndView.addObject("appointmentId", appointmentId);
-        return modelAndView.addObject("confirmationMessage", "reportCreationSuccess");
-    }
-
-    @PreAuthorize("hasRole('DOCTOR')")
-    @PostMapping("/appointments/{appointmentId}/report/edit")
-    public ModelAndView editMedicalReport(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                            @PathVariable UUID appointmentId,
-                                            @Valid MedicalReportRequest request,
-                                            BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            ModelAndView modelAndView = pageBuilder.buildPage(forTargetResource(MEDICAL_REPORT_VIEW, principal, appointmentId));
             pageBuilder.addErrors(modelAndView, "medicalReport", request, bindingResult);
             return modelAndView;
         }
@@ -173,15 +146,17 @@ public class AppointmentsController {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         boolean medicalReportExists = appointment.hasReport();
 
+        ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
+
         if (medicalReportExists) {
             reportService.editMedicalReport(appointment, request);
+            modelAndView.addObject("confirmationMessage", "reportEditSuccess");
         } else {
             reportService.createMedicalReport(appointment, request);
+            modelAndView.addObject("confirmationMessage", "reportCreationSuccess");
         }
 
-        ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
-        modelAndView.addObject("appointmentId", appointmentId);
-        return modelAndView.addObject("confirmationMessage", "reportEditSuccess");
+        return modelAndView;
     }
 
     @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR')")
