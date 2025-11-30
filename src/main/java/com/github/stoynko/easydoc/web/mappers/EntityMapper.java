@@ -1,5 +1,6 @@
 package com.github.stoynko.easydoc.web.mappers;
 
+import com.github.stoynko.easydoc.client.dto.UpsertPrescriptionRequest;
 import com.github.stoynko.easydoc.models.Appointment;
 import com.github.stoynko.easydoc.models.Doctor;
 import com.github.stoynko.easydoc.models.PractitionerApplication;
@@ -13,7 +14,9 @@ import com.github.stoynko.easydoc.web.dto.request.RegisterPractitionerRequest;
 import com.github.stoynko.easydoc.web.dto.request.RegisterRequest;
 import com.github.stoynko.easydoc.web.dto.response.CloudinaryUploadResult;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
@@ -92,6 +95,13 @@ public class EntityMapper {
                 .careRecommendations(request.getCareRecommendations())
                 .medicamentTreatment(request.getMedicamentTreatment())
                 .diagnosis(request.getDiagnosis())
+                .build();
+    }
+
+    public static UpsertPrescriptionRequest toPrescriptionRequest(UUID appointmentId) {
+        return UpsertPrescriptionRequest.builder()
+                .appointmentId(appointmentId)
+                .medicaments(new ArrayList<>())
                 .build();
     }
 }

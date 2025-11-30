@@ -75,6 +75,11 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
 
             }
 
+            case PRESCRIPTIONS_TABLE -> {
+
+                model.put("prescriptions", null);
+            }
+
             case PRESCRIPTION_VIEW -> {
                 Appointment appointment = appointmentService.getAppointmentById(dtoContext.resourceId());
                 model.put("appointmentDetails", DtoMapper.toDoctorAppointmentSummaryResponse(appointment));
@@ -89,11 +94,6 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
                 } else {
                     model.put("prescription", null);
                 }
-            }
-
-            case PRESCRIPTIONS_TABLE -> {
-
-                model.put("prescriptions", null);
             }
 
             case SETTINGS -> {

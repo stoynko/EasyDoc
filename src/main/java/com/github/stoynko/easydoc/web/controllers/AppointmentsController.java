@@ -3,6 +3,7 @@ package com.github.stoynko.easydoc.web.controllers;
 import com.github.stoynko.easydoc.models.Appointment;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.services.AppointmentService;
+import com.github.stoynko.easydoc.services.PrescriptionService;
 import com.github.stoynko.easydoc.services.ReportService;
 import com.github.stoynko.easydoc.web.dto.request.AppointmentRequest;
 import com.github.stoynko.easydoc.web.dto.request.MedicalReportRequest;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,6 +47,7 @@ public class AppointmentsController {
     private final PageBuilder pageBuilder;
     private final AppointmentService appointmentService;
     private final ReportService reportService;
+    private final PrescriptionService prescriptionService;
 
     @GetMapping("/appointments")
     public ModelAndView getAppointmentsPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
@@ -164,9 +167,13 @@ public class AppointmentsController {
     public ModelAndView viewAppointmentPrescriptionPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                             @PathVariable UUID appointmentId,
                                             @RequestParam(name = "action", required = false, defaultValue = "READ") ViewAction action) {
+
+        prescriptionService.upsertPrescription(appointmentId);
+
         if (principal.getRole() == PATIENT) {
             action = READ;
         }
+
         ModelAndView modelAndView = pageBuilder.buildPage(forTargetResourceWithAction(PRESCRIPTION_VIEW, principal, appointmentId, action));
         return modelAndView;
     }

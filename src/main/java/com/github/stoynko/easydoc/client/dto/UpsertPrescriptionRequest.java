@@ -1,9 +1,10 @@
-package com.github.stoynko.easydoc.web.dto.request;
+package com.github.stoynko.easydoc.client.dto;
 
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Getter;
 
@@ -11,7 +12,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class PrescriptionRequest {
+public class UpsertPrescriptionRequest {
 
     private UUID appointmentId;
 
