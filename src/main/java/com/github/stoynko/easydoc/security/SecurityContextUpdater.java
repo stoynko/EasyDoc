@@ -1,6 +1,6 @@
 package com.github.stoynko.easydoc.security;
 
-import com.github.stoynko.easydoc.events.UserContextRefreshEvent;
+import com.github.stoynko.easydoc.shared.event.UserContextRefreshEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

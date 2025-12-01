@@ -1,20 +1,20 @@
 package com.github.stoynko.easydoc.web.handler;
 
-import com.github.stoynko.easydoc.exceptions.AccountIncompleteException;
-import com.github.stoynko.easydoc.exceptions.AccountSuspendedException;
-import com.github.stoynko.easydoc.exceptions.ApplicationAlreadyExistsException;
-import com.github.stoynko.easydoc.exceptions.BookingSuspendedException;
-import com.github.stoynko.easydoc.exceptions.EmailNotVerifiedException;
-import com.github.stoynko.easydoc.exceptions.MissingAuthorityException;
-import com.github.stoynko.easydoc.models.enums.AccountAuthority;
+import com.github.stoynko.easydoc.user.exception.AccountIncompleteException;
+import com.github.stoynko.easydoc.user.exception.AccountSuspendedException;
+import com.github.stoynko.easydoc.practitioner.exception.ApplicationAlreadyExistsException;
+import com.github.stoynko.easydoc.appointment.exception.BookingSuspendedException;
+import com.github.stoynko.easydoc.user.exception.EmailNotVerifiedException;
+import com.github.stoynko.easydoc.shared.exception.MissingAuthorityException;
+import com.github.stoynko.easydoc.user.model.AccountAuthority;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
-import com.github.stoynko.easydoc.services.PractitionerApplicationService;
+import com.github.stoynko.easydoc.practitioner.service.PractitionerApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Component;
 
-import static com.github.stoynko.easydoc.models.enums.AccountAuthority.CAN_BOOK_APPOINTMENT;
-import static com.github.stoynko.easydoc.models.enums.AccountAuthority.CAN_SUBMIT_PRACTITIONER_APPLICATION;
+import static com.github.stoynko.easydoc.user.model.AccountAuthority.CAN_BOOK_APPOINTMENT;
+import static com.github.stoynko.easydoc.user.model.AccountAuthority.CAN_SUBMIT_PRACTITIONER_APPLICATION;
 
 @Component(value = "securityCheck")
 @RequiredArgsConstructor

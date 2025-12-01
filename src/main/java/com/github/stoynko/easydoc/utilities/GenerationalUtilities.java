@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class GenerationalUtilities {
 
-    private static final int DIGITS_COUNT = 9;
+    private static final int DIGITS_COUNT = 10;
 
     public static String extractDigits(String uuid) {
 

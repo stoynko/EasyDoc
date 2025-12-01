@@ -1,6 +1,5 @@
 <th:block th:fragment="dashboard" xmlns:th="http://www.thymeleaf.org">
 
-
         <div class="summary-grid">
             <div class="summary-card">
                 <div class="summary-card-header">
@@ -122,7 +121,7 @@
                             <label for="gender">Gender</label>
                             <select th:field="*{gender}" id="gender" name="gender" required>
                                 <option value="" >Select Your Gender</option>
-                                <option th:each="g : ${T(com.github.stoynko.easydoc.models.enums.Gender).values()}"
+                                <option th:each="g : ${T(com.github.stoynko.easydoc.user.model.Gender).values()}"
                                         th:value="${g}" th:text="${g.getDisplayValue()}">Placeholder</option>
                             </select>
                             <p th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="form-error">Placeholder Error</p>
@@ -176,7 +175,7 @@
                     <label for="specialization">Expertise</label>
                     <select th:field="*{expertise}" id="specialization" name="specialization" required>
                         <option value="" >Select your area of expertise</option>
-                        <option th:each="e : ${T(com.github.stoynko.easydoc.models.enums.Expertise).values()}"
+                        <option th:each="e : ${T(com.github.stoynko.easydoc.practitioner.model.Expertise).values()}"
                                 th:value="${e}" th:text="${e.getDisplayValue()}">Placeholder</option>
                     </select>
                     <p th:if="${#fields.hasErrors('expertise')}" th:errors="*{expertise}" class="form-error">Placeholder Error</p>

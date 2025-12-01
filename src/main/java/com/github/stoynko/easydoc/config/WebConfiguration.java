@@ -1,6 +1,6 @@
 package com.github.stoynko.easydoc.config;
 
-import com.github.stoynko.easydoc.exceptions.ErrorMessages;
+import com.github.stoynko.easydoc.shared.exception.ErrorMessages;
 import com.github.stoynko.easydoc.web.handler.SuccessHandler;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;

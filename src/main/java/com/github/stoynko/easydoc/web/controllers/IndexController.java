@@ -1,16 +1,15 @@
 package com.github.stoynko.easydoc.web.controllers;
 
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
-import com.github.stoynko.easydoc.services.PractitionerApplicationService;
-import com.github.stoynko.easydoc.services.UserService;
-import com.github.stoynko.easydoc.web.dto.request.RegisterRequest;
+import com.github.stoynko.easydoc.practitioner.service.PractitionerApplicationService;
+import com.github.stoynko.easydoc.user.service.UserService;
+import com.github.stoynko.easydoc.user.web.dto.request.RegisterRequest;
 import com.github.stoynko.easydoc.web.handler.SecurityCheck;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -84,13 +83,13 @@ public class IndexController {
         return modelAndView;
     }
 
-    @GetMapping({"/settings", "/settings/dashboard"})
-    public ModelAndView getSettingsDashboardPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
-        return pageBuilder.buildPage(forFragment(SETTINGS, SETTINGS_DASHBOARD, principal));
-    }
-
     @GetMapping("/dashboard")
     public ModelAndView getDashboardPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
         return pageBuilder.buildPage(forPage(DASHBOARD, principal));
+    }
+
+    @GetMapping({"/settings", "/settings/dashboard"})
+    public ModelAndView getSettingsDashboardPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
+        return pageBuilder.buildPage(forFragment(SETTINGS, SETTINGS_DASHBOARD, principal));
     }
 }

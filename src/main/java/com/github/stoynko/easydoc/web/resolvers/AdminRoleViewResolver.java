@@ -1,11 +1,12 @@
 package com.github.stoynko.easydoc.web.resolvers;
 
-import com.github.stoynko.easydoc.models.enums.AccountRole;
-import com.github.stoynko.easydoc.services.PractitionerApplicationService;
-import com.github.stoynko.easydoc.services.UserService;
+import com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper;
+import com.github.stoynko.easydoc.user.model.AccountRole;
+import com.github.stoynko.easydoc.practitioner.service.PractitionerApplicationService;
+import com.github.stoynko.easydoc.user.service.UserService;
+import com.github.stoynko.easydoc.user.web.mapper.UserMapper;
 import com.github.stoynko.easydoc.web.dto.DtoAggregator;
 import com.github.stoynko.easydoc.web.dto.DtoContext;
-import com.github.stoynko.easydoc.web.mappers.DtoMapper;
 import com.github.stoynko.easydoc.web.model.ViewFragment;
 
 import java.util.stream.Collectors;
@@ -16,7 +17,8 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.stoynko.easydoc.models.enums.AccountRole.ADMIN;
+import static com.github.stoynko.easydoc.user.model.AccountRole.ADMIN;
+import static com.github.stoynko.easydoc.user.web.mapper.UserMapper.toUserSummary;
 
 @Component
 @RequiredArgsConstructor
@@ -45,12 +47,12 @@ public class AdminRoleViewResolver implements RoleViewResolver {
             }
 
             case USERS -> model.put("users", userService.getAllUsersExceptAdmins()
-                    .stream().map(DtoMapper::toUserSummaryFrom)
+                    .stream().map(UserMapper::toUserSummaryFrom)
                     .collect(Collectors.toList()));
 
             case PRACTITIONER_APPLICATIONS -> model.put("applications",
                     practitionerApplicationService.getAllPendingApplications()
-                            .stream().map(DtoMapper::toPendingPractitionerApplicationFrom)
+                            .stream().map(PractitionerMapper::toPendingPractitionerApplicationFrom)
                             .collect(Collectors.toList()));
 
             case SETTINGS -> {
@@ -59,7 +61,7 @@ public class AdminRoleViewResolver implements RoleViewResolver {
             }
 
         }
-        model.put("userSummary", DtoMapper.toUserSummary(userService.getUserById(dtoContext.principal().getId())));
+        model.put("userSummary", toUserSummary(userService.getUserById(dtoContext.principal().getId())));
         return model;
     }
 }

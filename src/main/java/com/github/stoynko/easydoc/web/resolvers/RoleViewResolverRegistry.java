@@ -1,6 +1,6 @@
 package com.github.stoynko.easydoc.web.resolvers;
 
-import com.github.stoynko.easydoc.models.enums.AccountRole;
+import com.github.stoynko.easydoc.user.model.AccountRole;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.View;
 

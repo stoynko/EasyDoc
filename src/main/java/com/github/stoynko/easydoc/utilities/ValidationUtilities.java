@@ -1,6 +1,6 @@
 package com.github.stoynko.easydoc.utilities;
 
-import com.github.stoynko.easydoc.models.User;
+import com.github.stoynko.easydoc.user.model.User;
 import lombok.experimental.UtilityClass;
 
 import java.util.Locale;

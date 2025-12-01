@@ -1,25 +1,28 @@
 package com.github.stoynko.easydoc.web.dto;
 
-import com.github.stoynko.easydoc.services.AppointmentService;
-import com.github.stoynko.easydoc.services.DoctorService;
-import com.github.stoynko.easydoc.services.UserService;
-import com.github.stoynko.easydoc.web.dto.request.UpdateProfilePhotoRequest;
-import com.github.stoynko.easydoc.web.dto.request.UpdatePasswordRequest;
-import com.github.stoynko.easydoc.web.dto.request.DeleteAccountRequest;
-import com.github.stoynko.easydoc.web.mappers.DtoMapper;
+import com.github.stoynko.easydoc.practitioner.service.DoctorService;
+import com.github.stoynko.easydoc.user.service.UserService;
+import com.github.stoynko.easydoc.practitioner.web.dto.request.UpdateProfilePhotoRequest;
+import com.github.stoynko.easydoc.user.web.dto.request.UpdatePasswordRequest;
+import com.github.stoynko.easydoc.user.web.dto.request.DeleteAccountRequest;
 import com.github.stoynko.easydoc.web.model.ViewFragment;
 
 import java.util.Map;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import static com.github.stoynko.easydoc.web.model.ViewFragment.DELETE_ACCOUNT;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.PERSONAL_INFO;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.PROFESSIONAL_INFO;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.SECURITY;
 import static com.github.stoynko.easydoc.web.model.ViewFragment.SETTINGS_DASHBOARD;
+import static com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper.toProfessionalDetailsFrom;
+import static com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper.toRegisterPractitionerFrom;
+import static com.github.stoynko.easydoc.user.web.mapper.UserMapper.toPersonalDetailsFrom;
+import static com.github.stoynko.easydoc.user.web.mapper.UserMapper.toContactDetailsFrom;
+import static com.github.stoynko.easydoc.user.web.mapper.UserMapper.toEmailAddressFrom;
 
 @Component
 @RequiredArgsConstructor
@@ -39,17 +42,17 @@ public class DtoAggregator {
             case PERSONAL_INFO -> {
                 model.put(MODEL_ELEMENT_FRAGMENT, PERSONAL_INFO.getFragmentPath());
                 model.putIfAbsent("changeAvatarRequest", new UpdateProfilePhotoRequest());
-                model.putIfAbsent("changePersonalDetailsRequest", DtoMapper.toPersonalDetailsFrom(userService.getUserById(resourceId)));
-                model.putIfAbsent("changeContactDetailsRequest", DtoMapper.toContactDetailsFrom(userService.getUserById(resourceId)));
+                model.putIfAbsent("changePersonalDetailsRequest", toPersonalDetailsFrom(userService.getUserById(resourceId)));
+                model.putIfAbsent("changeContactDetailsRequest", toContactDetailsFrom(userService.getUserById(resourceId)));
             }
             case PROFESSIONAL_INFO -> {
                 model.put(MODEL_ELEMENT_FRAGMENT, PROFESSIONAL_INFO.getFragmentPath());
-                model.putIfAbsent("changeProfessionalDetailsRequest", DtoMapper.toProfessionalDetailsFrom(doctorService.getDoctorDetailsByUserId(resourceId)));
+                model.putIfAbsent("changeProfessionalDetailsRequest", toProfessionalDetailsFrom(doctorService.getDoctorDetailsByUserId(resourceId)));
             }
 
             case SECURITY -> {
                 model.put(MODEL_ELEMENT_FRAGMENT, SECURITY.getFragmentPath());
-                model.putIfAbsent("changeEmailAddressRequest", DtoMapper.toEmailAddressFrom(userService.getUserById(resourceId)));
+                model.putIfAbsent("changeEmailAddressRequest", toEmailAddressFrom(userService.getUserById(resourceId)));
                 model.putIfAbsent("changePasswordRequest", new UpdatePasswordRequest());
             }
 
@@ -61,8 +64,8 @@ public class DtoAggregator {
             }
 
             case DOCTOR_ONBOARDING -> {
-            model.putIfAbsent("registerPractitionerRequest", DtoMapper.toRegisterPractitionerFrom(userService.getUserById(resourceId)));
-            model.put("processState", "formEntry");
+                model.putIfAbsent("registerPractitionerRequest", toRegisterPractitionerFrom(userService.getUserById(resourceId)));
+                model.put("processState", "formEntry");
             }
         }
         return model;

@@ -1,8 +1,8 @@
 package com.github.stoynko.easydoc.security;
 
-import com.github.stoynko.easydoc.models.enums.AccountAuthority;
-import com.github.stoynko.easydoc.models.enums.AccountRole;
-import com.github.stoynko.easydoc.models.enums.AccountStatus;
+import com.github.stoynko.easydoc.user.model.AccountAuthority;
+import com.github.stoynko.easydoc.user.model.AccountRole;
+import com.github.stoynko.easydoc.user.model.AccountStatus;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-import static com.github.stoynko.easydoc.models.enums.AccountStatus.ACTIVE;
-import static com.github.stoynko.easydoc.models.enums.AccountStatus.EMAIL_UNVERIFIED;
-import static com.github.stoynko.easydoc.models.enums.AccountStatus.INCOMPLETE;
-import static com.github.stoynko.easydoc.models.enums.AccountStatus.SUSPENDED;
+import static com.github.stoynko.easydoc.user.model.AccountStatus.ACTIVE;
+import static com.github.stoynko.easydoc.user.model.AccountStatus.EMAIL_UNVERIFIED;
+import static com.github.stoynko.easydoc.user.model.AccountStatus.INCOMPLETE;
+import static com.github.stoynko.easydoc.user.model.AccountStatus.SUSPENDED;
 
 @Setter
 @Getter

@@ -7,16 +7,15 @@
             <img th:if="${!#strings.isEmpty(userSummary.profilePhotoUrl)}"
                  th:src="${userSummary.profilePhotoUrl}" alt="Profile Photo"/>
 
-            <!-- fallback icon if no photo -->
             <i th:if="${#strings.isEmpty(userSummary.profilePhotoUrl)}"
                class="fas fa-user"></i>
         </div>
 
-        <div th:if="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR}"
+        <div th:if="${role == T(com.github.stoynko.easydoc.user.model.AccountRole).DOCTOR}"
              th:text="${'Dr. ' + userSummary.firstName + ' ' + userSummary.lastName}"
              class="user-name">
         </div>
-        <div th:unless="${role == T(com.github.stoynko.easydoc.models.enums.AccountRole).DOCTOR}"
+        <div th:unless="${role == T(com.github.stoynko.easydoc.user.model.AccountRole).DOCTOR}"
              th:text="${userSummary.firstName + ' ' + userSummary.lastName}"
              class="user-name">
         </div>

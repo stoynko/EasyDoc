@@ -1,13 +1,12 @@
 package com.github.stoynko.easydoc.web.handler;
 
-import com.github.stoynko.easydoc.models.User;
+import com.github.stoynko.easydoc.user.model.User;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
-import com.github.stoynko.easydoc.services.UserService;
+import com.github.stoynko.easydoc.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.Instant;
 
-import static com.github.stoynko.easydoc.models.enums.AccountStatus.INCOMPLETE;
+import static com.github.stoynko.easydoc.user.model.AccountStatus.INCOMPLETE;
 
 @Slf4j
 @Component

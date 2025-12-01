@@ -1,0 +1,20 @@
+package com.github.stoynko.easydoc.practitioner.validation.annotation;
+
+import com.github.stoynko.easydoc.practitioner.validation.validator.FileSizeValidator;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = FileSizeValidator.class)
+public @interface MaxFileSize {
+
+    String message() default "File is too large";
+    long value();
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
+}

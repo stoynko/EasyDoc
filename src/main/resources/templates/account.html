@@ -7,7 +7,7 @@
       )}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
-    <title data-fragment="title">My Account · EasyDoc</title>
+    <title data-fragment="title">Account</title>
     <th:block data-fragment="head">
         <link rel="stylesheet" th:href="@{/css/account.css}">
     </th:block>
@@ -38,7 +38,7 @@
                             <div class="top-header" th:text="${doctorSummary.firstName + ' ' + doctorSummary.lastName}">Placeholder Name</div>
                         </div>
 
-                        <div class="account-hero-right">
+                        <div class="account-hero-right">x
                             <div class="expertise-tags">
                                 <span th:text="${doctorSummary.expertise.getDisplayValue()}">Placeholder expertise</span>
                                 <span th:text="${doctorSummary.yearsExperience + ' years of experience'}"

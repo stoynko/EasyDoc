@@ -47,7 +47,7 @@
 
                 <div class="dashboard-card" id="schedule-appointment-form">
 
-                    <form th:object="${appointmentRequest}" th:action="@{/appointments/doctor/{doctorId}(doctorId=${doctorSummary.id})}" th:method="POST" class="entity-form">
+                    <form th:object="${appointmentRequest}" th:action="@{/appointments/doctors/{doctorId}(doctorId=${doctorSummary.id})}" th:method="POST" class="entity-form">
 
                         <!-- DOCTOR INFORMATION DISPLAY -->
                         <div class="doctor-info-section">
@@ -74,7 +74,7 @@
                                                id="date"
                                                name="date"
                                                th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')},
-                                               hx-get=@{/appointments/doctor/{doctorId}/available-times(doctorId=${doctorSummary.id})}"
+                                               hx-get=@{/appointments/doctors/{doctorId}/available-times(doctorId=${doctorSummary.id})}"
                                                hx-target="#time-slots-container"
                                                hx-trigger="load, change"
                                                hx-params="date">
@@ -103,7 +103,7 @@
 
                                         <select th:field="*{appointmentReason}" id="appointmentType" name="appointmentType">
                                             <option value="">Select the reason for your appointment</option>
-                                            <option th:each="reason : ${T(com.github.stoynko.easydoc.models.enums.AppointmentReason).values()}"
+                                            <option th:each="reason : ${T(com.github.stoynko.easydoc.shared.enums.AppointmentReason).values()}"
                                                     th:value="${reason}" th:text="${reason.getDisplayValue()}">Placeholder</option>
                                         </select>
                                         <p th:if="${#fields.hasErrors('appointmentReason')}" th:errors="*{appointmentReason}" class="form-error">Placeholder Error</p>

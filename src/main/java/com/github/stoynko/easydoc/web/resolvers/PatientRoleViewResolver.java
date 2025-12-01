@@ -1,20 +1,20 @@
 package com.github.stoynko.easydoc.web.resolvers;
 
-import com.github.stoynko.easydoc.models.Doctor;
-import com.github.stoynko.easydoc.models.User;
-import com.github.stoynko.easydoc.models.enums.AccountRole;
-import com.github.stoynko.easydoc.services.AppointmentService;
-import com.github.stoynko.easydoc.services.DoctorService;
-import com.github.stoynko.easydoc.services.PractitionerApplicationService;
-import com.github.stoynko.easydoc.services.UserService;
+import com.github.stoynko.easydoc.appointment.web.mapper.AppointmentMapper;
+import com.github.stoynko.easydoc.practitioner.model.Doctor;
+import com.github.stoynko.easydoc.user.model.User;
+import com.github.stoynko.easydoc.user.model.AccountRole;
+import com.github.stoynko.easydoc.appointment.service.AppointmentService;
+import com.github.stoynko.easydoc.practitioner.service.DoctorService;
+import com.github.stoynko.easydoc.practitioner.service.PractitionerApplicationService;
+import com.github.stoynko.easydoc.user.service.UserService;
 import com.github.stoynko.easydoc.web.dto.DtoAggregator;
 import com.github.stoynko.easydoc.web.dto.DtoContext;
-import com.github.stoynko.easydoc.web.dto.request.AppointmentRequest;
-import com.github.stoynko.easydoc.web.dto.request.LoginRequest;
-import com.github.stoynko.easydoc.web.dto.request.RegisterRequest;
-import com.github.stoynko.easydoc.web.dto.request.SubmitAccountDetailsRequest;
-import com.github.stoynko.easydoc.web.mappers.DtoMapper;
-import com.github.stoynko.easydoc.web.model.*;
+import com.github.stoynko.easydoc.appointment.web.dto.request.AppointmentRequest;
+import com.github.stoynko.easydoc.user.web.dto.request.LoginRequest;
+import com.github.stoynko.easydoc.user.web.dto.request.RegisterRequest;
+import com.github.stoynko.easydoc.user.web.dto.request.SubmitAccountDetailsRequest;
+import com.github.stoynko.easydoc.web.model.ViewFragment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.github.stoynko.easydoc.models.enums.AccountRole.PATIENT;
+import static com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper.toDoctorBriefInfoFrom;
+import static com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper.toDoctorDetailedInfoFrom;
+import static com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper.toRegisterPractitionerFrom;
+import static com.github.stoynko.easydoc.user.model.AccountRole.PATIENT;
+import static com.github.stoynko.easydoc.user.web.mapper.UserMapper.toUserSummary;
 
 @Component
 @RequiredArgsConstructor
@@ -67,18 +71,18 @@ public class PatientRoleViewResolver implements RoleViewResolver {
 
             case APPOINTMENTS_TABLE -> {
                 model.put("upcomingAppointments", appointmentService.getPatientUpcomingAppointments(dtoContext.principal().getId())
-                        .stream().map(DtoMapper::toPatientAppointmentDetailsFrom)
+                        .stream().map(AppointmentMapper::toPatientAppointmentDetailsFrom)
                         .collect(Collectors.toList()));
 
                 model.put("pastAppointments", appointmentService.getPatientPastAppointments(dtoContext.principal().getId())
-                        .stream().map(DtoMapper::toPatientAppointmentDetailsFrom)
+                        .stream().map(AppointmentMapper::toPatientAppointmentDetailsFrom)
                         .collect(Collectors.toList()));
             }
 
             case APPOINTMENT_CREATION -> {
                 model.put("processState", "formEntry");
                 Doctor doctor = doctorService.getDoctorByDoctorId(dtoContext.resourceId());
-                model.putIfAbsent("doctorSummary", DtoMapper.toDoctorBriefInfoFrom(doctor));
+                model.putIfAbsent("doctorSummary", toDoctorBriefInfoFrom(doctor));
 
                 AppointmentRequest appointmentRequest = new AppointmentRequest();
                 appointmentRequest.setDate(LocalDate.now());
@@ -88,13 +92,13 @@ public class PatientRoleViewResolver implements RoleViewResolver {
 
             case ACCOUNT -> {
                 Doctor doctor = doctorService.getDoctorByDoctorId(dtoContext.resourceId());
-                model.put("doctorSummary", DtoMapper.toDoctorDetailedInfoFrom(doctor));
+                model.put("doctorSummary", toDoctorDetailedInfoFrom(doctor));
             }
 
             case DOCTOR_ONBOARDING -> {
                 User user = userService.getUserById(dtoContext.principal().getId());
                 model.put("processState", "formEntry");
-                model.putIfAbsent("registerPractitionerRequest", DtoMapper.toRegisterPractitionerFrom(user));
+                model.putIfAbsent("registerPractitionerRequest", toRegisterPractitionerFrom(user));
             }
 
             case SETTINGS -> {
@@ -107,7 +111,7 @@ public class PatientRoleViewResolver implements RoleViewResolver {
         }
 
         if (dtoContext.principal() != null) {
-            model.put("userSummary", DtoMapper.toUserSummary(userService.getUserById(dtoContext.principal().getId())));
+            model.put("userSummary", toUserSummary(userService.getUserById(dtoContext.principal().getId())));
             model.put("hasSubmittedApplication", practitionerApplicationService.hasPendingApplication(dtoContext.principal().getId()));
         }
 

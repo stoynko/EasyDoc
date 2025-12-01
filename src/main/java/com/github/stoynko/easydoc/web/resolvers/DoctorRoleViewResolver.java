@@ -1,15 +1,14 @@
 package com.github.stoynko.easydoc.web.resolvers;
 
-import com.github.stoynko.easydoc.models.Appointment;
-import com.github.stoynko.easydoc.models.Doctor;
-import com.github.stoynko.easydoc.models.enums.AccountRole;
-import com.github.stoynko.easydoc.models.enums.DocumentStatus;
-import com.github.stoynko.easydoc.services.AppointmentService;
-import com.github.stoynko.easydoc.services.DoctorService;
+import com.github.stoynko.easydoc.appointment.model.Appointment;
+import com.github.stoynko.easydoc.appointment.web.mapper.AppointmentMapper;
+import com.github.stoynko.easydoc.practitioner.model.Doctor;
+import com.github.stoynko.easydoc.user.model.AccountRole;
+import com.github.stoynko.easydoc.appointment.service.AppointmentService;
+import com.github.stoynko.easydoc.practitioner.service.DoctorService;
 import com.github.stoynko.easydoc.web.dto.DtoAggregator;
 import com.github.stoynko.easydoc.web.dto.DtoContext;
-import com.github.stoynko.easydoc.web.dto.request.MedicalReportRequest;
-import com.github.stoynko.easydoc.web.mappers.DtoMapper;
+import com.github.stoynko.easydoc.report.web.dto.request.MedicalReportRequest;
 import com.github.stoynko.easydoc.web.model.ViewFragment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,8 +17,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.github.stoynko.easydoc.models.enums.AccountRole.DOCTOR;
-import static com.github.stoynko.easydoc.models.enums.DocumentStatus.DRAFT;
+import static com.github.stoynko.easydoc.appointment.web.mapper.AppointmentMapper.toDoctorAppointmentSummaryResponse;
+import static com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper.toDoctorDetailedInfoFrom;
+import static com.github.stoynko.easydoc.report.web.mapper.ReportMapper.toMedicalReportResponseFrom;
+import static com.github.stoynko.easydoc.user.model.AccountRole.DOCTOR;
+import static com.github.stoynko.easydoc.shared.enums.DocumentStatus.DRAFT;
 import static com.github.stoynko.easydoc.web.model.ViewAction.READ;
 import static com.github.stoynko.easydoc.web.model.ViewAction.WRITE;
 
@@ -50,11 +52,11 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
 
             case APPOINTMENTS_TABLE -> {
                 model.put("upcomingAppointments", appointmentService.getDoctorUpcomingAppointments(dtoContext.principal().getId())
-                        .stream().map(DtoMapper::toDoctorAppointmentDetailsFrom)
+                        .stream().map(AppointmentMapper::toDoctorAppointmentDetailsFrom)
                         .collect(Collectors.toList()));
 
                 model.put("pastAppointments", appointmentService.getDoctorPastAppointments(dtoContext.principal().getId())
-                        .stream().map(DtoMapper::toDoctorAppointmentDetailsFrom)
+                        .stream().map(AppointmentMapper::toDoctorAppointmentDetailsFrom)
                         .collect(Collectors.toList()));
             }
 
@@ -64,12 +66,12 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
                 model.put("reportExists", appointment.hasReport());
                 model.put("action", (appointment.hasReport() && dtoContext.action() == READ) ? READ : WRITE);
 
-                model.put("appointmentDetails", DtoMapper.toDoctorAppointmentSummaryResponse(appointment));
+                model.put("appointmentDetails", toDoctorAppointmentSummaryResponse(appointment));
                 if (!appointment.hasReport()) {
                     model.put("medicalReport", new MedicalReportRequest());
                     model.put("documentStatus", DRAFT);
                 } else {
-                    model.put("medicalReport", DtoMapper.toMedicalReportResponseFrom(appointment.getReport()));
+                    model.put("medicalReport", toMedicalReportResponseFrom(appointment.getReport()));
                     model.put("documentStatus", appointment.getReport().getDocumentStatus());
                 }
 
@@ -82,7 +84,7 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
 
             case PRESCRIPTION_VIEW -> {
                 Appointment appointment = appointmentService.getAppointmentById(dtoContext.resourceId());
-                model.put("appointmentDetails", DtoMapper.toDoctorAppointmentSummaryResponse(appointment));
+                model.put("appointmentDetails", toDoctorAppointmentSummaryResponse(appointment));
 
                 boolean prescriptionExists = false;
 
@@ -110,8 +112,8 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
 
         if (dtoContext.principal() != null) {
             Doctor doctor = doctorService.getDoctorDetailsByUserId(dtoContext.principal().getId());
-            model.put("doctorSummary", DtoMapper.toDoctorDetailedInfoFrom(doctor));
-            model.put("userSummary", DtoMapper.toDoctorDetailedInfoFrom(doctor));
+            model.put("doctorSummary", toDoctorDetailedInfoFrom(doctor));
+            model.put("userSummary", toDoctorDetailedInfoFrom(doctor));
         }
 
         return model;

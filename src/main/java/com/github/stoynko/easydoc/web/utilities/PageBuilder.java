@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Map;
 
-import static com.github.stoynko.easydoc.models.enums.AccountRole.PATIENT;
+import static com.github.stoynko.easydoc.user.model.AccountRole.PATIENT;
 
 @Component
 @RequiredArgsConstructor

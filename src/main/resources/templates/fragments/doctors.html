@@ -1,6 +1,7 @@
 <th:block th:fragment="doctors_fragment">
 
     <div class="dashboard-card">
+
         <div th:insert="~{fragments/categories_filter :: specializations}" id="category-filter-container" class="category-filter-container"> </div>
 
                 <div id="doctors-grid-container" class="doctors-grid-container">
@@ -15,11 +16,11 @@
                             <p th:text="${doctor.practiceLocation}" class="doctor-address">Placeholder Location</p>
 
                             <div class="doctor-actions">
-                                <a th:href="@{/doctor/{doctorId}(doctorId=${doctor.id})}" class="action-button">
+                                <a th:href="@{/doctors/{doctorId}(doctorId=${doctor.id})}" class="action-button">
                                     <i class="fas fa-user-md"></i>
                                     <span>View Details</span>
                                 </a>
-                                <a th:href="@{/appointments/doctor/{doctorId}(doctorId=${doctor.id})}" class="action-button">
+                                <a th:href="@{/appointments/doctors/{doctorId}(doctorId=${doctor.id})}" class="action-button">
                                     <i class="fas fa-calendar"></i>
                                     <span>Book Appointment</span>
                                 </a>
