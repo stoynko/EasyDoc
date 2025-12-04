@@ -162,6 +162,7 @@ public class AppointmentsController {
     @GetMapping("/appointments/{appointmentId}/report/edit")
     public ModelAndView editReportPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                        @PathVariable UUID appointmentId) {
+
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         if (appointment.getReport() != null && appointment.getReport().getReportStatus() != DRAFT) {
             return new ModelAndView("redirect:/appointments/" + appointmentId + "/report");

@@ -75,6 +75,9 @@ public class Report {
     @Column(name = "issued_at")
     private LocalDateTime issuedAt;
 
+    @Column(name = "draft_reminder_sent_at")
+    private LocalDateTime draftReminderSentAt;
+
     @Embedded
     @Builder.Default
     private CreatedModifiedBy createdModifiedBy = new CreatedModifiedBy();

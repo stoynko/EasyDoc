@@ -38,6 +38,8 @@ public class DoctorAppointmentResponse {
 
     private boolean hasReport;
 
+    private boolean hasIssuedReport;
+
     private boolean hasPrescription;
 
 }

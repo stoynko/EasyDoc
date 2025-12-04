@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.CANCELLED;
 import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.COMPLETED;
@@ -95,10 +96,12 @@ public class AppointmentService {
         }
     }
 
+    @Transactional
     public void concludeAppointment(UUID appointmentId) {
         Appointment appointment = getAppointmentById(appointmentId);
         appointment.setStatus(COMPLETED);
         saveAppointment(appointment);
+
         log.info("[appointment-completed] | appointment: %s timestamp: %s", appointment.getId(),  LocalDateTime.now());
         eventPublisher.publishEvent(new AppointmentCompletedEvent(appointment.getPatient().getEmailAddress(), appointmentId));
     }

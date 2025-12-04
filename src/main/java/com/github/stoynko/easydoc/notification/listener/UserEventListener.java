@@ -1,6 +1,5 @@
 package com.github.stoynko.easydoc.notification.listener;
 
-import com.github.stoynko.easydoc.appointment.event.AppointmentCompletedEvent;
 import com.github.stoynko.easydoc.user.event.RegistrationCompletedEvent;
 import com.github.stoynko.easydoc.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +23,4 @@ public class UserEventListener {
         notificationService.sendVerificationEmail(event.emailAddress(), verificationLink);
     }
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleApplicationCompleted(AppointmentCompletedEvent event) {
-        String reportLink = baseUrl + "/appointments/" + event.appointmentId() + "/report";
-        notificationService.sendAppointmentCompletedEmail(event.emailAddress(), reportLink);
-    }
 }

@@ -129,7 +129,6 @@ public class PatientRoleViewResolver implements RoleViewResolver {
 
         if (dtoContext.principal() != null) {
             User user = userService.getUserById(dtoContext.principal().getId());
-
             model.put("userSummary", toUserSummary(user));
             model.put("isProfileCompleted", user.isProfileCompleted());
             model.put("hasSubmittedApplication", practitionerApplicationService.hasPendingApplication(user.getId()));

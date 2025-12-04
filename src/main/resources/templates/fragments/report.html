@@ -361,7 +361,6 @@
 
                         <!-- DIAGNOSIS SEARCH -->
                         <div th:if="${action == T(com.github.stoynko.easydoc.web.model.ViewAction).WRITE}"
-                             sec:authorize="hasRole('DOCTOR')"
                              class="entity-field field-inline">
                             <div class="form-group search-input-group">
                                 <input type="text"

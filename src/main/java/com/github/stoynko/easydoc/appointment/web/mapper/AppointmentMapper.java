@@ -63,6 +63,7 @@ public class AppointmentMapper {
                 .appointmentStatus(appointment.getStatus())
                 .appointmentAdditionalNotes(appointment.getAdditionalNotes())
                 .hasReport(appointment.hasReport())
+                .hasIssuedReport(appointment.getReport().getReportStatus() == ISSUED)
                 .hasPrescription(appointment.hasPrescription())
                 .startsAt(appointment.getStartsAt())
                 .build();

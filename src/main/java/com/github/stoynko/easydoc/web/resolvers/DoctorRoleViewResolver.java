@@ -1,19 +1,19 @@
 package com.github.stoynko.easydoc.web.resolvers;
 
 import com.github.stoynko.easydoc.appointment.model.Appointment;
+import com.github.stoynko.easydoc.appointment.service.AppointmentService;
 import com.github.stoynko.easydoc.appointment.web.mapper.AppointmentMapper;
 import com.github.stoynko.easydoc.practitioner.model.Doctor;
+import com.github.stoynko.easydoc.practitioner.service.DoctorService;
 import com.github.stoynko.easydoc.prescription.web.dto.request.AddMedicamentRequest;
 import com.github.stoynko.easydoc.prescription.web.dto.request.RemoveMedicamentRequest;
 import com.github.stoynko.easydoc.report.service.ReportService;
+import com.github.stoynko.easydoc.report.web.dto.request.MedicalReportRequest;
 import com.github.stoynko.easydoc.user.model.AccountRole;
-import com.github.stoynko.easydoc.appointment.service.AppointmentService;
-import com.github.stoynko.easydoc.practitioner.service.DoctorService;
 import com.github.stoynko.easydoc.user.model.User;
 import com.github.stoynko.easydoc.user.service.UserService;
 import com.github.stoynko.easydoc.web.dto.DtoAggregator;
 import com.github.stoynko.easydoc.web.dto.DtoContext;
-import com.github.stoynko.easydoc.report.web.dto.request.MedicalReportRequest;
 import com.github.stoynko.easydoc.web.model.ViewFragment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,11 +24,10 @@ import java.util.stream.Collectors;
 
 import static com.github.stoynko.easydoc.appointment.web.mapper.AppointmentMapper.toDoctorAppointmentSummaryResponse;
 import static com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper.toDoctorDetailedInfoFrom;
+import static com.github.stoynko.easydoc.report.model.ReportStatus.DRAFT;
+import static com.github.stoynko.easydoc.report.model.ReportStatus.ISSUED;
 import static com.github.stoynko.easydoc.report.web.mapper.ReportMapper.toMedicalReportResponseFrom;
 import static com.github.stoynko.easydoc.user.model.AccountRole.DOCTOR;
-import static com.github.stoynko.easydoc.report.model.ReportStatus.DRAFT;
-import static com.github.stoynko.easydoc.web.model.ViewAction.READ;
-import static com.github.stoynko.easydoc.web.model.ViewAction.WRITE;
 import static com.github.stoynko.easydoc.web.utilities.ValidationUtilities.getReportActionFor;
 
 @Component

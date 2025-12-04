@@ -243,4 +243,12 @@
         </article>
     </div>
 
+    <div id="medicament-modal" class="modal-overlay"
+         th:classappend="${#vars['org.springframework.validation.BindingResult.addMedicamentRequest']?.hasErrors()} ? ' is-open' : ''">
+        <div class="modal-content">
+
+            <div th:replace="~{fragments/medicament_creation :: medicament_creation}"></div>
+        </div>
+    </div>
+
 </th:block>

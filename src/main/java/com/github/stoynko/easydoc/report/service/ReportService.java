@@ -6,6 +6,7 @@ import com.github.stoynko.easydoc.report.exception.ReportAlreadyExistsException;
 import com.github.stoynko.easydoc.report.exception.ReportDoesNotExistException;
 import com.github.stoynko.easydoc.appointment.model.Appointment;
 import com.github.stoynko.easydoc.report.model.Report;
+import com.github.stoynko.easydoc.report.model.ReportStatus;
 import com.github.stoynko.easydoc.report.repository.ReportRepository;
 import com.github.stoynko.easydoc.report.web.dto.request.MedicalReportRequest;
 
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.github.stoynko.easydoc.report.model.ReportStatus.DRAFT;
 import static com.github.stoynko.easydoc.report.web.mapper.ReportMapper.toReportEntity;
 import static com.github.stoynko.easydoc.report.model.ReportStatus.ISSUED;
 
@@ -93,5 +95,14 @@ public class ReportService {
 
     public Report getById(UUID reportId) {
         return repository.findById(reportId).orElseThrow(() -> new ReportDoesNotExistException());
+    }
+
+    public List<Report> getDraftReportsForReminder(ReportStatus status, LocalDateTime remindAfter) {
+        return repository.findAllByReportStatusAndCreatedModifiedAt_UpdatedAtBeforeAndDraftReminderSentAtIsNull(status, remindAfter);
+    }
+
+    public void saveReport(Report report) {
+        repository.save(report);
+        log.warn("[report-update] Report with id %s was updated successfully".formatted(report.getId()));
     }
 }

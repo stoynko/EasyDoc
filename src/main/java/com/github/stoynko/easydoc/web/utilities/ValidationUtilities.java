@@ -14,10 +14,6 @@ public class ValidationUtilities {
 
     public static ViewAction getReportActionFor(Appointment appointment, DtoContext context) {
 
-        if (context.action() != WRITE) {
-            return READ;
-        }
-
         if (!appointment.hasReport() || appointment.getReport() == null) {
             return WRITE;
         }

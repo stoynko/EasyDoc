@@ -378,7 +378,7 @@
 
                                 <!-- FINALIZE REPORT BUTTON -->
                                 <form th:if="${appointment.appointmentStatus == T(com.github.stoynko.easydoc.appointment.model.AppointmentStatus).PROCESSING and
-                                               appointment.hasReport}"
+                                               appointment.hasReport and appointment.hasIssuedReport}"
                                       th:action="@{/appointments/{appointmentId}/conclude(appointmentId=${appointment.appointmentId})}"
                                       th:method="POST" style="flex: 1; width: 100%;">
                                     <button type="submit" class="btn-primary"
