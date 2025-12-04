@@ -3,11 +3,12 @@ package com.github.stoynko.easydoc.report.model;
 import com.github.stoynko.easydoc.appointment.model.Appointment;
 import com.github.stoynko.easydoc.shared.embedded.CreatedModifiedAt;
 import com.github.stoynko.easydoc.shared.embedded.CreatedModifiedBy;
-import com.github.stoynko.easydoc.shared.enums.DocumentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Setter
@@ -45,8 +47,9 @@ public class Report {
     @JoinColumn(name = "appointment_id", nullable = false)
     private Appointment appointment;
 
-    @Column(name = "document_status", nullable = false)
-    private DocumentStatus documentStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "report_status")
+    private ReportStatus reportStatus;
 
     @Column(name = "accompanying_illnesses", columnDefinition = "TEXT", length = 200)
     private String accompanyingIllnesses;
@@ -68,6 +71,9 @@ public class Report {
 
     @Column(name = "diagnosis", nullable = false, length = 100)
     private String diagnosis;
+
+    @Column(name = "issued_at")
+    private LocalDateTime issuedAt;
 
     @Embedded
     @Builder.Default

@@ -103,7 +103,7 @@
 
                                         <select th:field="*{appointmentReason}" id="appointmentType" name="appointmentType">
                                             <option value="">Select the reason for your appointment</option>
-                                            <option th:each="reason : ${T(com.github.stoynko.easydoc.shared.enums.AppointmentReason).values()}"
+                                            <option th:each="reason : ${T(com.github.stoynko.easydoc.appointment.model.AppointmentReason).values()}"
                                                     th:value="${reason}" th:text="${reason.getDisplayValue()}">Placeholder</option>
                                         </select>
                                         <p th:if="${#fields.hasErrors('appointmentReason')}" th:errors="*{appointmentReason}" class="form-error">Placeholder Error</p>

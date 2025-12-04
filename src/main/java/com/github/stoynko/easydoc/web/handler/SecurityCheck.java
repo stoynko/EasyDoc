@@ -1,14 +1,17 @@
 package com.github.stoynko.easydoc.web.handler;
 
+import com.github.stoynko.easydoc.appointment.service.AppointmentService;
+import com.github.stoynko.easydoc.report.service.ReportService;
 import com.github.stoynko.easydoc.user.exception.AccountIncompleteException;
 import com.github.stoynko.easydoc.user.exception.AccountSuspendedException;
-import com.github.stoynko.easydoc.practitioner.exception.ApplicationAlreadyExistsException;
+import com.github.stoynko.easydoc.practitioner.exception.PractitionerApplicationAlreadyExistsException;
 import com.github.stoynko.easydoc.appointment.exception.BookingSuspendedException;
 import com.github.stoynko.easydoc.user.exception.EmailNotVerifiedException;
 import com.github.stoynko.easydoc.shared.exception.MissingAuthorityException;
 import com.github.stoynko.easydoc.user.model.AccountAuthority;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.practitioner.service.PractitionerApplicationService;
+import com.github.stoynko.easydoc.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Component;
@@ -53,7 +56,7 @@ public class SecurityCheck {
         try {
             hasAuthority = hasAuthority(principal, CAN_BOOK_APPOINTMENT);
         } catch (MissingAuthorityException exception) {
-             throw new BookingSuspendedException();
+            throw new BookingSuspendedException();
         }
         return isAccountActive && hasAuthority;
     }
@@ -64,9 +67,10 @@ public class SecurityCheck {
         boolean hasApprovedApplication = practitionerApplicationService.hasApprovedApplication(principal.getId());
 
         if (hasPendingApplication || hasApprovedApplication) {
-            throw new ApplicationAlreadyExistsException();
+            throw new PractitionerApplicationAlreadyExistsException();
         }
 
         return isAccountActive(principal) && hasAuthority(principal, CAN_SUBMIT_PRACTITIONER_APPLICATION);
     }
+
 }

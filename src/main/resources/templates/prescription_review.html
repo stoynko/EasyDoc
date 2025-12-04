@@ -41,118 +41,18 @@
                    <span th:text="${' ' + appointmentDetails.appointmentPublicId}">Placeholder Crumb</span>
                </span>
 
-                <!--PATIENT & APPOINTMENT SUMMARY CARD-->
-                <section class="card-summary">
+                <th:block sec:authorize="hasRole('PATIENT')"
+                          th:insert="~{fragments/prescription :: prescription_patient}">
+                </th:block>
 
-                    <div class="card-summary-main">
-                        <div class="card-summary-item">
-                            <span class="card-summary-label">Patient</span>
-                            <span th:text="${appointmentDetails.patientFirstName + ' ' + appointmentDetails.patientLastName}" class="card-summary-value">Placeholder Name</span>
-                            <span class="card-summary-meta"><i class="fas fa-id-card"></i> <span th:text="${appointmentDetails.patientPin}">Placeholder Id</span></span>
-                            <span class="card-summary-meta"><i class="fas fa-envelope"></i> <span th:text="${appointmentDetails.patientEmail}">Placeholder Email</span></span>
-                            <span th:if="${!#strings.isEmpty(appointmentDetails.patientPhoneNumber)}" class="card-summary-meta"><i class="fas fa-phone"></i> <span th:text="${appointmentDetails.patientPhoneNumber}">Placeholder Phone Number</span></span>
-                        </div>
-                        <div class="card-summary-item card-summary-item-meta">
-                            <span class="card-summary-label">Appointment Details</span>
-                            <span th:text="${appointmentDetails.appointmentReason.getDisplayValue()}" class="card-summary-value">Placeholder Reason</span>
-                            <textarea th:text="${appointmentDetails.additionalNotes}" class="card-summary-meta card-summary-meta-textarea" rows="4" readonly>Placeholder Reason</textarea>
-                        </div>
-                    </div>
-
-                    <div class="card-summary-actions">
-                        <!--<form th:action="@{/appointments/{appointmentId}/prescription/create(appointmentId=${appointmentId})}" th:method="POST">
-                            <button type="submit" class="btn-primary">
-                                <i class="fas fa-save"></i>
-                                Create Prescription
-                            </button>
-                        </form>-->
-
-                        <!--<form th:action="@{/appointments/{appointmentId}/prescription/export(appointmentId=${appointmentId})}" th:method="POST">
-                            <button type="submit" class="btn-primary">
-                                <i class="fas fa-file-download"></i>
-                                Download PDF
-                            </button>
-                        </form>-->
-
-                    </div>
-
-                    <div class="card-status-block">
-                        <span class="card-status-label">Status</span>
-                        <span class="card-status-value">DRAFT</span>
-
-                        <form th:action="@{/appointments/{appointmentId}/prescription/create(appointmentId=${appointmentId})}" th:method="POST">
-                            <button type="submit" class="btn-primary btn-minimal">
-                                <i class="fas fa-cloud"></i>Submit
-                            </button>
-                        </form>
-                        <!--<span class="card-status-meta">Issued on <strong>07 Nov 2025</strong></span>
-                        <span class="card-status-meta">Valid until <strong>21 Dec 2025</strong></span>-->
-                    </div>
-
-                </section>
-
-                <!-- PRESCRIPTION -->
-                <div class="view-card">
-                    <div class="view-card-header">
-                        <h3 class="view-card-title">Prescription</h3>
-                        <div class="view-card-actions">
-                            <button type="button" class="btn-primary" onclick="openModal()">
-                                <i class="fas fa-prescription-bottle-alt"></i>Add
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="medicaments-list">
-
-                        <article class="medicament-card">
-                            <div class="medicament-card-header">
-                                <div class="medicament-main">
-                                    <span class="medicament-category">Antibiotic</span>
-                                    <h3 class="medicament-name">Amoxicillin 500mg</h3>
-                                    <p class="medicament-purpose">Primary medication to treat infection.</p>
-                                </div>
-                                <div class="medicament-icon" aria-hidden="true">
-                                    <i class="fas fa-virus-slash"></i>
-                                </div>
-                            </div>
-                            <div class="medicament-details">
-                                <div class="detail-item">
-                                    <span class="detail-label">Dosage</span>
-                                    <span class="detail-value">1 capsule twice daily</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Administration</span>
-                                    <span class="detail-value">Take with water after meals</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Duration</span>
-                                    <span class="detail-value">14 days</span>
-                                </div>
-                            </div>
-                            <div class="medicament-notes">
-                                <span class="detail-label">Additional notes</span>
-                                <p class="detail-value">Monitor for allergic reactions and report immediately.</p>
-                            </div>
-                        </article>
-
-                    </div>
-
-                    <div class="medicament-empty">
-                        <i class="fas fa-prescription-bottle-alt"></i>
-                        <p>No medications have been added for this prescription</p>
-                    </div>
-
-                </div>
+                <th:block sec:authorize="hasRole('DOCTOR')"
+                         th:insert="~{fragments/prescription :: prescription_doctor}">
+                </th:block>
             </div>
         </div>
     </div>
 </div>
 
-<div id="medicament-modal" class="modal-overlay">
-    <div class="modal-content">
 
-        <div th:replace="~{fragments/medicament_creation :: medicament_creation}"></div>
-    </div>
-</div>
 
 </body>

@@ -2,6 +2,7 @@ package com.github.stoynko.easydoc.user.web;
 
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.practitioner.service.DoctorService;
+import com.github.stoynko.easydoc.user.model.User;
 import com.github.stoynko.easydoc.user.service.UserService;
 import com.github.stoynko.easydoc.web.dto.DtoContext;
 import com.github.stoynko.easydoc.user.web.dto.request.DeleteAccountRequest;
@@ -51,6 +52,11 @@ public class AccountController {
 
     @GetMapping("/onboarding/account")
     public ModelAndView getOnboardingAccountPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
+
+        if (userService.getUserById(principal.getId()).isProfileCompleted()) {
+            return new ModelAndView("redirect:/");
+        }
+
         ModelAndView modelAndView = pageBuilder.buildPage(forPage(ACCOUNT_ONBOARDING, principal));
         return modelAndView;
     }
@@ -59,6 +65,10 @@ public class AccountController {
     public ModelAndView submitOnboardingInformation(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                                     @Valid SubmitAccountDetailsRequest request,
                                                     BindingResult bindingResult) {
+
+        if (userService.getUserById(principal.getId()).isProfileCompleted()) {
+            return new ModelAndView("redirect:/");
+        }
 
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = pageBuilder.buildPage(forPage(ACCOUNT_ONBOARDING, principal));
@@ -91,6 +101,7 @@ public class AccountController {
     }
 
     @PostMapping("/settings/personal-info/photo")
+    @PreAuthorize("hasRole('DOCTOR')")
     public ModelAndView changeAvatar(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                      @Valid UpdateProfilePhotoRequest request,
                                      BindingResult bindingResult) throws IOException {
@@ -205,12 +216,6 @@ public class AccountController {
         return pageBuilder.buildPage(forFragment(NOTIFICATIONS, NONE, principal));
     }
 
-    @GetMapping("/settings/membership")
-    @PreAuthorize(value = "hasRole('DOCTOR')")
-    public ModelAndView getMembershipPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
-        return pageBuilder.buildPage(forFragment(SETTINGS, MEMBERSHIP, principal));
-    }
-
     @GetMapping("/settings/delete")
     @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR')")
     public ModelAndView getDeleteAccountPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
@@ -218,7 +223,7 @@ public class AccountController {
     }
 
     @PostMapping("/settings/delete")
-    @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR'," + "@securityCheck.isAccountActive())")
+    @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR'," + "@securityCheck.isAccountActive(#principal))")
     public ModelAndView deleteAccount(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                       @Valid DeleteAccountRequest request,
                                       BindingResult bindingResult) {

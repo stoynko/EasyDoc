@@ -5,6 +5,7 @@ import com.github.stoynko.easydoc.user.event.RegistrationCompletedEvent;
 import com.github.stoynko.easydoc.shared.event.UserContextRefreshEvent;
 import com.github.stoynko.easydoc.shared.exception.CredentialsException;
 import com.github.stoynko.easydoc.shared.exception.InvalidInputException;
+import com.github.stoynko.easydoc.user.exception.AccountSuspendedException;
 import com.github.stoynko.easydoc.user.exception.UserDoesNotExistException;
 import com.github.stoynko.easydoc.user.exception.UserExistsWithEmailException;
 import com.github.stoynko.easydoc.user.exception.UserExistsWithPinException;
@@ -50,7 +51,7 @@ import static com.github.stoynko.easydoc.user.model.AccountStatus.DELETED;
 import static com.github.stoynko.easydoc.user.model.AccountStatus.EMAIL_UNVERIFIED;
 import static com.github.stoynko.easydoc.user.model.AccountStatus.INCOMPLETE;
 import static com.github.stoynko.easydoc.user.model.AccountStatus.SUSPENDED;
-import static com.github.stoynko.easydoc.utilities.ValidationUtilities.normalizeEmailAddress;
+import static com.github.stoynko.easydoc.utilities.GenerationalUtilities.normalizeEmailAddress;
 
 @Slf4j
 @Service
@@ -87,6 +88,10 @@ public class UserService implements UserDetailsService {
 
         EmailVerificationToken token = emailVerificationService.getValidToken(tokenId);
         User user = token.getUser();
+
+        if (user.getAccountStatus() == SUSPENDED || user.getAccountStatus() == DELETED) {
+            throw new AccountSuspendedException();
+        }
 
         user.setEmailVerified(true);
         user.getAuthority().add(CAN_BOOK_APPOINTMENT);
@@ -223,10 +228,6 @@ public class UserService implements UserDetailsService {
         log.info("-updatePersonalInfo | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
-    public User getUserById(UUID uuid) {
-        return repository.findById(uuid).orElseThrow(() -> new UserDoesNotExistException());
-    }
-
     public void updateContactDetails(UUID uuid, UpdateContactDetailsRequest request) {
         User user = getUserById(uuid);
         user.setPhoneNumber(request.getPhoneNumber());
@@ -250,10 +251,6 @@ public class UserService implements UserDetailsService {
         log.info("-accountDeleted | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
-    public List<User> getUsersByRole(AccountRole role) {
-        return repository.findAllByRole(role);
-    }
-
     public void revokeAuthority(UUID uuid, AccountAuthority authority) {
         User user = getUserById(uuid);
         user.getAuthority().remove(authority);
@@ -270,6 +267,10 @@ public class UserService implements UserDetailsService {
                 user.getId(), authority.name(), LocalDateTime.now());
     }
 
+    public User getUserById(UUID uuid) {
+        return repository.findById(uuid).orElseThrow(() -> new UserDoesNotExistException());
+    }
+
     public List<User> getAllUsersExceptAdmins() {
         return repository.findAllByRoleNot(ADMIN);
     }
@@ -280,9 +281,5 @@ public class UserService implements UserDetailsService {
 
     public int getDoctorsCount() {
         return repository.countByRole(DOCTOR);
-    }
-
-    public List<User> getAllUsersByRole(AccountRole role) {
-       return (role == null) ? getAllUsersExceptAdmins() : getUsersByRole(role);
     }
 }

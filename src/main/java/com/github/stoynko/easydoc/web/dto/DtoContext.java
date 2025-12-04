@@ -12,11 +12,12 @@ public record DtoContext(
         ViewFragment viewFragment,
         UserAuthenticationDetails principal,
         UUID resourceId,
-        ViewAction action
+        ViewAction action,
+        Object content
 ) {
     public static DtoContext forPage(ViewPage page, UserAuthenticationDetails principal) {
 
-        return new DtoContext(page, null, principal, null, null);
+        return new DtoContext(page, null, principal, null, null, null);
     }
 
     public static DtoContext forFragment(ViewPage page,
@@ -24,14 +25,14 @@ public record DtoContext(
                                          UserAuthenticationDetails principal) {
 
 
-        return new DtoContext(page, fragment, principal, null, null);
+        return new DtoContext(page, fragment, principal, null, null, null);
     }
 
     public static DtoContext forTargetResource(ViewPage page,
                                                UserAuthenticationDetails principal,
                                                UUID targetEntityId) {
 
-        return new DtoContext(page, null, principal, targetEntityId, null);
+        return new DtoContext(page, null, principal, targetEntityId, null, null);
     }
 
     public static DtoContext forTargetResourceWithAction(ViewPage page,
@@ -39,15 +40,15 @@ public record DtoContext(
                                                UUID targetEntityId,
                                                ViewAction action) {
 
-        return new DtoContext(page, null, principal, targetEntityId, action);
+        return new DtoContext(page, null, principal, targetEntityId, action, null);
     }
 
-   /* public static DtoContext forTargetResourceWithFragment(ViewPage page,
-                                                           ViewFragment fragment,
+    public static DtoContext forTargetResourceWithContent(ViewPage page,
                                                            UserAuthenticationDetails principal,
-                                                           UUID targetEntityId) {
+                                                           UUID targetEntityId,
+                                                           Object content) {
 
-        return new DtoContext(page, fragment, principal, targetEntityId);
-    }*/
+        return new DtoContext(page, null, principal, targetEntityId, null, content);
+    }
 }
 

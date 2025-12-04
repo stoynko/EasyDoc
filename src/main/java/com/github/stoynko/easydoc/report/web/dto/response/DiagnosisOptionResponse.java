@@ -1,4 +1,13 @@
 package com.github.stoynko.easydoc.report.web.dto.response;
 
-public record DiagnosisOptionResponse(String fullDiagnosis) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
+public class DiagnosisOptionResponse {
+
+    private String fullDiagnosis;
 }

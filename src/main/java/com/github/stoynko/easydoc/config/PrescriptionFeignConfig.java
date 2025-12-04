@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class PrescriptionFeignConfig {
 
     @Bean
-    public RequestInterceptor interceptor() {
+    public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
             SecurityContext context = SecurityContextHolder.getContext();
             if (context == null || context.getAuthentication() == null || !context.getAuthentication().isAuthenticated()) {

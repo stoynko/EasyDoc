@@ -29,39 +29,6 @@
     </a>
     <div class="header-actions">
 
-        <th:block th:switch="${currentPath}">
-
-            <th:block th:case="'/appointments'">
-                <th:block th:replace="~{fragments/search_bar :: search_bar(
-                                              action=@{/appointments},
-                                              placeholder='Search by name'
-                                          )}"></th:block>
-            </th:block>
-
-            <th:block th:case="'/reports'">
-                <th:block th:replace="~{fragments/search_bar :: search_bar(
-                                              action=@{/reports},
-                                              placeholder='Search by name'
-                                          )}"></th:block>
-            </th:block>
-
-            <th:block th:case="'/prescriptions'">
-                <th:block th:replace="~{fragments/search_bar :: search_bar(
-                                              action=@{/prescriptions},
-                                              placeholder='Search by code'
-                                          )}"></th:block>
-            </th:block>
-
-            <th:block th:case="'/doctors'">
-                <th:block th:replace="~{fragments/search_bar :: search_bar(
-                                              action=@{/doctors},
-                                              placeholder='Search by name'
-                                          )}"></th:block>
-            </th:block>
-
-            <th:block th:case="*"></th:block>
-        </th:block>
-
         <span class="nav-divider vertical"></span>
 
         <a sec:authorize="isAuthenticated()" th:href="@{/settings}" class="header-icon-btn" title="Settings"

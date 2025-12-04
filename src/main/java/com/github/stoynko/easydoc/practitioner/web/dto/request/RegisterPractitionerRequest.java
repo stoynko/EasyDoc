@@ -25,7 +25,7 @@ import java.time.LocalDate;
 public class RegisterPractitionerRequest{
 
     @NotNull(message = "Please upload a profile photo")
-    @MaxFileSize(value = 10 * 1024 * 1024, message = "Profile photo must be at most 10 MB")
+    @MaxFileSize(value = 10 * 1024 * 1024, message = "Profile photo must be at most 20 MB")
     private MultipartFile profilePhoto;
 
     @NotBlank(message = "Please provide your uin")

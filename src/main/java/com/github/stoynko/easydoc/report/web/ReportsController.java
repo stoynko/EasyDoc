@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forPage;
+import static com.github.stoynko.easydoc.web.model.ViewPage.MEDICAL_REPORTS_TABLE;
 import static com.github.stoynko.easydoc.web.model.ViewPage.MEDICAL_REPORT_VIEW;
 
 @Controller
@@ -22,6 +23,6 @@ public class ReportsController {
 
     @GetMapping("/reports")
     public ModelAndView getReportsPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
-        return pageBuilder.buildPage(forPage(MEDICAL_REPORT_VIEW, principal));
+        return pageBuilder.buildPage(forPage(MEDICAL_REPORTS_TABLE, principal));
     }
 }

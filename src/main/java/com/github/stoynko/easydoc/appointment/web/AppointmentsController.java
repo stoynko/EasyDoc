@@ -1,6 +1,12 @@
 package com.github.stoynko.easydoc.appointment.web;
 
 import com.github.stoynko.easydoc.appointment.model.Appointment;
+import com.github.stoynko.easydoc.appointment.model.AppointmentStatus;
+import com.github.stoynko.easydoc.prescription.model.DeliveryMethod;
+import com.github.stoynko.easydoc.prescription.service.MedicamentsCatalog;
+import com.github.stoynko.easydoc.prescription.web.dto.response.MedicamentItemResponse;
+import com.github.stoynko.easydoc.prescription.web.dto.response.PrescriptionResponse;
+import com.github.stoynko.easydoc.report.model.ReportStatus;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.appointment.service.AppointmentService;
 import com.github.stoynko.easydoc.prescription.service.PrescriptionService;
@@ -8,7 +14,6 @@ import com.github.stoynko.easydoc.report.service.ReportService;
 import com.github.stoynko.easydoc.appointment.web.dto.request.AppointmentRequest;
 import com.github.stoynko.easydoc.report.web.dto.request.MedicalReportRequest;
 import com.github.stoynko.easydoc.appointment.web.dto.response.AppointmentTimeSlotResponse;
-import com.github.stoynko.easydoc.web.model.ViewAction;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -28,11 +33,15 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import java.util.UUID;
 
-import static com.github.stoynko.easydoc.user.model.AccountRole.PATIENT;
+import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.PENDING;
+import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.PROCESSING;
+import static com.github.stoynko.easydoc.report.model.ReportStatus.DRAFT;
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forPage;
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forTargetResource;
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forTargetResourceWithAction;
+import static com.github.stoynko.easydoc.web.dto.DtoContext.forTargetResourceWithContent;
 import static com.github.stoynko.easydoc.web.model.ViewAction.READ;
+import static com.github.stoynko.easydoc.web.model.ViewAction.WRITE;
 import static com.github.stoynko.easydoc.web.model.ViewPage.APPOINTMENTS_TABLE;
 import static com.github.stoynko.easydoc.web.model.ViewPage.APPOINTMENT_CREATION;
 import static com.github.stoynko.easydoc.web.model.ViewPage.CONFIRMATION;
@@ -47,6 +56,7 @@ public class AppointmentsController {
     private final AppointmentService appointmentService;
     private final ReportService reportService;
     private final PrescriptionService prescriptionService;
+    private final MedicamentsCatalog medicamentsCatalog;
 
     @GetMapping("/appointments")
     public ModelAndView getAppointmentsPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
@@ -102,18 +112,39 @@ public class AppointmentsController {
         return new ModelAndView("redirect:/appointments");
     }
 
+    @PreAuthorize("hasRole('DOCTOR')")
+    @PostMapping("/appointments/{appointmentId}/process")
+    public ModelAndView ProcessAppointment(@AuthenticationPrincipal UserAuthenticationDetails principal,
+                                          @PathVariable UUID appointmentId) {
+
+        appointmentService.processAppointment(appointmentId, principal);
+        return new ModelAndView("redirect:/appointments");
+    }
+
+    @PreAuthorize("hasRole('PATIENT')")
     @PostMapping("/appointments/{appointmentId}/cancel")
     public ModelAndView cancelAppointment(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                          @PathVariable UUID appointmentId) {
+
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+        if (appointment.getStatus() != PENDING) {
+            return new ModelAndView("redirect:/appointments");
+        }
 
         appointmentService.cancelAppointment(appointmentId, principal);
         ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
         return modelAndView.addObject("confirmationMessage", "appointmentCancellationSuccess");
     }
 
+    @PreAuthorize("hasRole('DOCTOR')")
     @PostMapping("/appointments/{appointmentId}/no-show")
     public ModelAndView markAppointmentAsNoShow(@AuthenticationPrincipal UserAuthenticationDetails principal,
                                           @PathVariable UUID appointmentId) {
+
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+        if (appointment.getStatus() == PENDING) {
+            return new ModelAndView("redirect:/appointments");
+        }
 
         appointmentService.markAsNoShow(appointmentId, principal);
         ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
@@ -123,13 +154,20 @@ public class AppointmentsController {
     @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR')")
     @GetMapping("/appointments/{appointmentId}/report")
     public ModelAndView viewReportPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                            @PathVariable UUID appointmentId,
-                                            @RequestParam(name = "action", required = false, defaultValue = "READ") ViewAction action) {
-        if (principal.getRole() == PATIENT) {
-            action = READ;
+                                            @PathVariable UUID appointmentId) {
+        return pageBuilder.buildPage(forTargetResourceWithAction(MEDICAL_REPORT_VIEW, principal, appointmentId, READ));
+    }
+
+    @PreAuthorize("hasRole('DOCTOR')")
+    @GetMapping("/appointments/{appointmentId}/report/edit")
+    public ModelAndView editReportPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
+                                       @PathVariable UUID appointmentId) {
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+        if (appointment.getReport() != null && appointment.getReport().getReportStatus() != DRAFT) {
+            return new ModelAndView("redirect:/appointments/" + appointmentId + "/report");
         }
-        ModelAndView modelAndView = pageBuilder.buildPage(forTargetResourceWithAction(MEDICAL_REPORT_VIEW, principal, appointmentId, action));
-        return modelAndView;
+
+        return pageBuilder.buildPage(forTargetResourceWithAction(MEDICAL_REPORT_VIEW, principal, appointmentId, WRITE));
     }
 
     @PreAuthorize("hasRole('DOCTOR')")
@@ -151,7 +189,7 @@ public class AppointmentsController {
         ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
 
         if (medicalReportExists) {
-            reportService.editMedicalReport(appointment, request);
+            reportService.editMedicalReport(appointment.getReport(), request);
             modelAndView.addObject("confirmationMessage", "reportEditSuccess");
         } else {
             reportService.createMedicalReport(appointment, request);
@@ -161,34 +199,46 @@ public class AppointmentsController {
         return modelAndView;
     }
 
+    @PreAuthorize("hasRole('DOCTOR')")
+    @PostMapping("/appointments/{appointmentId}/report/issue")
+    public ModelAndView issueReport(@AuthenticationPrincipal UserAuthenticationDetails principal,
+                                       @PathVariable UUID appointmentId) {
+
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+
+        reportService.issueMedicalReport(appointment.getReport());
+        return pageBuilder.buildPage(forTargetResourceWithAction(MEDICAL_REPORT_VIEW, principal, appointmentId, READ));
+    }
+
     @PreAuthorize("hasAnyRole('PATIENT', 'DOCTOR')")
     @GetMapping("/appointments/{appointmentId}/prescription")
     public ModelAndView viewAppointmentPrescriptionPage(@AuthenticationPrincipal UserAuthenticationDetails principal,
-                                            @PathVariable UUID appointmentId,
-                                            @RequestParam(name = "action", required = false, defaultValue = "READ") ViewAction action) {
+                                            @PathVariable UUID appointmentId) {
 
-        prescriptionService.upsertPrescription(appointmentId);
+        PrescriptionResponse prescription = prescriptionService.getPrescription(appointmentId);
 
-        if (principal.getRole() == PATIENT) {
-            action = READ;
+        ModelAndView modelAndView = pageBuilder.buildPage(forTargetResourceWithContent(PRESCRIPTION_VIEW, principal, appointmentId, prescription));
+
+        if (prescription != null) {
+            List<MedicamentItemResponse> medicaments = medicamentsCatalog.getMedicamentsCatalog();
+            modelAndView.addObject("medicamentsCatalog", medicaments);
+            modelAndView.addObject("methods", DeliveryMethod.values());
         }
-
-        ModelAndView modelAndView = pageBuilder.buildPage(forTargetResourceWithAction(PRESCRIPTION_VIEW, principal, appointmentId, action));
         return modelAndView;
     }
 
     @PostMapping("/appointments/{appointmentId}/prescription/create")
     public ModelAndView createPrescription(@AuthenticationPrincipal UserAuthenticationDetails principal, @PathVariable UUID appointmentId) {
 
-        ModelAndView modelAndView = pageBuilder.buildPage(forTargetResource(PRESCRIPTION_VIEW, principal, appointmentId));
-        return modelAndView;
+        prescriptionService.createPrescription(appointmentId);
+        return new ModelAndView("redirect:/appointments/" + appointmentId + "/prescription");
     }
 
     @PreAuthorize("hasRole('DOCTOR')")
-    @GetMapping("search/diagnosis")
+    @GetMapping("/search/diagnosis")
     public String searchDiagnosis(@RequestParam("keyword") String keyword, Model model) {
         model.addAttribute("diagnosisList", reportService.findDiagnosisByKeyword(keyword));
-        return "fragments/components/diagnosis_selector :: diagnosis_selector";
+        return "fragments/diagnosis_selector :: diagnosis_selector";
     }
 }
 

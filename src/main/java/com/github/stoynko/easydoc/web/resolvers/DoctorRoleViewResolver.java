@@ -3,9 +3,14 @@ package com.github.stoynko.easydoc.web.resolvers;
 import com.github.stoynko.easydoc.appointment.model.Appointment;
 import com.github.stoynko.easydoc.appointment.web.mapper.AppointmentMapper;
 import com.github.stoynko.easydoc.practitioner.model.Doctor;
+import com.github.stoynko.easydoc.prescription.web.dto.request.AddMedicamentRequest;
+import com.github.stoynko.easydoc.prescription.web.dto.request.RemoveMedicamentRequest;
+import com.github.stoynko.easydoc.report.service.ReportService;
 import com.github.stoynko.easydoc.user.model.AccountRole;
 import com.github.stoynko.easydoc.appointment.service.AppointmentService;
 import com.github.stoynko.easydoc.practitioner.service.DoctorService;
+import com.github.stoynko.easydoc.user.model.User;
+import com.github.stoynko.easydoc.user.service.UserService;
 import com.github.stoynko.easydoc.web.dto.DtoAggregator;
 import com.github.stoynko.easydoc.web.dto.DtoContext;
 import com.github.stoynko.easydoc.report.web.dto.request.MedicalReportRequest;
@@ -21,17 +26,20 @@ import static com.github.stoynko.easydoc.appointment.web.mapper.AppointmentMappe
 import static com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper.toDoctorDetailedInfoFrom;
 import static com.github.stoynko.easydoc.report.web.mapper.ReportMapper.toMedicalReportResponseFrom;
 import static com.github.stoynko.easydoc.user.model.AccountRole.DOCTOR;
-import static com.github.stoynko.easydoc.shared.enums.DocumentStatus.DRAFT;
+import static com.github.stoynko.easydoc.report.model.ReportStatus.DRAFT;
 import static com.github.stoynko.easydoc.web.model.ViewAction.READ;
 import static com.github.stoynko.easydoc.web.model.ViewAction.WRITE;
+import static com.github.stoynko.easydoc.web.utilities.ValidationUtilities.getReportActionFor;
 
 @Component
 @RequiredArgsConstructor
 public class DoctorRoleViewResolver implements RoleViewResolver {
 
     private final DtoAggregator dtoAggregator;
+    private final UserService userService;
     private final DoctorService doctorService;
     private final AppointmentService appointmentService;
+    private final ReportService reportService;
 
     @Override
     public AccountRole getSupportedRole() {
@@ -60,41 +68,37 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
                         .collect(Collectors.toList()));
             }
 
-            case MEDICAL_REPORT_VIEW -> {
-                Appointment appointment = appointmentService.getAppointmentById(dtoContext.resourceId());
-
-                model.put("reportExists", appointment.hasReport());
-                model.put("action", (appointment.hasReport() && dtoContext.action() == READ) ? READ : WRITE);
-
-                model.put("appointmentDetails", toDoctorAppointmentSummaryResponse(appointment));
-                if (!appointment.hasReport()) {
-                    model.put("medicalReport", new MedicalReportRequest());
-                    model.put("documentStatus", DRAFT);
-                } else {
-                    model.put("medicalReport", toMedicalReportResponseFrom(appointment.getReport()));
-                    model.put("documentStatus", appointment.getReport().getDocumentStatus());
-                }
-
-            }
-
             case PRESCRIPTIONS_TABLE -> {
 
                 model.put("prescriptions", null);
             }
 
-            case PRESCRIPTION_VIEW -> {
+            case MEDICAL_REPORT_VIEW -> {
                 Appointment appointment = appointmentService.getAppointmentById(dtoContext.resourceId());
+
+                model.put("action", getReportActionFor(appointment, dtoContext));
+                model.put("reportExists", appointment.hasReport());
                 model.put("appointmentDetails", toDoctorAppointmentSummaryResponse(appointment));
 
-                boolean prescriptionExists = false;
-
-                model.put("prescriptionExists", !prescriptionExists);
-                model.put("readOnly", dtoContext.action() == READ && prescriptionExists);
-
-                if (prescriptionExists) {
-                    model.put("prescription", null);
+                if (!appointment.hasReport()) {
+                    model.put("medicalReport", new MedicalReportRequest());
+                    model.put("documentStatus", DRAFT);
                 } else {
-                    model.put("prescription", null);
+                    model.put("medicalReport", toMedicalReportResponseFrom(appointment.getReport()));
+                    model.put("documentStatus", appointment.getReport().getReportStatus());
+                }
+            }
+
+            case PRESCRIPTION_VIEW -> {
+                Appointment appointment = appointmentService.getAppointmentById(dtoContext.resourceId());
+
+                model.put("appointmentDetails", toDoctorAppointmentSummaryResponse(appointment));
+                model.put("prescriptionExists", dtoContext.content() != null);
+
+                if (dtoContext.content() != null) {
+                    model.put("prescriptionDetails", dtoContext.content());
+                    model.put("addMedicamentRequest", new AddMedicamentRequest());
+                    model.put("removeMedicamentRequest", new RemoveMedicamentRequest());
                 }
             }
 
@@ -109,9 +113,12 @@ public class DoctorRoleViewResolver implements RoleViewResolver {
             }
         }
 
-
         if (dtoContext.principal() != null) {
-            Doctor doctor = doctorService.getDoctorDetailsByUserId(dtoContext.principal().getId());
+
+            User user = userService.getUserById(dtoContext.principal().getId());
+            Doctor doctor = doctorService.getDoctorDetailsByUserId(user.getId());
+
+            model.put("isProfileCompleted", user.isProfileCompleted());
             model.put("doctorSummary", toDoctorDetailedInfoFrom(doctor));
             model.put("userSummary", toDoctorDetailedInfoFrom(doctor));
         }

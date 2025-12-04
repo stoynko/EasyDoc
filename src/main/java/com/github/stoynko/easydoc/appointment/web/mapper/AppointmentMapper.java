@@ -5,6 +5,7 @@ import com.github.stoynko.easydoc.appointment.web.dto.request.AppointmentRequest
 import com.github.stoynko.easydoc.appointment.web.dto.response.DoctorAppointmentResponse;
 import com.github.stoynko.easydoc.appointment.web.dto.response.DoctorAppointmentSummaryResponse;
 import com.github.stoynko.easydoc.appointment.web.dto.response.PatientAppointmentResponse;
+import com.github.stoynko.easydoc.appointment.web.dto.response.PatientAppointmentSummaryResponse;
 import com.github.stoynko.easydoc.practitioner.model.Doctor;
 import com.github.stoynko.easydoc.user.model.User;
 import lombok.experimental.UtilityClass;
@@ -12,9 +13,10 @@ import lombok.experimental.UtilityClass;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.CONFIRMED;
+import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.PENDING;
+import static com.github.stoynko.easydoc.report.model.ReportStatus.ISSUED;
 import static com.github.stoynko.easydoc.utilities.GenerationalUtilities.extractDigits;
-import static com.github.stoynko.easydoc.utilities.ValidationUtilities.extractName;
+import static com.github.stoynko.easydoc.utilities.GenerationalUtilities.extractName;
 
 @UtilityClass
 public class AppointmentMapper {
@@ -27,7 +29,7 @@ public class AppointmentMapper {
                 .startsAt(LocalDateTime.of(request.getDate(), request.getTime()))
                 .appointmentReason(request.getAppointmentReason())
                 .additionalNotes(request.getAdditionalNotes())
-                .status(CONFIRMED)
+                .status(PENDING)
                 .build();
     }
 
@@ -42,6 +44,8 @@ public class AppointmentMapper {
                 .appointmentReason(appointment.getAppointmentReason())
                 .appointmentStatus(appointment.getStatus())
                 .startsAt(appointment.getStartsAt())
+                .hasReport(appointment.hasReport() && appointment.getReport().getReportStatus() == ISSUED)
+                .hasPrescription(appointment.hasPrescription())
                 .build();
     }
 
@@ -76,6 +80,26 @@ public class AppointmentMapper {
                 .patientPhoneNumber(patient.getPhoneNumber())
                 .patientFirstName(patient.getFirstName())
                 .patientLastName(patient.getLastName())
+                .appointmentReason(appointment.getAppointmentReason())
+                .appointmentDate(appointment.getStartsAt())
+                .additionalNotes(appointment.getAdditionalNotes())
+                .build();
+    }
+
+    public static PatientAppointmentSummaryResponse toPatientAppointmentSummaryResponse(Appointment appointment) {
+
+        Doctor doctor = appointment.getDoctor();
+        User doctorUserProfile = doctor.getUser();
+
+        return PatientAppointmentSummaryResponse.builder()
+                .appointmentId(appointment.getId().toString())
+                .appointmentPublicId(appointment.getPublicId())
+                .doctorUin(doctor.getUin())
+                .doctorFirstName(doctorUserProfile.getFirstName())
+                .doctorLastName(doctorUserProfile.getLastName())
+                .doctorExpertise(doctor.getExpertise())
+                .doctorEmail(doctorUserProfile.getEmailAddress())
+                .doctorPhoneNumber(doctorUserProfile.getPhoneNumber())
                 .appointmentReason(appointment.getAppointmentReason())
                 .appointmentDate(appointment.getStartsAt())
                 .additionalNotes(appointment.getAdditionalNotes())

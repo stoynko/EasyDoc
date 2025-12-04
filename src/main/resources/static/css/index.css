@@ -63,13 +63,13 @@
   box-shadow: 0 6px 20px var(--color-shadow-primary);
 }
 
-.btn-video {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #1f2937;
-  text-decoration: none;
-  font-weight: 500;
+.btn-primary.btn-primary--disabled,
+.btn-primary[disabled] {
+  background: var(--color-gray-medium);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .play-icon {
@@ -83,11 +83,6 @@
   color: var(--color-white);
   font-size: 18px;
   transition: all 0.3s;
-}
-
-.btn-video:hover .play-icon {
-  background: var(--color-primary);
-  transform: scale(1.1);
 }
 
 .hero-image {

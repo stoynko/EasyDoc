@@ -5,7 +5,6 @@ import com.github.stoynko.easydoc.appointment.exception.AppointmentDoesNotExistE
 import com.github.stoynko.easydoc.appointment.exception.InvalidTimeException;
 import com.github.stoynko.easydoc.appointment.exception.PastDateException;
 import com.github.stoynko.easydoc.appointment.model.Appointment;
-import com.github.stoynko.easydoc.appointment.web.mapper.AppointmentMapper;
 import com.github.stoynko.easydoc.practitioner.model.Doctor;
 import com.github.stoynko.easydoc.practitioner.service.DoctorService;
 import com.github.stoynko.easydoc.user.model.User;
@@ -15,7 +14,6 @@ import com.github.stoynko.easydoc.user.service.UserService;
 import com.github.stoynko.easydoc.appointment.web.dto.request.AppointmentRequest;
 
 import com.github.stoynko.easydoc.appointment.web.dto.response.AppointmentTimeSlotResponse;
-import com.github.stoynko.easydoc.user.web.mapper.UserMapper;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,8 +31,9 @@ import org.springframework.stereotype.Service;
 
 import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.CANCELLED;
 import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.COMPLETED;
-import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.CONFIRMED;
 import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.NO_SHOW;
+import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.PENDING;
+import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.PROCESSING;
 import static com.github.stoynko.easydoc.appointment.web.mapper.AppointmentMapper.toAppointmentEntity;
 
 @Slf4j
@@ -74,24 +73,10 @@ public class AppointmentService {
         repository.save(appointment);
     }
 
-    public List<Appointment> getPatientUpcomingAppointments(UUID uuid) {
-        User user = userService.getUserById(uuid);
-        return repository.findByPatientAndStatusInOrderByStartsAtAsc(user, List.of(CONFIRMED));
-    }
-
-    public List<Appointment> getPatientPastAppointments(UUID uuid) {
-        User user = userService.getUserById(uuid);
-        return repository.findByPatientAndStatusInOrderByStartsAtAsc(user, List.of(CANCELLED, COMPLETED, NO_SHOW));
-    }
-
-    public List<Appointment> getDoctorUpcomingAppointments(UUID uuid) {
-        Doctor doctor = doctorService.getDoctorDetailsByUserId(uuid);
-        return repository.findByDoctorAndStatusInOrderByStartsAtAsc(doctor, List.of(CONFIRMED));
-    }
-
-    public List<Appointment> getDoctorPastAppointments(UUID uuid) {
-        Doctor doctor = doctorService.getDoctorDetailsByUserId(uuid);
-        return repository.findByDoctorAndStatusInOrderByStartsAtAsc(doctor, List.of(CANCELLED, COMPLETED, NO_SHOW));
+    public void processAppointment(UUID appointmentId, UserAuthenticationDetails principal) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        appointment.setStatus(PROCESSING);
+        repository.save(appointment);
     }
 
     private void validateDateAndTime(LocalDate date, LocalTime time) {
@@ -110,6 +95,44 @@ public class AppointmentService {
         }
     }
 
+    public void concludeAppointment(UUID appointmentId) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        appointment.setStatus(COMPLETED);
+        saveAppointment(appointment);
+        log.info("[appointment-completed] | appointment: %s timestamp: %s", appointment.getId(),  LocalDateTime.now());
+        eventPublisher.publishEvent(new AppointmentCompletedEvent(appointment.getPatient().getEmailAddress(), appointmentId));
+    }
+
+    public void cancelAppointment(UUID appointmentId, UserAuthenticationDetails principal) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        appointment.setStatus(CANCELLED);
+        repository.save(appointment);
+        log.info("[appointment-cancellation] | appointment:{} timestamp:{}", appointment.getId(),  LocalDateTime.now());
+    }
+
+    public void markAsNoShow(UUID appointmentId, UserAuthenticationDetails principal) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        appointment.setStatus(NO_SHOW);
+        repository.save(appointment);
+        log.info("[appointment-noshow] | appointment: {} timestamp: {}", appointment.getId(),  LocalDateTime.now());
+    }
+
+    public void saveAppointment(Appointment appointment) {
+        repository.save(appointment);
+    }
+
+    public void addPrescriptionToAppointment(UUID appointmentId, UUID prescriptionId) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        appointment.setPrescription(prescriptionId);
+        repository.save(appointment);
+        log.info("[added-prescription] | appointment: {} appointment: {}", appointment.getId(), prescriptionId);
+    }
+
+    public Appointment getAppointmentById(UUID id) {
+        return repository.findAppointmentById(id)
+                .orElseThrow(() -> new AppointmentDoesNotExistException());
+    }
+
     public List<Appointment> getAppointmentsFor(UUID doctorId, LocalDate date) {
         Doctor doctor = doctorService.getDoctorByDoctorId(doctorId);
 
@@ -117,7 +140,7 @@ public class AppointmentService {
         LocalDateTime endOfDay   = date.plusDays(1).atStartOfDay().minusNanos(1);
 
         return repository.findByDoctorAndStatusAndStartsAtBetweenOrderByStartsAtAsc(
-                doctor, CONFIRMED, startOfDay, endOfDay
+                doctor, PENDING, startOfDay, endOfDay
         );
     }
 
@@ -141,34 +164,23 @@ public class AppointmentService {
         return result;
     }
 
-    public void concludeAppointment(UUID appointmentId) {
-        Appointment appointment = getAppointmentById(appointmentId);
-        appointment.setStatus(COMPLETED);
-        saveAppointment(appointment);
-        log.info("-appointmentCompleted | appointment:{} timestamp:{}", appointment.getId(),  LocalDateTime.now());
-        eventPublisher.publishEvent(new AppointmentCompletedEvent(appointment.getPatient().getEmailAddress(), appointmentId));
+    public List<Appointment> getPatientUpcomingAppointments(UUID uuid) {
+        User user = userService.getUserById(uuid);
+        return repository.findByPatientAndStatusInOrderByStartsAtAsc(user, List.of(PENDING, PROCESSING));
     }
 
-    public void cancelAppointment(UUID appointmentId, UserAuthenticationDetails principal) {
-        Appointment appointment = getAppointmentById(appointmentId);
-        appointment.setStatus(CANCELLED);
-        repository.save(appointment);
-        log.info("-appointmentCancellation | appointment:{} timestamp:{}", appointment.getId(),  LocalDateTime.now());
+    public List<Appointment> getPatientPastAppointments(UUID uuid) {
+        User user = userService.getUserById(uuid);
+        return repository.findByPatientAndStatusInOrderByStartsAtAsc(user, List.of(CANCELLED, COMPLETED, NO_SHOW));
     }
 
-    public void markAsNoShow(UUID appointmentId, UserAuthenticationDetails principal) {
-        Appointment appointment = getAppointmentById(appointmentId);
-        appointment.setStatus(NO_SHOW);
-        repository.save(appointment);
-        log.info("-appointmentNoShow | appointment: {} timestamp: {}", appointment.getId(),  LocalDateTime.now());
+    public List<Appointment> getDoctorUpcomingAppointments(UUID uuid) {
+        Doctor doctor = doctorService.getDoctorDetailsByUserId(uuid);
+        return repository.findByDoctorAndStatusInOrderByStartsAtAsc(doctor, List.of(PENDING, PROCESSING));
     }
 
-    public Appointment getAppointmentById(UUID id) {
-        return repository.findAppointmentById(id)
-                .orElseThrow(() -> new AppointmentDoesNotExistException());
-    }
-
-    public void saveAppointment(Appointment appointment) {
-        repository.save(appointment);
+    public List<Appointment> getDoctorPastAppointments(UUID uuid) {
+        Doctor doctor = doctorService.getDoctorDetailsByUserId(uuid);
+        return repository.findByDoctorAndStatusInOrderByStartsAtAsc(doctor, List.of(CANCELLED, COMPLETED, NO_SHOW));
     }
 }

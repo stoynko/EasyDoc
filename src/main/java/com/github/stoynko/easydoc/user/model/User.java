@@ -105,17 +105,7 @@ public class User implements Serializable {
     @Builder.Default
     private CreatedModifiedAt createdModifiedAt = new CreatedModifiedAt();
 
-    public boolean isProfileCompleted(User user) {
-        return user.isProfileCompleted();
-    }
-
-    public boolean isEmailVerified(User user) {
-        return user.isEmailVerified();
-    }
-
-    public boolean isFullyActive(User user) {
-        return user.getAccountStatus() == ACTIVE
-                && user.isProfileCompleted()
-                && user.isEmailVerified();
-    }
+/*    public boolean isFullyActive() {
+        return this.getAccountStatus() == ACTIVE && this.isProfileCompleted() && this.isEmailVerified();
+    }*/
 }

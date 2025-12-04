@@ -32,20 +32,40 @@ spring:
 
   servlet:
     multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
+      max-file-size: 10MB
+      max-request-size: 10MB
+  #mail:
+    #host: smtp.mail.yahoo.com
+    #port: 587
+    #username: ${EMAIL_USERNAME}
+    #password: ${EMAIL_APP_PASSWORD}
+    #properties:
+      #mail:
+        #smtp:
+          #auth: true
+          #starttls:
+            #enable: true
+            #required: true
+
+  #app:
+    #mail:
+      #from: ${EMAIL_USERNAME}
   mail:
-    host: sandbox.smtp.mailtrap.io
+    host: smtp.office365.com
     port: 587
-    username: a87da0d17f6af3
-    password: b0926bb023fc01
+    username: yaniiiii@students.softuni.bg
+    password: :N!q^[9-xxLS8v7/z/IH
     properties:
       mail:
+        debug: true
         smtp:
           auth: true
           starttls:
             enable: true
-
+    default-encoding: UTF-8
+  app:
+    mail:
+      from: ${EMAIL_OUTLOOK}
 server:
   port: 8080
 
@@ -59,3 +79,6 @@ logging:
     #org.thymeleaf.TemplateEngine.CONFIG: TRACE
     rg.springframework.web: DEBUG
     org.springframework.web.servlet: DEBUG
+    org.springframework.cache: TRACE
+    org.springframework.data.redis.cache: TRACE
+    org.springframework.mail: DEBUG

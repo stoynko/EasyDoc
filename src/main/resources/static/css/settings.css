@@ -296,6 +296,11 @@
     color: #16a34a;
 }
 
+.info-chip.warning {
+    background: #dc2626;
+    color: var(--color-white);
+}
+
 .main-content .summary-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

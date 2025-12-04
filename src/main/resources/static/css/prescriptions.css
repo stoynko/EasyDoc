@@ -345,10 +345,50 @@
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: var(--spacing-lg);
     width: 100%;
-    max-width: 1200px;
+    max-width: none;
+}
+
+@media (min-width: 1400px) {
+    .medicaments-list {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.medicament-remove-form {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+}
+
+.medicament-remove-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(148, 163, 184, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.medicament-remove-btn:hover {
+    background: rgba(239, 68, 68, 0.14);
+    color: var(--color-red);
+}
+
+.medicament-remove-btn i {
+    pointer-events: none;
 }
 
 .medicament-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
@@ -359,6 +399,12 @@
     width: 100%;
 }
 
+.medicament-remove-form {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+}
+
 .medicament-card-header {
     display: flex;
     justify-content: space-between;
@@ -367,6 +413,13 @@
     min-width: 0;
     width: 100%;
     box-sizing: border-box;
+}
+
+.medicament-type-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
 }
 
 .medicament-main {
@@ -380,7 +433,7 @@
     box-sizing: border-box;
 }
 
-.medicament-category {
+.medicament-type {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -424,10 +477,10 @@
 }
 
 .medicament-icon {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    max-width: 48px;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    max-width: 24px;
     flex-shrink: 0;
     flex-grow: 0;
     border-radius: var(--radius-full);

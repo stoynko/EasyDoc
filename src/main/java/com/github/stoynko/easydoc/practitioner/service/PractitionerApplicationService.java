@@ -1,7 +1,7 @@
 package com.github.stoynko.easydoc.practitioner.service;
 
 import com.github.stoynko.easydoc.shared.event.UserContextRefreshEvent;
-import com.github.stoynko.easydoc.practitioner.exception.AlreadyOnboardedException;
+import com.github.stoynko.easydoc.practitioner.exception.PractitionerAlreadyOnboardedException;
 import com.github.stoynko.easydoc.practitioner.model.PractitionerApplication;
 import com.github.stoynko.easydoc.media.service.CloudinaryService;
 import com.github.stoynko.easydoc.user.model.User;
@@ -45,11 +45,11 @@ public class PractitionerApplicationService {
         User user = userService.getUserById(uuid);
 
         if (repository.existsPractitionerApplicationByUin(request.getUin())) {
-            throw new AlreadyOnboardedException();
+            throw new PractitionerAlreadyOnboardedException();
         }
 
         if (repository.existsPractitionerApplicationByUser(user)) {
-            throw new AlreadyOnboardedException();
+            throw new PractitionerAlreadyOnboardedException();
         }
 
         CloudinaryUploadResult uploadResult = cloudinaryService.uploadPhoto(request.getProfilePhoto(), "doctors");

@@ -1,5 +1,6 @@
 package com.github.stoynko.easydoc.web.resolvers;
 
+import com.github.stoynko.easydoc.appointment.model.Appointment;
 import com.github.stoynko.easydoc.appointment.web.mapper.AppointmentMapper;
 import com.github.stoynko.easydoc.practitioner.model.Doctor;
 import com.github.stoynko.easydoc.user.model.User;
@@ -15,6 +16,7 @@ import com.github.stoynko.easydoc.user.web.dto.request.LoginRequest;
 import com.github.stoynko.easydoc.user.web.dto.request.RegisterRequest;
 import com.github.stoynko.easydoc.user.web.dto.request.SubmitAccountDetailsRequest;
 import com.github.stoynko.easydoc.web.model.ViewFragment;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,11 +25,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.github.stoynko.easydoc.appointment.web.mapper.AppointmentMapper.toPatientAppointmentSummaryResponse;
 import static com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper.toDoctorBriefInfoFrom;
 import static com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper.toDoctorDetailedInfoFrom;
 import static com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper.toRegisterPractitionerFrom;
+import static com.github.stoynko.easydoc.report.web.mapper.ReportMapper.toMedicalReportResponseFrom;
 import static com.github.stoynko.easydoc.user.model.AccountRole.PATIENT;
 import static com.github.stoynko.easydoc.user.web.mapper.UserMapper.toUserSummary;
+import static com.github.stoynko.easydoc.web.utilities.ValidationUtilities.getReportActionFor;
 
 @Component
 @RequiredArgsConstructor
@@ -45,7 +50,7 @@ public class PatientRoleViewResolver implements RoleViewResolver {
     }
 
     @Override
-    public Map<String,Object> buildModelData(DtoContext dtoContext) {
+    public Map<String, Object> buildModelData(DtoContext dtoContext) {
 
         Map<String, Object> model = new HashMap<>();
 
@@ -60,14 +65,21 @@ public class PatientRoleViewResolver implements RoleViewResolver {
                 model.putIfAbsent("submitPersonalDetailsRequest", new SubmitAccountDetailsRequest());
             }
 
-            case DASHBOARD -> {}
+            case DASHBOARD -> {
+            }
 
             case DOCTORS -> model.put("doctors", doctorService.getAllDoctors());
 
-            case PRESCRIPTION_VIEW -> {
+            case APPOINTMENT_CREATION -> {
+                model.put("processState", "formEntry");
+                Doctor doctor = doctorService.getDoctorByDoctorId(dtoContext.resourceId());
+                model.putIfAbsent("doctorSummary", toDoctorBriefInfoFrom(doctor));
 
+                AppointmentRequest appointmentRequest = new AppointmentRequest();
+                appointmentRequest.setDate(LocalDate.now());
+                model.putIfAbsent("appointmentRequest", appointmentRequest);
+                model.putIfAbsent("timeSlots", appointmentService.getTimeSlotsFor(dtoContext.resourceId(), appointmentRequest.getDate()));
             }
-            case PRESCRIPTIONS_TABLE -> model.put("prescriptions", null);
 
             case APPOINTMENTS_TABLE -> {
                 model.put("upcomingAppointments", appointmentService.getPatientUpcomingAppointments(dtoContext.principal().getId())
@@ -79,15 +91,20 @@ public class PatientRoleViewResolver implements RoleViewResolver {
                         .collect(Collectors.toList()));
             }
 
-            case APPOINTMENT_CREATION -> {
-                model.put("processState", "formEntry");
-                Doctor doctor = doctorService.getDoctorByDoctorId(dtoContext.resourceId());
-                model.putIfAbsent("doctorSummary", toDoctorBriefInfoFrom(doctor));
+            case PRESCRIPTIONS_TABLE -> model.put("prescriptions", null);
 
-                AppointmentRequest appointmentRequest = new AppointmentRequest();
-                appointmentRequest.setDate(LocalDate.now());
-                model.putIfAbsent("appointmentRequest", appointmentRequest);
-                model.putIfAbsent("timeSlots", appointmentService.getTimeSlotsFor(dtoContext.resourceId(), appointmentRequest.getDate()));
+            case MEDICAL_REPORT_VIEW -> {
+                Appointment appointment = appointmentService.getAppointmentById(dtoContext.resourceId());
+                model.put("action", getReportActionFor(appointment, dtoContext));
+                model.put("appointmentDetails", toPatientAppointmentSummaryResponse(appointment));
+                model.put("medicalReport", toMedicalReportResponseFrom(appointment.getReport()));
+                model.put("documentStatus", appointment.getReport().getReportStatus());
+            }
+
+            case PRESCRIPTION_VIEW -> {
+                Appointment appointment = appointmentService.getAppointmentById(dtoContext.resourceId());
+                model.put("appointmentDetails", toPatientAppointmentSummaryResponse(appointment));
+                model.put("prescriptionDetails", dtoContext.content());
             }
 
             case ACCOUNT -> {
@@ -111,8 +128,11 @@ public class PatientRoleViewResolver implements RoleViewResolver {
         }
 
         if (dtoContext.principal() != null) {
-            model.put("userSummary", toUserSummary(userService.getUserById(dtoContext.principal().getId())));
-            model.put("hasSubmittedApplication", practitionerApplicationService.hasPendingApplication(dtoContext.principal().getId()));
+            User user = userService.getUserById(dtoContext.principal().getId());
+
+            model.put("userSummary", toUserSummary(user));
+            model.put("isProfileCompleted", user.isProfileCompleted());
+            model.put("hasSubmittedApplication", practitionerApplicationService.hasPendingApplication(user.getId()));
         }
 
         return model;

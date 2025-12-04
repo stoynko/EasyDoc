@@ -1,15 +1,21 @@
 package com.github.stoynko.easydoc.notification.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
 
     private final JavaMailSender mailSender;
+
+    @Value("${EMAIL_OUTLOOK}")
+    private String fromAddress;
 
     public void sendVerificationEmail(String recipient, String verificationLink) {
         String subject = "Welcome to EasyDoc account";
@@ -48,17 +54,19 @@ public class NotificationService {
         sendHtmlEmail(recipient, subject, htmlBody);
     }
 
-    private void sendHtmlEmail(String to, String subject, String htmlBody) {
+    private void sendHtmlEmail(String recipient, String subject, String htmlBody) {
         try {
             var mimeMessage = mailSender.createMimeMessage();
-            var helper = new MimeMessageHelper(mimeMessage, "UTF-8");
-            helper.setTo(to);
+            var helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+
+            helper.setFrom(fromAddress);
+            helper.setTo(recipient);
             helper.setSubject(subject);
             helper.setText(htmlBody, true);
+
             mailSender.send(mimeMessage);
         } catch (Exception e) {
-            // TODO: log / handle
+            log.error("[email-failed] Failed to send email to {} with subject {}: {}", recipient, subject, e.getMessage(), e);
         }
     }
-
 }

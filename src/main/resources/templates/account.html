@@ -38,7 +38,7 @@
                             <div class="top-header" th:text="${doctorSummary.firstName + ' ' + doctorSummary.lastName}">Placeholder Name</div>
                         </div>
 
-                        <div class="account-hero-right">x
+                        <div class="account-hero-right">
                             <div class="expertise-tags">
                                 <span th:text="${doctorSummary.expertise.getDisplayValue()}">Placeholder expertise</span>
                                 <span th:text="${doctorSummary.yearsExperience + ' years of experience'}"
@@ -70,7 +70,7 @@
                 </div>
 
                 <div sec:authorize="hasRole('PATIENT')" style="margin: var(--spacing-xl)">
-                    <a th:href="@{/appointments/doctor/{id}(id=${doctorSummary.id})}" class="btn-primary">
+                    <a th:href="@{/appointments/doctors/{id}(id=${doctorSummary.id})}" class="btn-primary">
                         <i class="fas fa-calendar"></i>
                         <span>Book Appointment</span>
                     </a>

@@ -31,5 +31,7 @@ public class UserSummaryResponse {
 
     private LocalDateTime creationDate;
 
+    private LocalDateTime updatedDate;
+
     private boolean canBookAppointment;
 }

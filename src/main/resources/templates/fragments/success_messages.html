@@ -57,7 +57,7 @@
     </section>
 </th:block>
 
-<th:block th:fragment="onboarding-doctor-submit-success">
+<th:block th:fragment="onboarding_doctor_submit_success">
     <section class="register-container">
         <div class="success-wrapper">
             <div class="register-header">
@@ -274,7 +274,7 @@
                 </a>
 
                 <form th:action="@{/appointments/{appointmentId}/conclude(appointmentId=${appointmentId})}" th:method="POST">
-                    <button class="btn-primary confirm">
+                    <button class="btn-primary">
                         <i class="fas fa-sign-in-alt"></i> Complete Appointment
                     </button>
                 </form>

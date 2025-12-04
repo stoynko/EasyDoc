@@ -37,4 +37,8 @@ public class PatientAppointmentResponse {
 
     private LocalDateTime startsAt;
 
+    private boolean hasReport;
+
+    private boolean hasPrescription;
+
 }

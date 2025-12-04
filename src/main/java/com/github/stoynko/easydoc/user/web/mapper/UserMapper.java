@@ -17,7 +17,7 @@ import lombok.experimental.UtilityClass;
 import static com.github.stoynko.easydoc.user.model.AccountAuthority.CAN_BOOK_APPOINTMENT;
 import static com.github.stoynko.easydoc.user.model.AccountRole.PATIENT;
 import static com.github.stoynko.easydoc.user.model.AccountStatus.INCOMPLETE;
-import static com.github.stoynko.easydoc.utilities.ValidationUtilities.extractName;
+import static com.github.stoynko.easydoc.utilities.GenerationalUtilities.extractName;
 
 @UtilityClass
 public class UserMapper {
@@ -83,6 +83,7 @@ public class UserMapper {
                 .emailAddress(user.getEmailAddress())
                 .canBookAppointment(user.getAuthority().contains(CAN_BOOK_APPOINTMENT))
                 .creationDate(user.getCreatedModifiedAt().getCreatedAt())
+                .updatedDate(user.getCreatedModifiedAt().getUpdatedAt())
                 .build();
     }
 }

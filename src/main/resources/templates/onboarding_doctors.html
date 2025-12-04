@@ -174,7 +174,7 @@
                                         <label for="gender">Gender</label>
                                         <select th:field="*{gender}" id="gender" name="gender" required>
                                             <option value="" >Select your gender</option>
-                                            <option th:each="g : ${T(com.github.stoynko.easydoc.shared.enums.Gender).values()}"
+                                            <option th:each="g : ${T(com.github.stoynko.easydoc.user.model.Gender).values()}"
                                                     th:value="${g}" th:text="${g.getDisplayValue()}">Placeholder</option>
                                         </select>
                                         <p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="form-error">Placeholder Error</p>
@@ -191,7 +191,7 @@
                                         <label for="specialization">Expertise</label>
                                         <select th:field="*{expertise}" id="specialization" name="specialization" required>
                                             <option value="" >Select your area of expertise</option>
-                                            <option th:each="e : ${T(com.github.stoynko.easydoc.shared.enums.Expertise).values()}"
+                                            <option th:each="e : ${T(com.github.stoynko.easydoc.practitioner.model.Expertise).values()}"
                                                     th:value="${e}" th:text="${e.getDisplayValue()}">Placeholder</option>
                                         </select>
                                         <p th:if="${#fields.hasErrors('expertise')}" th:errors="*{expertise}" class="form-error">Placeholder Error</p>
@@ -243,11 +243,11 @@
                 </th:block>
 
                 <th:block th:case="success">
-                    <th:block th:insert="~{fragments/success_messages :: onboarding-doctor-submit-success}"></th:block>
+                    <th:block th:insert="~{fragments/success_messages :: onboarding_doctor_submit_success}"></th:block>
                 </th:block>
 
                 <th:block th:case="failed">
-                    <th:block th:insert="~{fragments/error_messages :: onboarding-doctor-info-submit-failure}"></th:block>
+                    <th:block th:insert="~{fragments/error_messages :: onboarding_account_info_submit_failure}"></th:block>
                 </th:block>
             </th:block>
             </main>

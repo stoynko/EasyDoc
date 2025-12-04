@@ -3,6 +3,7 @@ package com.github.stoynko.easydoc.web.resolvers;
 import com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper;
 import com.github.stoynko.easydoc.user.model.AccountRole;
 import com.github.stoynko.easydoc.practitioner.service.PractitionerApplicationService;
+import com.github.stoynko.easydoc.user.model.User;
 import com.github.stoynko.easydoc.user.service.UserService;
 import com.github.stoynko.easydoc.user.web.mapper.UserMapper;
 import com.github.stoynko.easydoc.web.dto.DtoAggregator;
@@ -51,6 +52,7 @@ public class AdminRoleViewResolver implements RoleViewResolver {
                     .collect(Collectors.toList()));
 
             case PRACTITIONER_APPLICATIONS -> model.put("applications",
+
                     practitionerApplicationService.getAllPendingApplications()
                             .stream().map(PractitionerMapper::toPendingPractitionerApplicationFrom)
                             .collect(Collectors.toList()));
@@ -61,7 +63,15 @@ public class AdminRoleViewResolver implements RoleViewResolver {
             }
 
         }
-        model.put("userSummary", toUserSummary(userService.getUserById(dtoContext.principal().getId())));
+
+        if (dtoContext.principal() != null) {
+
+            User user = userService.getUserById(dtoContext.principal().getId());
+
+            model.put("userSummary", toUserSummary(userService.getUserById(dtoContext.principal().getId())));
+            model.put("isProfileCompleted", user.isProfileCompleted());
+        }
+
         return model;
     }
 }

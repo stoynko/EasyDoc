@@ -58,9 +58,10 @@
                 <table class="appointment-table">
 
                     <colgroup>
-                        <col class="col-uuid">
+                        <col class="col-id">
                         <col class="col-patient">
                         <col class="col-email">
+                        <col class="col-created">
                         <col class="col-created">
                         <col class="col-role">
                         <col class="col-status">
@@ -69,10 +70,11 @@
 
                     <thead>
                     <tr>
-                        <th scope="col">PIN</th>
+                        <th scope="col">Id</th>
                         <th scope="col">Name</th>
                         <th scope="col">Email Address</th>
-                        <th scope="col">Created On</th>
+                        <th scope="col">Registered On</th>
+                        <th scope="col">Updated On</th>
                         <th scope="col">Account Status</th>
                         <th scope="col">Role</th>
                         <th scope="col" class="th-actions">Quick Actions</th>
@@ -90,12 +92,16 @@
                             class="appointment-schedule">Placeholder Date
                         </td>
 
+                        <td th:text="${#temporals.format(user.updatedDate, 'dd MMM yyyy ''at'' HH:mm')}"
+                            class="appointment-schedule">Placeholder Date
+                        </td>
+
                         <td th:text="${user.accountStatus}" class="user-status">Placeholder Status</td>
 
                         <td th:text="${user.accountRole}" class="user-role">Placeholder Role</td>
 
                         <td class="quick-actions">
-                            <form th:if="${user.canBookAppointment and user.accountStatus != T(com.github.stoynko.easydoc.shared.enums.AccountStatus).DELETED}"
+                            <form th:if="${user.canBookAppointment and user.accountStatus != T(com.github.stoynko.easydoc.user.model.AccountStatus).DELETED}"
                                   th:action="@{/users/{userId}/authorities/revoke/{authority}(userId=${user.id}, authority='CAN_BOOK_APPOINTMENT')}"
                                   th:method="POST"
                                   class="inline-form">
@@ -104,7 +110,7 @@
                                     <i class="fas fa-calendar-times"></i>
                                 </button>
                             </form>
-                            <form th:if="${!user.canBookAppointment and user.accountStatus != T(com.github.stoynko.easydoc.shared.enums.AccountStatus).DELETED}"
+                            <form th:if="${!user.canBookAppointment and user.accountStatus != T(com.github.stoynko.easydoc.user.model.AccountStatus).DELETED}"
                                   th:action="@{/users/{userId}/authorities/reinstate/{authority}(userId=${user.id}, authority='CAN_BOOK_APPOINTMENT')}"
                                   th:method="POST"
                                   class="inline-form">
@@ -113,7 +119,7 @@
                                     <i class="fas fa-calendar-check"></i>
                                 </button>
                             </form>
-                            <form th:if="${user.accountStatus == T(com.github.stoynko.easydoc.shared.enums.AccountStatus).SUSPENDED}"
+                            <form th:if="${user.accountStatus == T(com.github.stoynko.easydoc.user.model.AccountStatus).SUSPENDED}"
                                   th:action="@{/users/{uuid}/enable(uuid=${user.id})}"
                                   th:method="POST"
                                   class="inline-form">
@@ -122,8 +128,8 @@
                                     <i class="fas fa-user-check"></i>
                                 </button>
                             </form>
-                            <form th:if="${user.accountStatus != T(com.github.stoynko.easydoc.shared.enums.AccountStatus).SUSPENDED
-                                         and user.accountStatus != T(com.github.stoynko.easydoc.shared.enums.AccountStatus).DELETED}"
+                            <form th:if="${user.accountStatus != T(com.github.stoynko.easydoc.user.model.AccountStatus).SUSPENDED
+                                         and user.accountStatus != T(com.github.stoynko.easydoc.user.model.AccountStatus).DELETED}"
                                   th:action="@{/users/{userId}/suspend(userId=${user.id})}"
                                   th:method="POST"
                                   class="inline-form">

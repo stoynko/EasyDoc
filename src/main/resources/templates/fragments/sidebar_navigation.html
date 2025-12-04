@@ -2,6 +2,7 @@
           xmlns:th="http://www.thymeleaf.org"
           xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
+    <!-- PROFILE PHOTO -->
     <div th:if="${userSummary != null}" class="user-profile">
         <div class="user-avatar">
             <img th:if="${!#strings.isEmpty(userSummary.profilePhotoUrl)}"
@@ -37,7 +38,8 @@
                     <span>Appointments</span>
                 </a>
             </li>
-            <li class="nav-item" sec:authorize="hasRole('DOCTOR')">
+<!--            sec:authorize="hasRole('DOCTOR')"-->
+            <li class="nav-item" >
                 <a th:href="@{/reports}" class="nav-link"
                    th:classappend="${currentPath == '/reports'} ? ' active'">
                     <i class="fas fa-file-medical"></i>
@@ -88,6 +90,27 @@
 <th:block th:fragment="settings_navigation" xmlns:th="http://www.thymeleaf.org"
           xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
+    <!-- PROFILE PHOTO -->
+    <div th:if="${userSummary != null}" class="user-profile">
+        <div class="user-avatar">
+            <img th:if="${!#strings.isEmpty(userSummary.profilePhotoUrl)}"
+                 th:src="${userSummary.profilePhotoUrl}" alt="Profile Photo"/>
+
+            <i th:if="${#strings.isEmpty(userSummary.profilePhotoUrl)}"
+               class="fas fa-user"></i>
+        </div>
+
+        <div th:if="${role == T(com.github.stoynko.easydoc.user.model.AccountRole).DOCTOR}"
+             th:text="${'Dr. ' + userSummary.firstName + ' ' + userSummary.lastName}"
+             class="user-name">
+        </div>
+        <div th:unless="${role == T(com.github.stoynko.easydoc.user.model.AccountRole).DOCTOR}"
+             th:text="${userSummary.firstName + ' ' + userSummary.lastName}"
+             class="user-name">
+        </div>
+    </div>
+
+    <nav>
         <ul class="nav-menu">
 
             <!-- SECURITY DASHBOARD -->
@@ -147,4 +170,5 @@
                 </a>
             </li>
         </ul>
+    </nav>
 </th:block>

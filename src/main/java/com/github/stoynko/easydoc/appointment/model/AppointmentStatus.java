@@ -2,7 +2,8 @@ package com.github.stoynko.easydoc.appointment.model;
 
 public enum AppointmentStatus {
 
-    CONFIRMED("Confirmed"),
+    PENDING("Pending"),
+    PROCESSING("Processing"),
     CANCELLED("Cancelled"),
     COMPLETED("Completed"),
     NO_SHOW("No Show");
