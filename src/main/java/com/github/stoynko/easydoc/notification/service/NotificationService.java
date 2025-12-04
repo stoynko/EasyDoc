@@ -15,7 +15,7 @@ public class NotificationService {
 
     private final JavaMailSender mailSender;
 
-    @Value("${EMAIL_OUTLOOK}")
+    @Value("yani_stoyanov@yahoo.com")
     private String fromAddress;
 
     private void sendHtmlEmail(String recipient, String subject, String htmlBody) {
