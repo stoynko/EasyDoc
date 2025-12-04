@@ -1,3 +1,5 @@
+# EasyDoc
+
 EasyDoc is a role-based medical management platform built with Spring Boot.  
 It supports patients, doctors, and admins with:
 
@@ -10,7 +12,7 @@ It supports patients, doctors, and admins with:
 
 ---
 
-# Tech Stack
+# Features
 
 - User accounts & roles
   - Patient, Doctor, Admin roles with different dashboards and permissions
