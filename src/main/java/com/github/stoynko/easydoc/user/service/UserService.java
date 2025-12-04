@@ -77,7 +77,7 @@ public class UserService implements UserDetailsService {
         User user = UserMapper.toUserEntity(registerRequest, hashedPassword);
 
         repository.save(user);
-        log.info("-registration | emailAddress:{} timestamp:{}", registerRequest.getEmailAddress(), LocalDateTime.now());
+        log.info("[registration] | emailAddress:{} timestamp:{}", registerRequest.getEmailAddress(), LocalDateTime.now());
 
         EmailVerificationToken verificationToken = emailVerificationService.createTokenForUser(user);
         eventPublisher.publishEvent(new RegistrationCompletedEvent(
@@ -101,7 +101,7 @@ public class UserService implements UserDetailsService {
 
         emailVerificationService.markTokenAsUsed(token);
         eventPublisher.publishEvent(new UserContextRefreshEvent(user.getId()));
-        log.info("-emailVerification | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
+        log.info("[email-verification] | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
     @Transactional
@@ -117,12 +117,6 @@ public class UserService implements UserDetailsService {
         } else {
             user.setAccountStatus(ACTIVE);
         }
-    }
-
-    @Transactional
-    public void updateAccountStatusAndSave(User user) {
-        updateAccountStatus(user);
-        repository.save(user);
     }
 
     @Override
@@ -151,7 +145,7 @@ public class UserService implements UserDetailsService {
         updateAccountStatus(user);
 
         repository.save(user);
-        log.info("-submitPersonalInfo | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
+        log.info("[submit-personal-info] | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
 
         eventPublisher.publishEvent(new UserContextRefreshEvent(user.getId()));
     }
@@ -181,7 +175,7 @@ public class UserService implements UserDetailsService {
         eventPublisher.publishEvent(new EmailChangeEvent
                 (user.getId(), user.getEmailAddress(), verificationToken.getId()));
 
-        log.info("-updateEmailAddress | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
+        log.info("[update-email-address] | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
     public void updatePassword(UUID uuid, UpdatePasswordRequest request) {
@@ -197,7 +191,7 @@ public class UserService implements UserDetailsService {
 
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         repository.save(user);
-        log.info("-updatePassword | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
+        log.info("[update-password | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
     public void updateAccountStatus(UUID uuid, AccountStatus status) {
@@ -209,13 +203,13 @@ public class UserService implements UserDetailsService {
         }
         user.setAccountStatus(status);
         repository.save(user);
-        log.info("-accountStatusChange | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
+        log.info("[account-status-change] | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
     public void updateUserRoleTo(User user, AccountRole role) {
         user.setRole(role);
         repository.save(user);
-        log.info("-roleChange | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
+        log.info("[role-change] | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
     public void updatePersonalInfo(UUID uuid, UpdateAccountDetailsRequest request) {
@@ -225,14 +219,14 @@ public class UserService implements UserDetailsService {
         user.setDateOfBirth(request.getDateOfBirth());
         user.setGender(request.getGender());
         repository.save(user);
-        log.info("-updatePersonalInfo | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
+        log.info("[update-personal-info] | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
     public void updateContactDetails(UUID uuid, UpdateContactDetailsRequest request) {
         User user = getUserById(uuid);
         user.setPhoneNumber(request.getPhoneNumber());
         repository.save(user);
-        log.info("-updateContactDetails | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
+        log.info("-[update-contact-details] | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
     public void deleteAccount(UUID uuid, DeleteAccountRequest request) {
@@ -248,14 +242,14 @@ public class UserService implements UserDetailsService {
 
         updateAccountStatus(user.getId(), DELETED);
         repository.save(user);
-        log.info("-accountDeleted | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
+        log.info("[account-deleted] | userId: {} timestamp:{}", user.getId(), LocalDateTime.now());
     }
 
     public void revokeAuthority(UUID uuid, AccountAuthority authority) {
         User user = getUserById(uuid);
         user.getAuthority().remove(authority);
         repository.save(user);
-        log.info("-authorityRevoked | userId: {} authority: {} timestamp:{}",
+        log.info("[authority-revoked] | userId: {} authority: {} timestamp:{}",
                 user.getId(), authority.name(), LocalDateTime.now());
     }
 
@@ -263,7 +257,7 @@ public class UserService implements UserDetailsService {
         User user = getUserById(uuid);
         user.getAuthority().add(authority);
         repository.save(user);
-        log.info("-authorityReinstated | userId: {} authority: {} timestamp:{}",
+        log.info("[authority-reinstated] | userId: {} authority: {} timestamp:{}",
                 user.getId(), authority.name(), LocalDateTime.now());
     }
 

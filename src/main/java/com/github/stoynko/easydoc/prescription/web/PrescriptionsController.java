@@ -90,23 +90,11 @@ public class PrescriptionsController {
     }
     @PreAuthorize("hasAnyRole('DOCTOR')")
     @GetMapping("/prescriptions/medicaments/options")
-    public String getMedicamentsByType(@RequestParam("medicamentType") MedicamentType medicamentType,
-                                       Model model) {
+    public String getMedicamentsByType(@RequestParam("medicamentType") MedicamentType medicamentType, Model model) {
 
-        //TODO: REFORMAT TO THIN CONTROLLER
-        List<MedicamentItemResponse> catalog = medicamentsCatalog.getMedicamentsCatalog();
-
-        List<MedicamentItemResponse> filteredMedicaments = catalog.stream()
-                .filter(m -> m.getType() == medicamentType)
-                .toList();
-
+        List<MedicamentItemResponse> filteredMedicaments = medicamentsCatalog.getFilteredMedicamentsCatalog(medicamentType);
         model.addAttribute("medicamentsCatalog", filteredMedicaments);
-
-        Set<DeliveryMethod> methods = filteredMedicaments.stream()
-                .flatMap(m -> m.getDeliveryMethods().stream())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-
-        model.addAttribute("methods", methods);
+        model.addAttribute("methods", medicamentsCatalog.getFilteredByDeliveryMethod(filteredMedicaments));
 
         return "fragments/medicament_selector :: medicament_block";
     }
@@ -116,20 +104,7 @@ public class PrescriptionsController {
     public String getDeliveryMethodsForMedicament(@RequestParam("medicamentId") UUID medicamentId,
                                                   Model model) {
 
-        //TODO: REFORMAT TO THIN CONTROLLER
-
-        List<MedicamentItemResponse> allMedicaments = medicamentsCatalog.getMedicamentsCatalog();
-
-        MedicamentItemResponse filteredMedicament = allMedicaments.stream()
-                .filter(medicament -> medicament.getMedicamentId().equals(medicamentId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown medicament: " + medicamentId));
-
-        List<DeliveryMethod> methods = new ArrayList<>(filteredMedicament.getDeliveryMethods());
-        methods.sort(Comparator.comparing(Enum::name));
-
-        model.addAttribute("methods", methods);
-
+        model.addAttribute("methods", medicamentsCatalog.getDeliveryMethods(medicamentId));
         return "fragments/medicament_delivery :: delivery_method_fragment";
     }
 }

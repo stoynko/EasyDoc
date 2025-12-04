@@ -4,6 +4,8 @@ import com.github.stoynko.easydoc.user.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -53,8 +55,7 @@ public class Doctor {
     @Column(name = "uin", nullable = false, unique = true)
     private String uin;
 
-    //TODO: CHANGE TO ENUMERATED AFTER DB DROP
-    //@Enumerated(value = EnumType.STRING)
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "expertise", nullable = false)
     private Expertise expertise;
 

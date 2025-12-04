@@ -38,26 +38,11 @@
                     <span>Appointments</span>
                 </a>
             </li>
-<!--            sec:authorize="hasRole('DOCTOR')"-->
-            <li class="nav-item" >
-                <a th:href="@{/reports}" class="nav-link"
-                   th:classappend="${currentPath == '/reports'} ? ' active'">
-                    <i class="fas fa-file-medical"></i>
-                    <span>Medical Reports</span>
-                </a>
-            </li>
             <li class="nav-item" sec:authorize="hasRole('PATIENT')">
                 <a th:href="@{/doctors}" class="nav-link"
                    th:classappend="${currentPath == '/doctors'} ? ' active'">
                     <i class="fas fa-users"></i>
                     <span>Doctors</span>
-                </a>
-            </li>
-            <li class="nav-item" sec:authorize="hasAnyRole('DOCTOR','PATIENT')">
-                <a th:href="@{/prescriptions}" class="nav-link"
-                   th:classappend="${currentPath == '/prescriptions'} ? ' active'">
-                    <i class="fas fa-prescription"></i>
-                    <span>Prescriptions</span>
                 </a>
             </li>
             <li class="nav-item" sec:authorize="hasRole('ADMIN')">

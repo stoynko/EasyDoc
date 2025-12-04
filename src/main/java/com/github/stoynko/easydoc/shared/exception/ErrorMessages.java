@@ -2,6 +2,7 @@ package com.github.stoynko.easydoc.shared.exception;
 
 public enum ErrorMessages {
 
+    RESOLVER_NOT_FOUND("No resolver was found for user's role"),
     ACCOUNT_NOT_FOUND("Account does not exist."),
     ACCOUNT_DUPLICATE_EMAIL("User with this email address is already registered."),
     ACCOUNT_DUPLICATE_PIN("User with this personal identification number is already registered."),

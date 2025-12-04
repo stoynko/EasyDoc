@@ -94,8 +94,10 @@
             <th:block th:insert="~{fragments/error_messages :: max_upload_size_exceeded}"></th:block>
         </th:block>
 
+        <th:block th:case="access_denied_exception">
+            <th:block th:insert="~{fragments/error_messages :: access_denied_exception}"></th:block>
+        </th:block>
     </th:block>
-
 </div>
 </body>
 </html>

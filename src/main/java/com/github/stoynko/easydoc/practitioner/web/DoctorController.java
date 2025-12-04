@@ -41,7 +41,6 @@ public class DoctorController {
     private final PractitionerApplicationService applicationService;
 
     @GetMapping("/onboarding/doctors")
-    @PreAuthorize("@securityCheck.canSubmitPractitionerApplication(principal)")
     public ModelAndView getOnboardingPage(@AuthenticationPrincipal UserAuthenticationDetails principal) {
         ModelAndView modelAndView = pageBuilder.buildPage(forFragment(ViewPage.DOCTOR_ONBOARDING, DOCTOR_LANDING, principal));
         modelAndView.addObject("processState", "landing");

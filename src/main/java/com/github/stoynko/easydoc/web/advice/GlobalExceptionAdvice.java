@@ -15,6 +15,7 @@ import com.github.stoynko.easydoc.user.exception.UserExistsWithPinException;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -145,21 +146,16 @@ public class GlobalExceptionAdvice {
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ModelAndView handleMaxUploadSizeExceededException(@AuthenticationPrincipal UserAuthenticationDetails principal, MaxUploadSizeExceededException exception) {
+    public ModelAndView handleMaxUploadSizeExceededException(@AuthenticationPrincipal UserAuthenticationDetails principal) {
         ModelAndView modelAndView = pageBuilder.buildPage(forPage(ERROR, principal));
         modelAndView.addObject("errorMessage", "max_upload_size_exceeded");
         return modelAndView;
     }
 
-    @ExceptionHandler(ReportEditAccessDeniedException.class)
-    public ModelAndView handleReportEditAccessDeniedException(@AuthenticationPrincipal UserAuthenticationDetails principal, MaxUploadSizeExceededException exception) {
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ModelAndView handleAuthorizationDeniedException(@AuthenticationPrincipal UserAuthenticationDetails principal) {
         ModelAndView modelAndView = pageBuilder.buildPage(forPage(ERROR, principal));
-        modelAndView.addObject("errorMessage", "report_edit_access_denied");
+        modelAndView.addObject("errorMessage", "access_denied_exception");
         return modelAndView;
     }
 }
-
-//ReportAlreadyExistsException
-
-
-/*UnsatisfiedServletRequestParameterException*/

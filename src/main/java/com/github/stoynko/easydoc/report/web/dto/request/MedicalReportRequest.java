@@ -3,6 +3,7 @@ package com.github.stoynko.easydoc.report.web.dto.request;
 import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class MedicalReportRequest {
 
     private UUID appointmentId;
 
-    //TODO: @NotNull
+    @NotNull
     @Size(max = 100, message = "Please input up to 100 characters")
     private String diagnosis;
 

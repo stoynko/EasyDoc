@@ -387,23 +387,26 @@
     </div>
 </th:block>
 
-<th:block th:fragment="401">
-
-    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+<th:block th:fragment="access_denied_exception">
 
     <div class="main-content">
-     <div class="view-card is-centered">
-        <div class="view-card-title">
-            <p>Access Denied</p>
-        </div>
-        <p class="view-card-subtitle">
-            You do not have permission to view this page.
-        </p>
+        <section class="register-container">
+            <div class="error-wrapper">
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Access Denied</h2>
+                </div>
 
-        <div class="form-actions">
-            <a th:href="@{/dashboard}" class="btn-primary">Back to Dashboard</a>
-        </div>
-    </div>
+                <p class="error-subtitle">
+                    You do not have permission to view this page.
+                </p>
+
+                <div class="form-actions">
+                    <a th:href="@{/}" class="btn-primary">Go Back</a>
+                </div>
+            </div>
+        </section>
     </div>
 
 </th:block>
+

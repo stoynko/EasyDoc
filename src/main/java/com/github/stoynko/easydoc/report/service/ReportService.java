@@ -51,7 +51,7 @@ public class ReportService {
 
         appointment.setReport(report);
         appointmentService.saveAppointment(appointment);
-        log.info("[medical-report-created] Medical report with id %s has been successfully created for appointment %s",  report.getId(), appointment.getId());
+        log.info("[medical-report-created] Medical report with id {} has been successfully created for appointment {}",  report.getId(), appointment.getId());
     }
 
     public void editMedicalReport(Report report, MedicalReportRequest request) {
@@ -62,14 +62,14 @@ public class ReportService {
         report.setCareRecommendations(request.getCareRecommendations());
         report.setMedicamentTreatment(request.getMedicamentTreatment());
         repository.save(report);
-        log.info("[medical-report-created] Medical report with id %s has been successfully edited",  report.getId());
+        log.info("[medical-report-created] Medical report with id {} has been successfully edited",  report.getId());
     }
 
     public void issueMedicalReport(Report report) {
         report.setReportStatus(ISSUED);
         report.setIssuedAt(LocalDateTime.now());
         repository.save(report);
-        log.info("[medical-report-issued] Medical report with id %s has been successfully issued.",  report.getId());
+        log.info("[medical-report-issued] Medical report with id {} has been successfully issued.",  report.getId());
     }
 
     public List<DiagnosisOptionResponse> findDiagnosisByKeyword(String keyword) {
@@ -103,6 +103,6 @@ public class ReportService {
 
     public void saveReport(Report report) {
         repository.save(report);
-        log.warn("[report-update] Report with id %s was updated successfully".formatted(report.getId()));
+        log.info("[report-update] Report with id {} was updated successfully", report.getId());
     }
 }

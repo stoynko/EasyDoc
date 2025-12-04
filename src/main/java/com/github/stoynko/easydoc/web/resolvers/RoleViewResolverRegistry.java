@@ -1,5 +1,6 @@
 package com.github.stoynko.easydoc.web.resolvers;
 
+import com.github.stoynko.easydoc.shared.exception.ResolverNotFoundException;
 import com.github.stoynko.easydoc.user.model.AccountRole;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.View;
@@ -28,8 +29,7 @@ public class RoleViewResolverRegistry {
     public RoleViewResolver getResolverForRole(AccountRole role) {
         RoleViewResolver resolver = map.get(role);
         if (resolver == null) {
-            //TODO: ADD CUSTOM EXCEPTION
-            throw new RuntimeException();
+            throw new ResolverNotFoundException();
         }
         return resolver;
     }

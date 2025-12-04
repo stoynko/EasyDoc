@@ -1,7 +1,6 @@
 package com.github.stoynko.easydoc.prescription.service;
 
 import com.github.stoynko.easydoc.appointment.service.AppointmentService;
-import com.github.stoynko.easydoc.prescription.exception.PrescriptionAlreadyExists;
 import com.github.stoynko.easydoc.prescription.web.client.PrescriptionClient;
 import com.github.stoynko.easydoc.prescription.web.dto.request.AddMedicamentRequest;
 import com.github.stoynko.easydoc.prescription.web.dto.request.RemoveMedicamentRequest;
@@ -30,7 +29,7 @@ public class PrescriptionService {
             PrescriptionResponse prescription = client.createPrescription(appointmentId).getBody();
             appointmentService.addPrescriptionToAppointment(appointmentId, prescription.getPrescriptionId());
         } catch (FeignException exception) {
-            log.error("[S2S Call] Prescription creation failed due to %s".formatted(exception.getMessage()));
+            log.error("[S2S Call] Prescription creation failed due to {}", exception.getMessage());
         }
     }
 
@@ -44,8 +43,8 @@ public class PrescriptionService {
             log.error("[S2S Call] Failed due to %s".formatted(exception.getMessage()));
             return null;
         } catch (Exception exception) {
-            log.error("Failed to get prescription for appointment with id %s: %s"
-                    .formatted(appointmentId, exception.getMessage(), exception));
+            log.error("Failed to get prescription for appointment with id {}: {}",
+                    appointmentId, exception.getMessage(), exception);
             return null;
         }
     }
@@ -56,8 +55,8 @@ public class PrescriptionService {
             client.addMedicament(appointmentId, request);
             return client.getPrescription(appointmentId).getBody();
         } catch (FeignException exception) {
-            log.error("[S2S Call] Adding medicament to prescription with id %s failed due to %s"
-                    .formatted(request.getPrescriptionId(), exception.getMessage()));
+            log.error("[S2S Call] Adding medicament to prescription with id {} failed due to {}",
+                    request.getPrescriptionId(), exception.getMessage());
 
             return client.getPrescription(appointmentId).getBody();
         }
@@ -69,8 +68,8 @@ public class PrescriptionService {
             client.removeMedicament(appointmentId, request);
             return client.getPrescription(appointmentId).getBody();
         } catch (FeignException exception) {
-            log.error("[S2S Call] Removing medicament with id %s from prescription with id %s failed due to %s"
-                    .formatted(request.getMedicamentId(), request.getPrescriptionId(), exception.getMessage()));
+            log.error("[S2S Call] Removing medicament with id {} from prescription with id {} failed due to {}",
+                    request.getMedicamentId(), request.getPrescriptionId(), exception.getMessage());
 
             return client.getPrescription(appointmentId).getBody();
         }
@@ -82,9 +81,10 @@ public class PrescriptionService {
             client.issuePrescription(appointmentId, prescriptionId);
             return client.getPrescription(appointmentId).getBody();
         } catch (FeignException exception) {
-            log.error("[S2S Call] Issuing prescription with id %s failed due to %s"
-                    .formatted(prescriptionId, exception.getMessage()));
+            log.error("[S2S Call] Issuing prescription with id {} failed due to {}", prescriptionId, exception.getMessage());
             return client.getPrescription(appointmentId).getBody();
         }
     }
+
+
 }

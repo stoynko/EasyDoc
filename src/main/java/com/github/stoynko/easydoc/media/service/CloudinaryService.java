@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.github.stoynko.easydoc.media.dto.CloudinaryUploadResult;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CloudinaryService {
@@ -30,6 +32,7 @@ public class CloudinaryService {
 
         String secureUrl = (String) result.getOrDefault("secure_url", result.get("url"));
         String publicId = (String) result.get("public_id");
+        log.info("[profile-photo-deleted] Photo with id {} was successfully uploaded", publicId);
         return new CloudinaryUploadResult(publicId, secureUrl);
     }
 
@@ -44,6 +47,7 @@ public class CloudinaryService {
                     "invalidate", true,
                     "resource_type", "image"
             ));
+            log.info("[profile-photo-deleted] Photo with id {} was successfully deleted", profilePhotoPublicId);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
