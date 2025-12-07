@@ -1,0 +1,187 @@
+.onboarding-section {
+    width: min(1180px, 100%);
+    margin: 0 auto;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    text-align: left;
+    align-items: flex-start;
+}
+
+.onboarding-section:first-of-type {
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+}
+
+.onboarding-section + .onboarding-section {
+    padding-top: var(--spacing-sm);
+}
+
+.onboarding-title {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.onboarding-subtitle {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-lg);
+    line-height: 1.6;
+    max-width: 720px;
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.onboarding-pricing {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+@media (min-width: 1024px) {
+    .onboarding-pricing {
+        grid-template-columns: repeat(3, 340px);
+        justify-content: center;
+        align-items: stretch;
+    }
+
+    .onboarding-price-card {
+        width: 340px;
+    }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+    .onboarding-pricing {
+        grid-template-columns: repeat(2, minmax(300px, 1fr));
+        justify-content: center;
+    }
+}
+
+@media (max-width: 639px) {
+    .onboarding-pricing {
+        grid-template-columns: 1fr;
+    }
+}
+
+.onboarding-price-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    height: 100%;
+}
+
+.onboarding-price-card.featured {
+    border: 2px solid var(--color-primary);
+    box-shadow: 0 24px 60px rgba(37, 99, 235, 0.18);
+}
+
+.onboarding-price {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+}
+
+.onboarding-price span {
+    font-size: var(--font-size-base);
+    color: var(--color-text-muted);
+    margin-left: 4px;
+    vertical-align: baseline;
+}
+
+.onboarding-price span .currency-symbol {
+    font-size: 0.75em;
+}
+
+.onboarding-plan-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+}
+
+.onboarding-plan-features li {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--color-text-secondary);
+    justify-content: flex-start;
+}
+
+.onboarding-plan-features li i {
+    color: var(--color-primary);
+}
+
+.onboarding-price-card .btn,
+.onboarding-price-card .btn-primary {
+    margin-top: auto;
+    align-self: stretch;
+    text-align: center;
+}
+
+.onboarding-testimonials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.onboarding-testimonial {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: 0 12px 34px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.onboarding-testimonial strong {
+    color: var(--color-text-secondary);
+}
+
+.onboarding-cta {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.92) 0%, rgba(59, 130, 246, 0.88) 100%);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    color: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    text-align: center;
+    margin-inline: auto;
+    max-width: 780px;
+}
+
+.onboarding-cta p {
+    font-size: var(--font-size-lg);
+    max-width: 560px;
+}
+
+.onboarding-cta .btn-primary {
+    background: var(--color-white);
+    color: var(--color-primary);
+}
+
+.onboarding-cta .btn-primary:hover {
+    background: var(--color-primary-bg);
+}
+
+@media (max-width: 960px) {
+    .onboarding-section {
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+}
+
+@media (max-width: 560px) {
+    .onboarding-section {
+        padding: var(--spacing-md);
+    }
+
+    .onboarding-pricing, .onboarding-testimonials {
+        gap: var(--spacing-md);
+    }
+}

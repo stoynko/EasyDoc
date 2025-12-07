@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">Users Management</title>
+    <th:block data-fragment="head">
+        <link rel="stylesheet" th:href="@{/css/applications.css}">
+    </th:block>
+</head>
+<body data-fragment="body">
+
+<!-- HEADER-->
+<header th:insert="~{fragments/header :: header_auth}"></header>
+
+<div class="workspace-container">
+
+    <!-- SIDEBAR -->
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <!-- PENDING APPLICATIONS-->
+    <div class="main-content">
+
+        <div class="dashboard-card">
+
+            <h2 th:if="${!#lists.isEmpty(applications)}"
+                th:with="count=${#lists.size(applications)}"
+                class="section-heading">
+
+                <span th:if="${count > 1}">
+                    <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                    Pending Applications
+                </span>
+
+                <span th:unless="${count > 1}">
+                    <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                    Pending Application
+                </span>
+            </h2>
+
+            <!-- EMPTY APPLICATIONS CONTAINER -->
+            <div th:if="${#lists.isEmpty(applications)}" class="view-card-empty-container">
+                <div class="empty-container-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+
+                <h3 class="empty-container-title">No pending applications</h3>
+                <p class="empty-container-description">Any pending applications will appear here.</p>
+
+            </div>
+
+            <div th:unless="${#lists.isEmpty(applications)}" class="applications-grid">
+
+                <div th:each="pApplication : ${applications}" class="application-card">
+
+                    <div class="application-card-content">
+
+                        <!-- PROFILE PHOTO -->
+                        <div class="application-photo-section">
+                            <div class="user-avatar">
+                                <img th:src="${pApplication.profilePhotoUrl}" alt="Profile Photo">
+                            </div>
+                        </div>
+
+                        <!-- PROFESSIONAL INFORMATION -->
+                        <div class="application-section">
+
+                            <h3 class="application-section-title">Professional Information</h3>
+
+                            <div class="application-fields">
+
+                                <div class="application-field">
+                                    <label class="application-field-label">UIN</label>
+                                    <div th:text="${pApplication.doctorUin}"
+                                         class="application-field-value">Placeholder UIN
+                                    </div>
+                                </div>
+
+                                <div class="application-field">
+                                    <label class="application-field-label">Expertise</label>
+                                    <div th:text="${pApplication.doctorExpertise.getDisplayValue()}"
+                                         class="application-field-value">Placeholder Expertise
+                                    </div>
+                                </div>
+
+                                <div class="application-field">
+                                    <label class="application-field-label">Years of Experience</label>
+                                    <div th:text="${pApplication.doctorYearsExperience}"
+                                         class="application-field-value">Placeholder Experience
+                                    </div>
+                                </div>
+
+                                <div class="application-field">
+                                    <label class="application-field-label">Practice Location</label>
+                                    <div th:text="${pApplication.doctorPracticeLocation}"
+                                         class="application-field-value">Placeholder Location
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div class="application-section">
+                            <h3 class="application-section-title">Additional Information</h3>
+                            <div class="application-fields">
+                                <div class="application-field application-field-full">
+                                    <label class="application-field-label">Professional Highlights</label>
+                                    <textarea readonly
+                                              th:text="${pApplication.doctorProfessionalHighlights}"
+                                              class="application-field-value application-textarea">Placeholder Highlights</textarea>
+                                </div>
+                                <div class="application-field application-field-full">
+                                    <label class="application-field-label">Spoken Languages</label>
+                                    <div th:unless="${#strings.trim(pApplication.doctorSpokenLanguages).isEmpty()}"
+                                         th:text="${pApplication.doctorSpokenLanguages}"
+                                         class="application-field-value">Placeholder Languages
+                                    </div>
+                                    <div th:if="${#strings.trim(pApplication.doctorSpokenLanguages).isEmpty()}"
+                                         class="application-field-value">-
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ACTION BUTTONS -->
+                            <div class="application-actions">
+
+                                <form th:action="@{/applications/{id}/approve(id=${pApplication.applicationId})}"
+                                      th:method="POST"
+                                      style="flex: 1; width: 100%;">
+
+                                    <button type="submit"
+                                            class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none;">
+                                        <i class="fas fa-check"></i>
+                                        Approve
+                                    </button>
+                                </form>
+
+                                <form th:action="@{/applications/{id}/reject(id=${pApplication.applicationId})}"
+                                      th:method="POST"
+                                      style="flex: 1; width: 100%;">
+
+                                    <button type="submit"
+                                            class="btn-primary warning"
+                                            style="width: 100%; text-align: center; text-decoration: none;">
+                                        <i class="fas fa-times"></i>
+                                        Reject
+                                    </button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

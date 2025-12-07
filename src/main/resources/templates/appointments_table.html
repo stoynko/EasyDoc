@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">My Appointments</title>
+    <th:block data-fragment="head">
+        <link rel="stylesheet" th:href="@{/css/appointments.css}">
+    </th:block>
+</head>
+<body data-fragment="body">
+
+<th:block data-fragment="scripts"></th:block>
+
+<!-- HEADER-->
+<header th:insert="~{fragments/header :: header_auth}"></header>
+
+<div class="workspace-container">
+
+    <!-- SIDEBAR -->
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <main class="main-content">
+
+        <th:block sec:authorize="hasRole('PATIENT')">
+
+            <!-- UPCOMING APPOINTMENTS-->
+            <div class="dashboard-card">
+
+                <h2 th:if="${!#lists.isEmpty(upcomingAppointments)}"
+                    th:with="count=${#lists.size(upcomingAppointments)}"
+                    class="section-heading">
+
+                <span th:if="${count > 1}">
+                    <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                    Upcoming Appointments
+                </span>
+
+                    <span th:unless="${count > 1}">
+                    <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                    Upcoming Appointment
+                </span>
+                </h2>
+
+                <div th:if="${#lists.isEmpty(upcomingAppointments)}" class="view-card-empty-container">
+                    <div class="empty-container-icon">
+                        <i class="fas fa-comment-medical"></i>
+                    </div>
+                    <h3 class="empty-container-title">No upcoming appointments</h3>
+                    <p class="empty-container-description">Any upcoming appointments will appear here once booked.</p>
+                </div>
+
+                <div th:unless="${#lists.isEmpty(upcomingAppointments)}" class="table-wrapper">
+
+                    <table class="appointment-table patient-upcoming">
+
+                        <colgroup>
+                            <col class="col-id">
+                            <col class="col-schedule">
+                            <col class="col-doctor">
+                            <col class="col-doctor-uin">
+                            <col class="col-expertise">
+                            <col class="col-reason">
+                            <col class="col-status">
+                            <col class="col-actions">
+                        </colgroup>
+
+                        <thead>
+                        <tr>
+                            <th scope="col">Reference</th>
+                            <th scope="col">Date &amp; Time</th>
+                            <th scope="col">Doctor Name</th>
+                            <th scope="col">Doctor UIN</th>
+                            <th scope="col">Expertise</th>
+                            <th scope="col">Reason</th>
+                            <th scope="col" class="th-actions">Quick Actions</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="appointment : ${upcomingAppointments}">
+
+                            <td th:text="${appointment.appointmentPublicId}"
+                                class="visit-doctor-name">Placeholder Reference
+                            </td>
+
+                            <td th:text="${#temporals.format(appointment.startsAt, 'dd MMM yyyy ''at'' HH:mm')}"
+                                class="appointment-schedule"> Placeholder Starts At
+                            </td>
+
+                            <td th:text="${appointment.doctorFirstName + ' ' + appointment.doctorLastName}"
+                                class="visit-doctor-name">Placeholder Name
+                            </td>
+
+                            <td th:text="${appointment.doctorUin}"
+                                class="visit-doctor-name">Placeholder UIN
+                            </td>
+
+                            <td th:text="${appointment.doctorExpertise.getDisplayValue()}"
+                                class="visit-doctor-expertise">Placeholder Expertise
+                            </td>
+
+                            <td th:text="${appointment.appointmentReason.getDisplayValue()}"
+                                class="visit-reason">Placeholder Reason
+                            </td>
+
+                            <td class="quick-actions">
+
+                                <!-- CANCEL BUTTON -->
+                                <form th:unless="${appointment.appointmentStatus == T(com.github.stoynko.easydoc.appointment.model.AppointmentStatus).PROCESSING}"
+                                      th:action="@{/appointments/{id}/cancel(id=${appointment.appointmentId})}"
+                                      th:method="POST" style="flex: 1; width: 100%;">
+
+                                    <button type="submit"
+                                            class="btn-primary warning"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-times"></i>
+                                        Cancel
+                                    </button>
+                                </form>
+
+                                <!-- MEDICAL REPORT BUTTON -->
+                                <form th:if="${appointment.hasReport and appointment.appointmentStatus == T(com.github.stoynko.easydoc.appointment.model.AppointmentStatus).PROCESSING}"
+                                      th:action="@{/appointments/{appointmentId}/report(appointmentId=${appointment.appointmentId})}"
+                                      th:method="GET" style="flex: 1; width: 100%;">
+                                    <button type="submit"
+                                            class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-file-medical"></i>
+                                    </button>
+                                </form>
+
+                                <!-- PRESCRIPTION BUTTON -->
+                                <form th:if="${appointment.hasPrescription and appointment.appointmentStatus == T(com.github.stoynko.easydoc.appointment.model.AppointmentStatus).PROCESSING}"
+                                      th:action="@{/appointments/{appointmentId}/prescription(appointmentId=${appointment.appointmentId})}"
+                                      th:method="GET" style="flex: 1; width: 100%;">
+                                    <button type="submit"
+                                            class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-prescription"></i>
+                                    </button>
+                                </form>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- PAST APPOINTMENTS-->
+            <div class="dashboard-card">
+
+                <h2 th:if="${!#lists.isEmpty(pastAppointments)}"
+                    th:with="count=${#lists.size(pastAppointments)}"
+                    class="section-heading">
+
+                <span th:if="${count > 1}">
+                    <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                    Past Appointments
+                </span>
+
+                    <span th:unless="${count > 1}">
+                    <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                    Past Appointment
+                </span>
+                </h2>
+
+
+                <div th:if="${#lists.isEmpty(pastAppointments)}" class="view-card-empty-container">
+                    <div class="empty-container-icon">
+                        <i class="fas fa-archive"></i>
+                    </div>
+                    <h3 class="empty-container-title">No past appointments</h3>
+                    <p class="empty-container-description">Any past appointments will appear here once completed.</p>
+                </div>
+
+                <div th:unless="${#lists.isEmpty(pastAppointments)}" class="table-wrapper">
+                    <table class="appointment-table patient-past">
+                        <colgroup>
+                            <col class="col-id">
+                            <col class="col-schedule">
+                            <col class="col-doctor">
+                            <col class="col-expertise">
+                            <col class="col-reason">
+                            <col class="col-status">
+                            <col class="col-actions">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th scope="col">Reference</th>
+                            <th scope="col">Date &amp; Time</th>
+                            <th scope="col">Doctor Name</th>
+                            <th scope="col">Expertise</th>
+                            <th scope="col">Reason</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="th-actions">Quick Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="appointment : ${pastAppointments}">
+
+                            <td th:text="${appointment.appointmentPublicId}"
+                                class="visit-doctor-name">Placeholder Reference
+                            </td>
+
+                            <td th:text="${#temporals.format(appointment.startsAt, 'dd MMM yyyy ''at'' HH:mm')}"
+                                class="appointment-schedule"> Placeholder Starts At
+                            </td>
+
+                            <td th:text="${appointment.doctorFirstName + ' ' + appointment.doctorLastName}"
+                                class="visit-doctor-name">Placeholder Name
+                            </td>
+
+                            <td th:text="${appointment.doctorExpertise.getDisplayValue()}"
+                                class="visit-doctor-expertise">Placeholder Expertise
+                            </td>
+
+                            <td th:text="${appointment.appointmentReason.getDisplayValue()}"
+                                class="visit-reason">Placeholder Reason
+                            </td>
+
+                            <td th:text="${appointment.appointmentStatus.getDisplayValue()}"
+                                class="visit-reason">Placeholder Status
+                            </td>
+
+                            <td class="quick-actions">
+                                <!-- MEDICAL REPORT BUTTON -->
+                                <form th:if="${appointment.hasReport}"
+                                      th:action="@{/appointments/{appointmentId}/report(appointmentId=${appointment.appointmentId})}"
+                                      th:method="GET" style="flex: 1; width: 100%;">
+                                    <button type="submit"
+                                            class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-file-medical"></i>
+                                    </button>
+                                </form>
+
+                                <!-- PRESCRIPTION BUTTON -->
+                                <form th:if="${appointment.hasPrescription}"
+                                      th:action="@{/appointments/{appointmentId}/prescription(appointmentId=${appointment.appointmentId})}"
+                                      th:method="GET" style="flex: 1; width: 100%;">
+                                    <button type="submit"
+                                            class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-prescription"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </th:block>
+
+        <th:block sec:authorize="hasRole('DOCTOR')">
+
+            <!-- UPCOMING APPOINTMENTS-->
+            <div class="dashboard-card">
+
+                <h2 th:if="${!#lists.isEmpty(upcomingAppointments)}"
+                    th:with="count=${#lists.size(upcomingAppointments)}"
+                    class="section-heading">
+
+                <span th:if="${count > 1}">
+                    <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                    Upcoming Appointments
+                </span>
+
+                    <span th:unless="${count > 1}">
+                    <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                    Upcoming Appointment
+                </span>
+                </h2>
+
+                <div th:if="${#lists.isEmpty(upcomingAppointments)}" class="view-card-empty-container">
+                    <div class="empty-container-icon">
+                        <i class="fas fa-comment-medical"></i>
+                    </div>
+                    <h3 class="empty-container-title">No upcoming appointments</h3>
+                    <p class="empty-container-description">Any upcoming appointments will appear here once booked.</p>
+                </div>
+
+                <div th:unless="${#lists.isEmpty(upcomingAppointments)}" class="table-wrapper">
+                    <table class="appointment-table">
+                        <colgroup>
+                            <col class="col-id">
+                            <col class="col-schedule">
+                            <col class="col-patient-id">
+                            <col class="col-patient">
+                            <col class="col-email">
+                            <col class="col-reason">
+                            <col class="col-actions">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th scope="col">Reference</th>
+                            <th scope="col">Date &amp; Time</th>
+                            <th scope="col">Patient PIN</th>
+                            <th scope="col">Patient Name</th>
+                            <th scope="col">Patient Email</th>
+                            <th scope="col">Reason</th>
+                            <th scope="col" class="th-actions">Quick Actions</th>
+                        </tr>
+
+                        </thead>
+                        <tbody>
+
+                        <tr th:each="appointment : ${upcomingAppointments}">
+
+                            <td th:text="${appointment.appointmentPublicId}"
+                                class="appointment-id">Placeholder Appointment ID
+                            </td>
+
+                            <td th:text="${#temporals.format(appointment.startsAt, 'dd MMM yyyy ''at'' HH:mm')}"
+                                class="appointment-schedule"> Placeholder Date
+                            </td>
+
+                            <td th:text="${appointment.patientPin}"
+                                class="appointment-id">Placeholder PIN
+                            </td>
+
+                            <td th:text="${appointment.patientName}"
+                                class="visit-doctor-name">Placeholder Name</span>
+                            </td>
+
+                            <td th:text="${appointment.patientEmailAddress}"
+                                class="patient-email">Placeholder Email Address
+                            </td>
+
+                            <td th:text="${appointment.appointmentReason.getDisplayValue()}"
+                                class="visit-reason">Placeholder Reason
+                            </td>
+
+                            <td class="quick-actions">
+
+                                <!-- PROCESS BUTTON -->
+                                <form th:if="${appointment.appointmentStatus == T(com.github.stoynko.easydoc.appointment.model.AppointmentStatus).PENDING}"
+                                      th:action="@{/appointments/{appointmentId}/process(appointmentId=${appointment.appointmentId})}"
+                                      th:method="POST" style="flex: 1; width: 100%;">
+                                    <button type="submit"
+                                            class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-play"></i> Process
+                                    </button>
+                                </form>
+
+                                <!-- MEDICAL REPORT BUTTON -->
+                                <form th:if="${appointment.appointmentStatus == T(com.github.stoynko.easydoc.appointment.model.AppointmentStatus).PROCESSING}"
+                                      th:action="@{/appointments/{appointmentId}/report(appointmentId=${appointment.appointmentId})}"
+                                      th:method="GET" style="flex: 1; width: 100%;">
+                                    <button type="submit"
+                                            class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-file-medical"></i>
+                                    </button>
+                                </form>
+
+                                <!-- PRESCRIPTION BUTTON -->
+                                <form th:if="${appointment.appointmentStatus == T(com.github.stoynko.easydoc.appointment.model.AppointmentStatus).PROCESSING}"
+                                      th:action="@{/appointments/{appointmentId}/prescription(appointmentId=${appointment.appointmentId})}"
+                                      th:method="GET" style="flex: 1; width: 100%;">
+                                    <button type="submit"
+                                            class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-prescription"></i>
+                                    </button>
+                                </form>
+
+                                <!-- FINALIZE REPORT BUTTON -->
+                                <form th:if="${appointment.appointmentStatus == T(com.github.stoynko.easydoc.appointment.model.AppointmentStatus).PROCESSING and
+                                               appointment.hasReport and appointment.hasIssuedReport}"
+                                      th:action="@{/appointments/{appointmentId}/conclude(appointmentId=${appointment.appointmentId})}"
+                                      th:method="POST" style="flex: 1; width: 100%;">
+                                    <button type="submit" class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-upload"></i>
+                                    </button>
+                                </form>
+
+                                <!-- NO SHOW BUTTON -->
+                                <form th:if="${appointment.appointmentStatus == T(com.github.stoynko.easydoc.appointment.model.AppointmentStatus).PENDING}"
+                                      th:action="@{/appointments/{appointmentId}/no-show(appointmentId=${appointment.appointmentId})}"
+                                      th:method="POST" style="flex: 1; width: 100%;">
+
+                                    <button type="submit"
+                                            class="btn-primary warning"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-calendar-times"></i>
+                                        No-Show
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- PAST APPOINTMENTS-->
+            <div class="dashboard-card">
+
+                <h2 th:if="${!#lists.isEmpty(pastAppointments)}"
+                    th:with="count=${#lists.size(pastAppointments)}"
+                    class="section-heading">
+
+                <span th:if="${count > 1}">
+                    <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                    Past Appointments
+                </span>
+
+                    <span th:unless="${count > 1}">
+                    <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                    Past Appointment
+                </span>
+                </h2>
+
+                <div th:if="${#lists.isEmpty(pastAppointments)}" class="view-card-empty-container">
+                    <div class="empty-container-icon">
+                        <i class="fas fa-archive"></i>
+                    </div>
+                    <h3 class="empty-container-title">No past appointments</h3>
+                    <p class="empty-container-description">Any past appointments will appear here once completed.</p>
+                </div>
+
+                <div th:unless="${#lists.isEmpty(pastAppointments)}" class="table-wrapper">
+                    <table class="appointment-table">
+                        <colgroup>
+                            <col class="col-id">
+                            <col class="col-schedule">
+                            <col class="col-patient-id">
+                            <col class="col-patient">
+                            <col class="col-email">
+                            <col class="col-reason">
+                            <col class="col-actions">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th scope="col">Reference</th>
+                            <th scope="col">Date &amp; Time</th>
+                            <th scope="col">Patient PIN</th>
+                            <th scope="col">Patient Name</th>
+                            <th scope="col">Patient Email</th>
+                            <th scope="col">Reason</th>
+                            <th scope="col" class="th-actions">Quick Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="appointment : ${pastAppointments}">
+
+                            <td th:text="${appointment.appointmentPublicId}"
+                                class="appointment-id">Placeholder Appointment ID
+                            </td>
+
+                            <td th:text="${#temporals.format(appointment.startsAt, 'dd MMM yyyy ''at'' HH:mm')}"
+                                class="appointment-schedule"> Placeholder Date
+                            </td>
+
+                            <td th:text="${appointment.patientPin}"
+                                class="appointment-id">Placeholder PIN
+                            </td>
+
+                            <td th:text="${appointment.patientName}"
+                                class="visit-doctor-name">Placeholder Name</span>
+                            </td>
+
+                            <td th:text="${appointment.patientEmailAddress}"
+                                class="patient-email">Placeholder Email Address
+                            </td>
+
+                            <td th:text="${appointment.appointmentReason.getDisplayValue()}"
+                                class="visit-reason">Placeholder Reason
+                            </td>
+
+                            <td class="quick-actions" data-label="Actions">
+                                <!-- MEDICAL REPORT BUTTON -->
+                                <form th:if="${appointment.hasReport}"
+                                      th:action="@{/appointments/{appointmentId}/report(appointmentId=${appointment.appointmentId})}"
+                                      th:method="GET" style="flex: 1; width: 100%;">
+                                    <button type="submit"
+                                            class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-file-medical"></i>
+                                    </button>
+                                </form>
+
+                                <!-- PRESCRIPTION BUTTON -->
+                                <form th:if="${appointment.hasPrescription}"
+                                      th:action="@{/appointments/{appointmentId}/prescription(appointmentId=${appointment.appointmentId})}"
+                                      th:method="GET" style="flex: 1; width: 100%;">
+                                    <button type="submit"
+                                            class="btn-primary"
+                                            style="width: 100%; text-align: center; text-decoration: none; padding: var(--spacing-sm)">
+                                        <i class="fas fa-prescription"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </th:block>
+
+    </main>
+</div>
+
+</body>
+</html>

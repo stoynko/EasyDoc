@@ -1,0 +1,19 @@
+<th:block th:fragment="delivery_method_fragment">
+    <div id="delivery-method-container">
+        <div class="form-group">
+            <select id="delivery-method"
+                    name="deliveryMethod">
+                <option th:if="${#lists.isEmpty(methods)}" value="">
+                    No delivery method matching the criteria
+                </option>
+                <option th:unless="${#lists.isEmpty(methods)}" value="">
+                    Select the dosage delivery form
+                </option>
+                <option th:each="deliveryMethod : ${methods}"
+                        th:value="${deliveryMethod}"
+                        th:text="${deliveryMethod.getDisplayValue()}">
+                </option>
+            </select>
+        </div>
+    </div>
+</th:block>

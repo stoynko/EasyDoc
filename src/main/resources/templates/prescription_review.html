@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">Users Management</title>
+    <th:block data-fragment="head">
+        <link rel="stylesheet" th:href="@{/css/prescriptions.css}">
+    </th:block>
+</head>
+<body data-fragment="body">
+
+<th:block data-fragment="scripts">
+    <script th:src="@{/js/modal.js}"></script>
+</th:block>
+
+<!-- HEADER-->
+<header th:insert="~{fragments/header :: header_auth}"></header>
+
+<div class="workspace-container">
+
+    <!-- SIDEBAR -->
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+
+        <div class="dashboard-card">
+
+            <div class="entity-form">
+
+                <!-- BREADCRUMB -->
+                <span class="breadcrumb">
+                   <a th:href="@{/appointments}" class="breadcrumb-link">My Appointments </a>
+                   <i class="fas fa-caret-right"></i>
+                   <span th:text="${' ' + appointmentDetails.appointmentPublicId}">Placeholder Crumb</span>
+               </span>
+
+                <th:block sec:authorize="hasRole('PATIENT')"
+                          th:insert="~{fragments/prescription :: prescription_patient}">
+                </th:block>
+
+                <th:block sec:authorize="hasRole('DOCTOR')"
+                         th:insert="~{fragments/prescription :: prescription_doctor}">
+                </th:block>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</body>

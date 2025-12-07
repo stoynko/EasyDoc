@@ -1,0 +1,42 @@
+<th:block th:fragment="doctors_fragment">
+
+    <div class="dashboard-card">
+
+        <div th:insert="~{fragments/categories_filter :: specializations}" id="category-filter-container" class="category-filter-container"> </div>
+
+                <div id="doctors-grid-container" class="doctors-grid-container">
+
+                    <div class="doctors-grid">
+                        <div th:each="doctor : ${doctors}" class="doctor-card">
+                            <div class="avatar-container">
+                                <img th:src="${doctor.profilePhotoUrl}" alt="profile-photo" class="avatar-img">
+                                <span th:text="${doctor.expertise}" class="specialization-tag">Placeholder Expertise</span>
+                            </div>
+                            <h3 th:text="${doctor.firstName + ' ' + doctor.lastName}" class="doctor-name">Placeholder Name</h3>
+                            <p th:text="${doctor.practiceLocation}" class="doctor-address">Placeholder Location</p>
+
+                            <div class="doctor-actions">
+                                <a th:href="@{/doctors/{doctorId}(doctorId=${doctor.id})}" class="action-button">
+                                    <i class="fas fa-user-md"></i>
+                                    <span>View Details</span>
+                                </a>
+                                <a th:href="@{/appointments/doctors/{doctorId}(doctorId=${doctor.id})}" class="action-button">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Book Appointment</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EMPTY LIST -->
+                    <div th:if="${#lists.isEmpty(doctors)}" class="doctors-empty-container">
+                        <div class="doctors-empty-container-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <h3 class="no-result-title">No Available Doctors</h3>
+                        <p class="no-result-message">There are currently no available doctors. Please check back later or try a
+                            different category.</p>
+                    </div>
+                </div>
+            </div>
+</th:block>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+
+    <head>
+        <meta charset="UTF-8">
+        <title data-fragment="title">EasyMed</title>
+        <th:block data-fragment="head">
+
+        </th:block>
+    </head>
+
+    <body data-fragment="body">
+
+    <!-- HEADER-->
+    <header th:insert="~{fragments/header :: header}"></header>
+
+    <th:block th:switch="${processState}">
+
+        <th:block th:case="'formEntry'">
+
+            <section class="register-container">
+
+                <div class="register-wrapper">
+
+                    <div class="register-header">
+                        <h2>Configure Your Account</h2>
+                    </div>
+
+                    <form th:object="${submitPersonalDetailsRequest}" th:action="@{/onboarding/account}"
+                          th:method="POST" class="entity-form">
+
+
+                        <div class="form-group">
+                            <label for="firstname">First Name</label>
+                            <input th:field="*{firstName}" type="text" id="firstname" name="firstname" maxlength="100"
+                                   required>
+                            <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="form-error">Placeholder Error</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastname">Last Name</label>
+                            <input th:field="*{lastName}" type="text" id="lastname" name="lastname" maxlength="100"
+                                   required>
+                            <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="form-error">Placeholder Error</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pin">Personal Identification Number</label>
+                            <input th:field="*{pin}" type="text" id="pin" name="pin" maxlength="10"
+                                   required>
+                            <p th:if="${#fields.hasErrors('pin')}" th:errors="*{pin}" class="form-error">Placeholder Error</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dateOfBirth">Date of Birth</label>
+                            <input type="date"
+                                   id="dateOfBirth"
+                                   name="dateOfBirth"
+                                   th:field="*{dateOfBirth}"
+                                   th:attr="min=${'1930-01-01'}, max=${#temporals.format(
+                                            #temporals.createNow().minusYears(18),'yyyy-MM-dd')}"
+                                   required>
+                            <p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="form-error">Placeholder Error</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select th:field="*{gender}" id="gender" name="gender" required>
+                                <option value="">Select Your Gender</option>
+                                <option th:each="g : ${T(com.github.stoynko.easydoc.user.model.Gender).values()}"
+                                        th:value="${g}" th:text="${g.getDisplayValue()}">Placeholder
+                                </option>
+                            </select>
+                            <p th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="form-error">Placeholder
+                                Error</p>
+                        </div>
+
+                        <a th:href="@{/dashboard}" class="btn-register">
+                            <i class="fas fa-sign-in-alt"></i> Skip
+                        </a>
+
+                        <button type="submit" class="btn-register">
+                            <i class="fas fa-user-plus"></i> Submit Your Details
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </th:block>
+
+        <th:block th:case="'success'">
+            <th:block th:insert="~{fragments/success_messages :: onboarding-account-submit-success}"></th:block>
+        </th:block>
+
+        <th:block th:case="'failed'">
+            <th:block th:replace="~{fragments/error_messages :: info-submission-failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="*"></th:block>
+    </th:block>
+
+    </body>
+</html>

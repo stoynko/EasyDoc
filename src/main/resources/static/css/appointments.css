@@ -1,0 +1,437 @@
+.appointment-container {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+.appointment-container::before {
+    content: '';
+    position: absolute;
+    right: -200px;
+    top: -100px;
+    width: 800px;
+    height: 800px;
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    border-radius: 50%;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.section-heading {
+    margin-bottom: var(--spacing-md);
+}
+
+.appointment-wrapper {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.appointment-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.appointment-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.appointment-header p {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.appointment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.appointment-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    font-size: 14px;
+    margin-top: var(--spacing-lg);
+}
+
+/* ============================================
+             PATIENT UPCOMING APPOINTMENTS
+   ============================================ */
+
+.appointment-table.patient-upcoming col.col-id {
+    width: 12%;
+}
+
+.appointment-table.patient-upcoming col.col-schedule {
+    width: 18%;
+}
+
+.appointment-table.patient-upcoming col.col-doctor {
+    width: 22%;
+}
+
+.appointment-table col.col-doctor-uin {
+    width: 14%;
+}
+
+.appointment-table.patient-upcoming col.col-expertise {
+    width: 12%;
+}
+
+.appointment-table.patient-upcoming col.col-reason {
+    width: 24%;
+}
+
+.appointment-table.patient-upcoming col.col-actions {
+    width: 10%;
+}
+
+/* ============================================
+             PATIENT PAST APPOINTMENTS
+   ============================================ */
+
+.appointment-table.patient-past col.col-id {
+    width: 6%;
+}
+
+.appointment-table.patient-past col.col-doctor {
+    width: 8%;
+}
+
+.appointment-table.patient-past col.col-expertise {
+    width: 10%;
+}
+
+.appointment-table.patient-past col.col-reason {
+    width: 10%;
+}
+
+.appointment-table.patient-past col.col-status {
+    width: 5%;
+}
+
+.appointment-table.patient-past col.col-schedule {
+    width: 10%;
+}
+
+.appointment-table.patient-past col.col-actions {
+    width: 14%;
+}
+
+/* ============================================
+             DOCTOR APPOINTMENTS
+   ============================================ */
+
+.appointment-table thead th {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    color: #9ca3af;
+    font-weight: 600;
+    text-align: center;
+    padding: 0 16px 12px;
+}
+
+.appointment-table thead th:not(:last-child) {
+    border-right: 1px solid #e5e7eb;
+}
+
+.appointment-table thead th.th-actions {
+    text-align: center;
+}
+
+.appointment-table tbody tr {
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    border-radius: 12px;
+    border: 1px solid #eef2f7;
+}
+
+.appointment-table tbody tr td {
+    padding: 14px 16px;
+    color: #4b5563;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.appointment-table tbody tr td:not(:last-child) {
+    border-right: 1px solid #e5e7eb;
+}
+
+.appointment-table tbody tr td:first-child {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+.appointment-table tbody tr td:last-child {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.patient-email {
+    color: #4b5563;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: space-evenly;
+}
+
+.appointment-schedule {
+    color: var(--color-text-primary);
+}
+
+.visit-doctor-name {
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
+.visit-doctor-expertise {
+    color: var(--color-text-primary);
+}
+
+.visit-reason {
+    color: var(--color-text-primary);
+}
+
+.patient-name {
+    color: var(--color-text-primary);
+}
+
+.appointment-id {
+    color: var(--color-text-primary);
+}
+
+@media (max-width: 992px) {
+    .appointment-table {
+        border-spacing: 0 8px;
+    }
+
+    .appointment-table thead {
+        display: none;
+    }
+
+    .appointment-table tbody tr {
+        display: block;
+        padding: 16px;
+    }
+
+    .appointment-table tbody tr td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-radius: 0;
+        border-right: none;
+    }
+
+    .appointment-table tbody tr td:first-child {
+        margin-top: 4px;
+    }
+
+    .appointment-table tbody tr td:first-child,
+    .appointment-table tbody tr td:last-child {
+        border-radius: 0;
+    }
+
+    .appointment-table tbody tr td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6b7280;
+        margin-right: 12px;
+    }
+
+    .quick-actions {
+        justify-content: flex-start;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .appointment-container {
+        padding: 40px 20px;
+    }
+
+    .appointment-wrapper {
+        padding: 30px 24px;
+    }
+
+    .appointment-header h2 {
+        font-size: 28px;
+    }
+}
+
+.time-slot-btn {
+    padding: var(--spacing-sm) var(--spacing-xs);
+    border: 2px solid var(--color-gray-medium);
+    border-radius: var(--radius-sm);
+    background: var(--color-white);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: 'Poppins', sans-serif;
+}
+
+.time-slot-btn:hover:not(.unavailable):not(.active) {
+    background: var(--color-gray-light);
+}
+
+.time-slot-btn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.time-slot-btn.unavailable {
+    background: var(--color-red-bg);
+    border-color: var(--color-red);
+    color: var(--color-red);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.time-slot-btn.unavailable:hover {
+    background: var(--color-red-bg);
+    border-color: var(--color-red);
+    color: var(--color-red);
+}
+
+.time-slots-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--color-white);
+    border: 2px solid var(--color-gray-medium);
+    border-radius: var(--radius-sm);
+}
+
+.doctor-info-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.doctor-info-section .form-group-label {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.doctor-info-card {
+    background: var(--color-gray-light);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-lg);
+    border: 2px solid var(--color-gray-medium);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.doctor-expertise {
+    font-size: var(--font-size-base);
+    color: var(--color-primary);
+    margin-bottom: 4px;
+}
+
+.doctor-location {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.doctor-info-content {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-xl);
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.doctor-info-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+.doctor-info-icon {
+    color: var(--color-primary);
+    font-size: var(--font-size-base);
+}
+
+.doctor-info-icon-large {
+    color: var(--color-primary);
+    font-size: var(--font-size-lg);
+}
+
+.doctor-name,
+.doctor-expertise,
+.doctor-location {
+    margin: 0;
+}
+
+.appointment-form-row {
+    align-items: stretch;
+}
+
+.appointment-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.appointment-form-group-flex {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.appointment-label-no-shrink {
+    flex-shrink: 0;
+}
+
+.appointment-time-container {
+    flex: 1;
+    min-height: 0;
+    grid-template-columns: repeat(6, 1fr);
+}
+
+.appointment-form-group-no-shrink {
+    flex-shrink: 0;
+}
+
+.appointment-textarea-flex {
+    flex: 1;
+    min-height: 0;
+    resize: none;
+}
+
+.appointment-error-no-shrink {
+    flex-shrink: 0;
+}
+
+.appointment-submit-button {
+    margin-top: var(--spacing-2xl);
+}

@@ -1,0 +1,43 @@
+<th:block th:fragment="header"
+          xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+    <a th:href="@{/}" class="logo">
+        <div class="logo-icon"></div>
+        <span>EasyDoc</span>
+    </a>
+    <nav>
+        <a th:href="@{/doctors}" th:classappend="${currentPath == '/doctors'} ? ' active' : ''">Doctors</a>
+    </nav>
+
+    <div class="header-actions">
+        <a th:href="@{/register}" class="register-btn">Register</a>
+        <a th:href="@{/login}" class="login-btn">Login</a>
+    </div>
+
+</th:block>
+
+<th:block th:fragment="header_auth"
+          xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+    <a th:href="@{/}" class="logo">
+        <div class="logo-icon"></div>
+        <span>EasyDoc</span>
+    </a>
+    <div class="header-actions">
+
+        <span class="nav-divider vertical"></span>
+
+        <a sec:authorize="isAuthenticated()" th:href="@{/settings}" class="header-icon-btn" title="Settings"
+           th:classappend="${currentPath == '/settings'} ? ' active' : ''">
+            <i class="fas fa-cog"></i>
+        </a>
+        <a sec:authorize="isAuthenticated() and hasRole('DOCTOR')" th:href="@{/account}" class="header-icon-btn"
+           title="Account"
+           th:classappend="${currentPath == '/account'} ? ' active' : ''">
+            <i class="fas fa-user"></i>
+        </a>
+    </div>
+</th:block>
+

@@ -1,0 +1,136 @@
+.doctors-grid-container {
+    margin: 0 auto;
+    padding: 10px 10px;
+}
+
+.doctors-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+}
+
+.doctors-empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.doctors-empty-container-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--color-primary-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    font-size: 48px;
+    color: var(--color-primary);
+}
+
+.doctor-card {
+    background: var(--color-white);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+    transition: box-shadow 0.3s;
+    max-width: 400px;
+}
+
+.doctor-card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.doctor-name {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 8px;
+}
+
+.doctor-address {
+    text-align: center;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+}
+
+.doctor-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 2px solid var(--color-gray-medium);
+    border-radius: 12px;
+    background: var(--color-white);
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+}
+
+.action-button:hover {
+    background: var(--color-gray-light);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.action-button i {
+    font-size: 14px;
+}
+
+@media (max-width: 1200px) {
+    .doctors-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .doctors-container {
+        padding: 30px 40px;
+    }
+
+    .doctors-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .header-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .search-doctor {
+        flex: 1;
+    }
+}
+
+@media (max-width: 600px) {
+    .doctors-container {
+        padding: 20px;
+    }
+
+    .doctors-grid {
+        grid-template-columns: 1fr;
+    }
+}

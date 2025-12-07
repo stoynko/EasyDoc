@@ -1,0 +1,58 @@
+<th:block th:fragment="medicament_block">
+    <div id="medicament-block">
+
+        <!-- MEDICAMENT NAME -->
+        <div class="entity-field">
+            <label class="entity-field-label inline-error">Medicament
+                <span class="required">*</span>
+            </label>
+            <div class="form-group">
+                <select id="medicament-id"
+                        name="medicamentId"
+                        th:hx-get="@{/prescriptions/medicaments/delivery-methods}"
+                        hx-trigger="change"
+                        hx-target="#delivery-method-container"
+                        hx-swap="outerHTML">
+
+                    <option th:if="${#lists.isEmpty(medicamentsCatalog)}" value="">
+                        No medicament matching the criteria
+                    </option>
+
+                    <option selected th:unless="${#lists.isEmpty(medicamentsCatalog)}" value="">
+                        Select Medicament
+                    </option>
+                    <option th:each="medicament : ${medicamentsCatalog}"
+                            th:value="${medicament.medicamentId}"
+                            th:text="${medicament.brandName + ' (' + medicament.genericName + ')'}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <!-- DELIVERY METHODS -->
+        <div class="entity-field">
+            <label class="entity-field-label inline-error">Delivery Method
+                <span class="required">*</span>
+            </label>
+            <div id="delivery-method-container">
+                <div class="form-group">
+                    <select id="delivery-method"
+                            name="deliveryMethod">
+
+                        <option th:if="${#lists.isEmpty(methods)}" value="">
+                            No delivery method matching the criteria
+                        </option>
+
+                        <option selected th:unless="${#lists.isEmpty(methods)}" value="">
+                            Select the dosage delivery form
+                        </option>
+                        <option th:each="deliveryMethod : ${methods}"
+                                th:value="${deliveryMethod}"
+                                th:text="${deliveryMethod.getDisplayValue()}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>

@@ -1,0 +1,35 @@
+<th:block th:fragment="specializations">
+        <div class="category-filter">
+            <a th:href="@{/doctors}"
+               th:classappend="${category == null} ? ' active' : ''" class="category-btn">ALL
+            </a>
+            <a th:href="@{/doctors(category='CARDIOLOGIST')}"
+               th:classappend="${category == T(com.github.stoynko.easydoc.practitioner.model.Expertise).CARDIOLOGIST} ? ' active' : ''"
+               class="category-btn">CARDIOLOGY
+            </a>
+            <a th:href="@{/doctors(category='ORTHOPEDIST')}"
+               th:classappend="${category == T(com.github.stoynko.easydoc.practitioner.model.Expertise).ORTHOPEDIST} ? ' active' : ''"
+            class="category-btn">ORTHOPEDICS
+            </a>
+            <a th:href="@{/doctors(category='SURGEON')}"
+               th:classappend="${category == T(com.github.stoynko.easydoc.practitioner.model.Expertise).SURGEON} ? ' active' : ''"
+               class="category-btn">SURGERY
+            </a>
+            <a th:href="@{/doctors(category='PEDIATRICIAN')}"
+               th:classappend="${category == T(com.github.stoynko.easydoc.practitioner.model.Expertise).PEDIATRICIAN} ? ' active' : ''"
+               class="category-btn">PEDIATRICS
+            </a>
+            <a th:href="@{/doctors(category='UROLOGIST')}"
+               th:classappend="${category == T(com.github.stoynko.easydoc.practitioner.model.Expertise).UROLOGIST} ? ' active' : ''"
+               class="category-btn">UROLOGY
+            </a>
+            <a th:href="@{/doctors(category='GASTROENTEROLOGIST')}"
+               th:classappend="${category == T(com.github.stoynko.easydoc.practitioner.model.Expertise).GASTROENTEROLOGIST} ? ' active' : ''"
+               class="category-btn">GASTROENTEROLOGY
+            </a>
+            <a th:href="@{/doctors(category='ENT')}"
+               th:classappend="${category == T(com.github.stoynko.easydoc.practitioner.model.Expertise).ENT} ? ' active' : ''"
+               class="category-btn">ENT
+            </a>
+        </div>
+</th:block>

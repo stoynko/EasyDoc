@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">EasyDoc</title>
+    <th:block data-fragment="head">
+
+    </th:block>
+</head>
+
+<body data-fragment="body">
+
+<!-- HEADER-->
+<header sec:authorize="isAnonymous()" th:insert="~{fragments/header :: header}"></header>
+<header sec:authorize="isAuthenticated()" th:insert="~{fragments/header :: header_auth}"></header>
+
+<div class="workspace-container">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <th:block sec:authorize="isAuthenticated()">
+        <aside th:if="${#strings.contains(currentPath ?: '', '/settings')}"
+               th:insert="~{fragments/sidebar_navigation :: settings_navigation}"
+               class="sidebar">
+        </aside>
+
+        <aside th:if="${!#strings.contains(currentPath ?: '', '/settings')}"
+               th:insert="~{fragments/sidebar_navigation :: workspace_navigation}"
+               class="sidebar">
+        </aside>
+    </th:block>
+
+        <!-- FRAGMENT DISPLAY -->
+        <div class="main-content">
+            <th:block th:switch="${confirmationMessage}">
+                <th:block th:case="registrationSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: registration_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="emailVerificationSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: email_verification_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="personalInfoUpdateSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: personal_info_update_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="profilePhotoUpdateSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: profile_photo_update_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="contactInfoUpdateSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: contact_info_update_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="professionalInfoUpdateSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: professional_info_update_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="emailAddressUpdateSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: email_address_update_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="passwordUpdateSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: password_update_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="deleteRequestSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: account_deletion_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="appointmentCancellationSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: appointment_cancellation_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="appointmentMarkNoShow">
+                    <th:block th:insert="~{fragments/success_messages :: appointment_mark_noshow_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="reportCreationSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: medical_report_creation_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="reportEditSuccess">
+                    <th:block th:insert="~{fragments/success_messages :: medical_report_edit_success}"></th:block>
+                </th:block>
+            </th:block>
+        </div>
+</div>
+</body>
+</html>

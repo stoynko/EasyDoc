@@ -1,0 +1,353 @@
+<th:block th:fragment="dashboard" xmlns:th="http://www.thymeleaf.org">
+
+    <div class="summary-grid">
+
+
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <div>
+                    <div class="summary-label">Account Details</div>
+                </div>
+            </div>
+            <ul class="info-list settings-info-list">
+                <li class="settings-info-item">
+                    <div class="settings-info-item-content">
+                        <span class="info-label">Personal Information</span>
+
+                        <div class="summary-details">Personal Details</div>
+
+                    </div>
+                    <span th:if="${isProfileCompleted}" class="info-chip success">Submitted</span>
+
+                    <a th:unless="${isProfileCompleted}" th:href="@{/onboarding/account}">
+                        <span class="info-chip warning">Submit</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="personal_info"
+          xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+    <div class="view-card onboarding-hero">
+
+        <div class="onboarding-copy">
+            <h1 class="view-card-title">Personal Information</h1>
+            <p class="view-card-subtitle">Review and update your personal details and contact information</p>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="entity-form">
+            <form sec:authorize="hasRole('DOCTOR')" th:object="${changeAvatarRequest}"
+                  th:action="@{/settings/personal-info/photo}" th:method="POST" class="view-card"
+                  enctype="multipart/form-data">
+                <h3 class="view-card-title">Profile Photo</h3>
+                <p class="view-card-subtitle">Upload a clear, front-facing photo. PNG or JPG files up to 10 MB are
+                    supported.</p>
+
+                <div class="form-group">
+                    <label for="avatarUpload">Upload Profile Photo</label>
+                    <input th:field="*{fileUpload}" type="file" id="avatarUpload" name="avatarUpload" accept="image/*">
+                    <p th:if="${#fields.hasErrors('fileUpload')}" th:errors="*{fileUpload}" class="form-error">
+                        Placeholder Error</p>
+                </div>
+
+                <div class="form-actions right-align">
+                    <button type="submit" class="btn-primary">Update Your Details</button>
+                </div>
+            </form>
+
+            <form th:object="${changePersonalDetailsRequest}" th:action="@{/settings/personal-info/update}"
+                  th:method="POST" class="view-card">
+                <h3 class="view-card-title">Update Your Personal Information</h3>
+                <p class="view-card-subtitle"></p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input th:field="*{firstName}" type="text" id="firstname" name="firstname" maxlength="100"
+                               required>
+                        <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="form-error">
+                            Placeholder Error</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input th:field="*{lastName}" type="text" id="lastname" name="lastname" maxlength="100"
+                               required>
+                        <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="form-error">
+                            Placeholder Error</p>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth</label>
+                        <input type="date"
+                               id="dateOfBirth"
+                               name="dateOfBirth"
+                               th:field="*{dateOfBirth}"
+                               th:value="${#temporals.format(changePersonalDetailsRequest.dateOfBirth, 'yyyy-MM-dd')}"
+                               th:attr="min=${'1930-01-01'}, max=${#temporals.format(#temporals.createNow().minusYears(18),'yyyy-MM-dd')}"
+                               required>
+                        <p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="form-error">
+                            Placeholder Error</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select th:field="*{gender}" id="gender" name="gender" required>
+                            <option value="">Select Your Gender</option>
+                            <option th:each="g : ${T(com.github.stoynko.easydoc.user.model.Gender).values()}"
+                                    th:value="${g}" th:text="${g.getDisplayValue()}">Placeholder
+                            </option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="form-error">Placeholder
+                            Error</p>
+                    </div>
+                </div>
+
+                <div class="form-actions right-align">
+                    <button type="submit" class="btn-primary">Update Your Details</button>
+                </div>
+            </form>
+
+            <form th:object="${changeContactDetailsRequest}" th:action="@{/settings/personal-info/contacts}"
+                  th:method="POST" class="view-card">
+
+                <h2>Update Your Contact Information</h2>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="contactPhone">Contact Phone</label>
+                        <input th:field="*{phoneNumber}" type="tel" id="contactPhone" name="contactPhone"
+                               placeholder="+359 88 123 4567" required>
+                        <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="form-error">
+                            Placeholder Error</p>
+                    </div>
+
+                </div>
+
+                <div class="form-actions" style="justify-content: flex-end;">
+                    <button type="submit" class="btn-primary">Update Your Details</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="professional_info"
+          xmlns:th="http://www.thymeleaf.org">
+
+    <div class="view-card onboarding-hero">
+
+        <div class="onboarding-copy">
+            <h1 class="view-card-title">Update Your Professional Expertise</h1>
+            <p class="view-card-subtitle">Keep your professional highlights up to date so that your patients can receive
+                the most accurate details of your care.</p>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="entity-form">
+            <form th:object="${changeProfessionalDetailsRequest}" th:action="@{/settings/professional-info}"
+                  th:method="POST" class="view-card">
+
+                <div class="form-group">
+                    <label for="specialization">Expertise</label>
+                    <select th:field="*{expertise}" id="specialization" name="specialization" required>
+                        <option value="">Select your area of expertise</option>
+                        <option th:each="e : ${T(com.github.stoynko.easydoc.practitioner.model.Expertise).values()}"
+                                th:value="${e}" th:text="${e.getDisplayValue()}">Placeholder
+                        </option>
+                    </select>
+                    <p th:if="${#fields.hasErrors('expertise')}" th:errors="*{expertise}" class="form-error">Placeholder
+                        Error</p>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="yearsOfExperience">Years of Experience</label>
+                        <input th:field="*{yearsExperience}" type="number" id="yearsOfExperience"
+                               name="yearsOfExperience" min="0" max="60" placeholder="5" required>
+                        <p th:if="${#fields.hasErrors('yearsExperience')}" th:errors="*{yearsExperience}"
+                           class="form-error">Placeholder Error</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="practiceLocation">Primary Practice Location</label>
+                        <input th:field="*{practiceLocation}" type="text" id="practiceLocation" name="practiceLocation"
+                               placeholder="St. Nicholas Medical Center - Varna" required>
+                        <p th:if="${#fields.hasErrors('practiceLocation')}" th:errors="*{practiceLocation}"
+                           class="form-error">Placeholder Error</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="professionalHighlights">Professional Highlights</label>
+                    <textarea th:field="*{professionalHighlights}" id="professionalHighlights"
+                              name="professionalHighlights" max=""
+                              placeholder="Share your background, achievements, and patient care philosophy"
+                              required></textarea>
+                    <p th:if="${#fields.hasErrors('professionalHighlights')}" th:errors="*{professionalHighlights}"
+                       class="form-error">Placeholder Error</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="spokenLanguages">Spoken Languages (Seperate by comma if such e.g. "English,
+                        German")</label>
+                    <input th:field="*{spokenLanguages}" type="text" id="spokenLanguages" name="spokenLanguages"
+                           placeholder="Bulgarian, English, German">
+                    <p th:if="${#fields.hasErrors('spokenLanguages')}" th:errors="*{spokenLanguages}"
+                       class="form-error">Placeholder Error</p>
+                </div>
+
+                <div class="form-actions right-align">
+                    <button type="submit" class="btn-primary">Update Your Details</button>
+                </div>
+            </form>
+        </div>
+</th:block>
+
+<th:block th:fragment="security"
+          xmlns:th="http://www.thymeleaf.org">
+
+    <div class="view-card onboarding-hero">
+        <div class="onboarding-copy">
+            <h1 class="view-card-title">Security &amp; Login</h1>
+            <p class="view-card-subtitle">Keep your account safe by updating credentials and enabling multi-factor
+                authentication</p>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+
+        <div class="entity-form">
+
+            <form th:object="${changeEmailAddressRequest}" th:action="@{/settings/security/email}" th:method="POST"
+                  class="view-card">
+
+                <h3 class="view-card-title">Email Address</h3>
+                <p class="view-card-subtitle">We send login alerts and account notifications to this email.</p>
+
+                <div class="form-group">
+                    <label for="currentEmail">Current Email</label>
+                    <input th:field="*{currentEmailAddress}" type="email" id="currentEmail" name="currentEmail"
+                           placeholder="john.doe@easydoc.com" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="newEmail">Enter Your New Email Address</label>
+                    <input th:field="*{newEmailAddress}" type="email" id="newEmail" name="newEmail"
+                           placeholder="Enter new email" required>
+                    <p th:if="${#fields.hasErrors('newEmailAddress')}" th:errors="*{newEmailAddress}"
+                       class="form-error">Placeholder Error</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmEmailPassword">Confirm Your Password</label>
+                    <input th:field="*{password}" type="text" id="confirmEmailPassword" name="confirmPassword"
+                           placeholder="Confirm your password" required>
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="form-error">Placeholder
+                        Error</p>
+                </div>
+
+                <div class="form-actions right-align">
+                    <button type="submit" class="btn-primary">Update Your Email Address</button>
+                </div>
+            </form>
+
+            <form th:object="${changePasswordRequest}" th:action="@{/settings/security/password}" th:method="POST"
+                  class="view-card">
+                <h3 class="view-card-title">Change Password</h3>
+                <p class="view-card-subtitle">Choose a strong password with at least 8 characters, including letters and
+                    numbers.</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="currentPassword">Enter Your Current Password</label>
+                        <input th:field="*{currentPassword}" type="password" id="currentPassword" name="currentPassword"
+                               placeholder="Current password" required>
+                        <p th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}"
+                           class="form-error">Placeholder Error</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Enter Your New Password</label>
+                        <input th:field="*{newPassword}" type="password" id="newPassword" name="newPassword"
+                               placeholder="Create new password" required>
+                        <p th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}" class="form-error">
+                            Placeholder Error</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Your New Password</label>
+                    <input th:field="*{confirmNewPassword}" type="password" id="confirmPassword" name="confirmPassword"
+                           placeholder="Re-enter new password" required>
+                    <p th:if="${#fields.hasErrors('confirmNewPassword')}" th:errors="*{confirmNewPassword}"
+                       class="form-error">Placeholder Error</p>
+                </div>
+
+                <div class="form-actions right-align">
+                    <button type="submit" class="btn-primary">Update Your Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="delete_account"
+          xmlns:th="http://www.thymeleaf.org">
+    <div class="view-card onboarding-hero">
+
+        <div class="onboarding-copy">
+            <h1 class="view-card-title">Delete Your Account</h1>
+            <p class="view-card-subtitle">Please note that this action cannot be undone. Confirm the statement below and
+                re-enter your password.</p>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+
+        <div class="entity-form">
+
+            <form th:object="${deleteAccountRequest}" th:action="@{/settings/delete}" th:method="POST"
+                  class="view-card">
+
+                <div class="view-card">
+                    <h3 class="view-card-title">Final Confirmation</h3>
+                    <p class="view-card-subtitle"></p>
+
+                    <div class="form-group">
+                        <label for="confirmationPhrase">To Confirm, Type <span
+                                style="color: var(--color-red); text-decoration: underline;">" I confirm the deletion of my account "</span>
+                            Below</label>
+                        <input th:field="*{confirmationInput}" type="text" id="confirmationPhrase"
+                               name="confirmationPhrase" placeholder="I confirm the deletion of my account" required>
+                        <p th:if="${#fields.hasErrors('confirmationInput')}" th:errors="*{confirmationInput}"
+                           class="form-error">Placeholder Error</p>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Confirm With Your Password</label>
+                        <input th:field="*{passwordConfirmation}" type="password" id="password" name="password"
+                               placeholder="Enter your password" required>
+                        <p th:if="${#fields.hasErrors('passwordConfirmation')}" th:errors="*{passwordConfirmation}"
+                           class="form-error">Placeholder Error</p>
+                    </div>
+
+                    <div class="form-actions right-align">
+                        <button type="submit" class="btn-primary warning">Delete My Account</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</th:block>

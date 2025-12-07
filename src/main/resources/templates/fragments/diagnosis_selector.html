@@ -1,0 +1,19 @@
+<th:block th:fragment="diagnosis_selector">
+
+    <div id="diagnosis-container" class="form-group">
+        <select id="diagnosis" name="diagnosis">
+
+            <option th:if="${diagnosisList != null and !#lists.isEmpty(diagnosisList)}">Select Diagnosis</option>
+
+            <option th:if="${diagnosisList != null and #lists.isEmpty(diagnosisList)}"
+                    value="" selected>No diagnosis matching the requirements
+            </option>
+
+            <option th:unless="${diagnosisList == null or #lists.isEmpty(diagnosisList)}"
+                    th:each="diagnosisOption : ${diagnosisList}"
+                    th:value="${diagnosisOption.fullDiagnosis}"
+                    th:text="${diagnosisOption.fullDiagnosis}">Placeholder
+            </option>
+        </select>
+    </div>
+</th:block>

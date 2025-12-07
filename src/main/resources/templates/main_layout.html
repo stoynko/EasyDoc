@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(titleFragment, bodyFragment, head, scripts)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <title th:replace="${titleFragment}">EasyMed</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+
+    <th:block th:if="${head != null}">
+        <th:block th:insert="${head}"></th:block>
+    </th:block>
+
+</head>
+
+    <body>
+        <!-- JS -->
+        <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+
+        <th:block th:if="${scripts != null}">
+            <th:block th:insert="${scripts}"></th:block>
+        </th:block>
+
+        <!-- BODY -->
+        <main id="body-content">
+            <section th:replace="${bodyFragment}"></section>
+        </main>
+
+        <!-- FOOTER -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    </body>
+</html>

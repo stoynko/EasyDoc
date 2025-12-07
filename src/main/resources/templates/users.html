@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">Users Management</title>
+    <th:block data-fragment="head">
+        <link rel="stylesheet" th:href="@{/css/appointments.css}">
+    </th:block>
+</head>
+<body data-fragment="body">
+
+<!-- HEADER-->
+<header th:insert="~{fragments/header :: header_auth}"></header>
+
+<div class="workspace-container">
+
+    <!-- SIDEBAR -->
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <!-- ACTIVE USERS APPOINTMENTS-->
+    <div class="main-content">
+
+        <div class="dashboard-card">
+
+                <h2 th:if="${!#lists.isEmpty(users)}"
+                    th:with="count=${#lists.size(users)}"
+                    class="section-heading">
+                    <span th:if="${count > 1}">
+                        <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                        Active Users
+                    </span>
+                            <span th:unless="${count > 1}">
+                        <span th:text="${count}" class="header-meta-value">Placeholder Count</span>
+                        Active User
+                    </span>
+                </h2>
+
+            <div th:if="${#lists.isEmpty(users)}" class="view-card-empty-container">
+
+                <div class="empty-container-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+
+                <h3 class="empty-container-title">No active users</h3>
+                <p class="empty-container-description">Any active users will appear here.</p>
+
+            </div>
+
+            <div th:unless="${#lists.isEmpty(users)}" class="table-wrapper">
+
+                <table class="appointment-table">
+
+                    <colgroup>
+                        <col class="col-id">
+                        <col class="col-patient">
+                        <col class="col-email">
+                        <col class="col-created">
+                        <col class="col-created">
+                        <col class="col-role">
+                        <col class="col-status">
+                        <col class="col-actions">
+                    </colgroup>
+
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email Address</th>
+                        <th scope="col">Registered On</th>
+                        <th scope="col">Updated On</th>
+                        <th scope="col">Account Status</th>
+                        <th scope="col">Role</th>
+                        <th scope="col" class="th-actions">Quick Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.id}" class="user-uuid">Placeholder Reference</td>
+
+                        <td th:text="${user.name}" class="patient-name">Placeholder Name</td>
+
+                        <td th:text="${user.emailAddress}" class="patient-email">Placeholder Email</td>
+
+                        <td th:text="${#temporals.format(user.creationDate, 'dd MMM yyyy ''at'' HH:mm')}"
+                            class="appointment-schedule">Placeholder Date
+                        </td>
+
+                        <td th:text="${#temporals.format(user.updatedDate, 'dd MMM yyyy ''at'' HH:mm')}"
+                            class="appointment-schedule">Placeholder Date
+                        </td>
+
+                        <td th:text="${user.accountStatus}" class="user-status">Placeholder Status</td>
+
+                        <td th:text="${user.accountRole}" class="user-role">Placeholder Role</td>
+
+                        <td class="quick-actions">
+                            <form th:if="${user.canBookAppointment and user.accountStatus != T(com.github.stoynko.easydoc.user.model.AccountStatus).DELETED}"
+                                  th:action="@{/users/{userId}/authorities/revoke/{authority}(userId=${user.id}, authority='CAN_BOOK_APPOINTMENT')}"
+                                  th:method="POST"
+                                  class="inline-form">
+
+                                <button type="submit" class="action-btn cancel" title="Activate user">
+                                    <i class="fas fa-calendar-times"></i>
+                                </button>
+                            </form>
+                            <form th:if="${!user.canBookAppointment and user.accountStatus != T(com.github.stoynko.easydoc.user.model.AccountStatus).DELETED}"
+                                  th:action="@{/users/{userId}/authorities/reinstate/{authority}(userId=${user.id}, authority='CAN_BOOK_APPOINTMENT')}"
+                                  th:method="POST"
+                                  class="inline-form">
+
+                                <button type="submit" class="action-btn enable" title="Activate user">
+                                    <i class="fas fa-calendar-check"></i>
+                                </button>
+                            </form>
+                            <form th:if="${user.accountStatus == T(com.github.stoynko.easydoc.user.model.AccountStatus).SUSPENDED}"
+                                  th:action="@{/users/{uuid}/enable(uuid=${user.id})}"
+                                  th:method="POST"
+                                  class="inline-form">
+
+                                <button type="submit" class="action-btn enable" title="Activate user">
+                                    <i class="fas fa-user-check"></i>
+                                </button>
+                            </form>
+                            <form th:if="${user.accountStatus != T(com.github.stoynko.easydoc.user.model.AccountStatus).SUSPENDED
+                                         and user.accountStatus != T(com.github.stoynko.easydoc.user.model.AccountStatus).DELETED}"
+                                  th:action="@{/users/{userId}/suspend(userId=${user.id})}"
+                                  th:method="POST"
+                                  class="inline-form">
+
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                                <button type="submit" class="action-btn cancel">
+                                    <i class="fas fa-user-slash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,412 @@
+<th:block th:fragment="registration_failure">
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Registration Failed</h2>
+                </div>
+
+                <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                <p class="error-subtitle" th:if="${errorMessageDetails == null}"> Your email address could not be verified as the verification link is invalid or has expired.
+
+                <div class="form-actions">
+                    <a th:href="@{/register}" class="btn-primary">
+                        <i class="fas fa-redo"></i> Try Again
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="account_suspended">
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Account Suspended</h2>
+                    <p class="error-subtitle">Your request could not be processed as your account has been suspended. If you believe this is in error, please contact our support team.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="onboarding_account_info_submit_failure">
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Onboarding Submission Failed</h2>
+                    <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                    <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We could not process your request
+                </div>
+
+                <div class="form-actions">
+                    <a th:href="@{/onboarding/account}" class="btn-primary">
+                        <i class="fas fa-th-large"></i> Try Again
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="account_already_onboarded">
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Onboarding Request Failed</h2>
+                    <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                    <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We could not process your request
+                </div>
+
+                <div class="form-actions">
+                    <a th:href="@{/dashboard}" class="btn-primary">
+                        <i class="fas fa-redo"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="onboarding_doctor_info_submit_failure">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: settings_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+    <section class="register-container">
+        <div class="error-wrapper">
+
+            <div class="register-header">
+                <i class="fas fa-exclamation-circle error-icon"></i>
+                <h2 class="error-title">Onboarding Submission Failed</h2>
+                <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We could not process your request
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/onboarding/doctors/submit}" class="btn-primary">
+                    <i class="fas fa-redo"></i> Try Again
+                </a>
+            </div>
+        </div>
+    </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="appointment-booking-failed">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+    <section class="register-container">
+        <div class="error-wrapper">
+            <div class="register-header">
+                <i class="fas fa-exclamation-circle error-icon"></i>
+                <h2 class="success-title">Appointment Failed</h2>
+                <p class="success-subtitle">We encountered an error while booking your appointment</p>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/appointments}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> View Appointments
+                </a>
+            </div>
+        </div>
+    </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="email_verification_failure">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: settings_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+    <section class="register-container">
+        <div class="error-wrapper">
+
+            <div class="register-header">
+                <i class="fas fa-exclamation-circle error-icon"></i>
+                <h2 class="error-title">Email Not Verified</h2>
+                <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We encountered an error during the verification of your email</p>
+            </div>
+        </div>
+    </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="token_verification_failure">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Invalid Verification Token</h2>
+                    <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                    <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We encountered an error during the verification of your email</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="authority_check_failure">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+    <section class="register-container">
+        <div class="error-wrapper">
+
+            <div class="register-header">
+                <i class="fas fa-exclamation-circle error-icon"></i>
+                <h2 class="error-title">Request Failed</h2>
+                <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We encountered an error during the verification of your email</p>
+            </div>
+        </div>
+    </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="can_book_check_failure">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+    <section class="register-container">
+        <div class="error-wrapper">
+
+            <div class="register-header">
+                <i class="fas fa-exclamation-circle error-icon"></i>
+                <h2 class="error-title">Request Failed</h2>
+                <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We encountered an error during the verification of your email</p>
+            </div>
+        </div>
+    </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="can_submit_application_check_failure">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Request Failed</h2>
+                    <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                    <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We encountered an error during the verification of your email</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="application_already_exists">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Request Failed</h2>
+                    <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                    <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We encountered an error during the verification of your email</p>
+                </div>
+
+                <div class="form-actions">
+
+                    <a th:href="@{/settings}" class="btn-register">
+                            <i class="fas fa-th-large"></i> Settings Dashboard
+                    </a>
+
+                    <a th:href="@{/dashboard}" class="btn-register">
+                        <i class="fas fa-th-large"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="prescription_exists">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Prescription Already Exists</h2>
+                    <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                    <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We encountered an error creating a prescription</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="general_error">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Oops, something went wrong</h2>
+                    <p class="error-subtitle">Your request could not be completed</p>
+                </div>
+
+                <div class="form-actions">
+                    <a th:href="@{/}" class="btn-register">
+                        <i class="fas fa-sign-in-alt"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="page_render_failed">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Oops, something went wrong</h2>
+                    <p class="error-subtitle">An error was encountered when rendering the page. Please try again later. If the issue persists, you are welcome to get in touch with our support team.</p>
+                </div>
+
+                <div class="form-actions">
+                    <a th:href="@{/}" class="btn-register">
+                        <i class="fas fa-sign-in-alt"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="max_upload_size_exceeded">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: settings_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Oops, something went wrong</h2>
+                    <p class="error-subtitle" >An error was encountered processing your image. Please refer to the allowed maximum size.</p>
+                </div>
+
+                <div class="form-actions">
+                    <a th:href="@{/}" class="btn-register">
+                        <i class="fas fa-sign-in-alt"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="report_edit_access_denied">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Edit Access Denied</h2>
+                    <p class="error-subtitle" th:if="${errorMessageDetails != null}" th:text="${errorMessageDetails}">Placeholder Error</p>
+                    <p class="error-subtitle" th:if="${errorMessageDetails == null}"> We encountered an error creating a prescription</p>
+                </div>
+
+                <div class="form-actions">
+                    <a th:href="@{/}" class="btn-register">
+                        <i class="fas fa-sign-in-alt"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="resource_not_found">
+
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Oops, something went wrong</h2>
+                    <p class="error-subtitle">The page or resource you're looking for doesn't exist or has been moved.</p>
+                </div>
+
+                <div class="form-actions">
+                    <a th:href="@{/dashboard}" class="btn-primary">Back to Dashboard</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="access_denied_exception">
+
+    <div class="main-content">
+        <section class="register-container">
+            <div class="error-wrapper">
+                <div class="register-header">
+                    <i class="fas fa-exclamation-circle error-icon"></i>
+                    <h2 class="error-title">Access Denied</h2>
+                </div>
+
+                <p class="error-subtitle">
+                    You do not have permission to view this page.
+                </p>
+
+                <div class="form-actions">
+                    <a th:href="@{/}" class="btn-primary">Go Back</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</th:block>
+

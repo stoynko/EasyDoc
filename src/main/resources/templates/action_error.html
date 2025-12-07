@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">EasyDoc</title>
+    <th:block data-fragment="head">
+        <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    </th:block>
+</head>
+
+<body data-fragment="body">
+
+<!-- HEADER-->
+<header sec:authorize="isAnonymous()" th:insert="~{fragments/header :: header}"></header>
+<header sec:authorize="isAuthenticated()" th:insert="~{fragments/header :: header_auth}"></header>
+
+<div class="workspace-container">
+
+    <th:block th:switch="${errorMessage}">
+
+        <th:block th:case="registration_failure">
+            <th:block th:insert="~{fragments/error_messages :: registration_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="account_suspended">
+            <th:block th:insert="~{fragments/error_messages :: account_suspended}"></th:block>
+        </th:block>
+
+        <th:block th:case="token_verification_failure">
+            <th:block th:insert="~{fragments/error_messages :: token_verification_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="onboarding_account_info_submit_failure">
+            <th:block th:insert="~{fragments/error_messages :: onboarding_account_info_submit_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="account_already_onboarded">
+            <th:block th:insert="~{fragments/error_messages :: account_already_onboarded}"></th:block>
+        </th:block>
+
+        <th:block th:case="onboardingDoctorInfoSubmitFailure">
+            <th:block th:insert="~{fragments/error_messages :: onboarding_doctor_info_submit_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="email_verification_check_failure">
+            <th:block th:insert="~{fragments/error_messages :: email_verification_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="authority_check_failure">
+            <th:block th:insert="~{fragments/error_messages :: authority_check_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="can_book_check_failure">
+            <th:block th:insert="~{fragments/error_messages :: can_book_check_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="can_submit_application_check_failure">
+            <th:block th:insert="~{fragments/error_messages :: can_submit_application_check_failure}"></th:block>
+        </th:block>
+
+        <th:block th:case="prescription_exists">
+            <th:block th:insert="~{fragments/error_messages :: prescription_exists}"></th:block>
+        </th:block>
+
+        <th:block th:case="application_already_exists">
+            <th:block th:insert="~{fragments/error_messages :: application_already_exists}"></th:block>
+        </th:block>
+
+        <th:block th:case="resource_not_found">
+            <th:block th:insert="~{fragments/error_messages :: resource_not_found}"></th:block>
+        </th:block>
+
+        <th:block th:case="general_error">
+            <th:block th:insert="~{fragments/error_messages :: general_error}"></th:block>
+        </th:block>
+
+        <th:block th:case="page_render_failed">
+            <th:block th:insert="~{fragments/error_messages :: page_render_failed}"></th:block>
+        </th:block>
+
+        <th:block th:case="max_upload_size_exceeded">
+            <th:block th:insert="~{fragments/error_messages :: max_upload_size_exceeded}"></th:block>
+        </th:block>
+
+        <th:block th:case="report_edit_access_denied">
+            <th:block th:insert="~{fragments/error_messages :: max_upload_size_exceeded}"></th:block>
+        </th:block>
+
+        <th:block th:case="access_denied_exception">
+            <th:block th:insert="~{fragments/error_messages :: access_denied_exception}"></th:block>
+        </th:block>
+    </th:block>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+
+    <head>
+        <meta charset="UTF-8">
+        <title data-fragment="title">My Dashboard</title>
+        <th:block data-fragment="head">
+            <link rel="stylesheet" th:href="@{/css/settings.css}">
+            <link rel="stylesheet" th:href="@{/css/onboarding.css}">
+        </th:block>
+    </head>
+
+    <body data-fragment="body">
+
+        <!-- HEADER-->
+        <header th:insert="~{fragments/header :: header_auth}"></header>
+
+        <div class="workspace-container">
+
+            <!-- SIDEBAR NAVIGATION -->
+            <aside th:insert="~{fragments/sidebar_navigation :: settings_navigation}" class="sidebar"></aside>
+
+            <!-- FRAGMENT DISPLAY -->
+            <main class="main-content"
+                th:insert="~{__${fragmentPath}__}">
+            </main>
+        </div>
+    </body>
+</html>

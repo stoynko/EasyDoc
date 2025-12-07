@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">Create Prescription</title>
+    <th:block data-fragment="head">
+        <!-- Using only shared styles from base.css -->
+    </th:block>
+</head>
+<body data-fragment="body">
+
+<header th:insert="~{fragments/header :: header}"></header>
+
+<section class="register-container">
+    <div class="register-wrapper listing-wrapper">
+        <div class="register-header">
+            <h2>Create Prescription</h2>
+            <p class="text-muted">Prepare a prescription for the selected examination.</p>
+        </div>
+
+        <form class="entity-form"
+              method="post"
+              th:action="@{/prescriptions}">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="prescription-id">Prescription ID</label>
+                    <input id="prescription-id"
+                           type="text"
+                           name="id"
+                           placeholder="Auto-generated"
+                           readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="appointment">Appointment</label>
+                    <select id="appointment"
+                            name="appointmentId"
+                            required>
+                        <option value="" disabled selected>Select appointment</option>
+                        <option>
+                            Sample Appointment
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="patient-notes">Patient Notes</label>
+                <textarea id="patient-notes"
+                          name="patientNotes"
+                          placeholder="Additional notes about the patient or examination"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="medicaments">Medicaments</label>
+                <textarea id="medicaments"
+                          name="medicaments"
+                          placeholder="List prescribed medicaments and quantities"
+                          required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="dosage">Dosage Instructions</label>
+                <textarea id="dosage"
+                          name="dosageInstructions"
+                          placeholder="Specify dosage and administration guidelines"
+                          required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="duration">Treatment Duration</label>
+                <input id="duration"
+                       type="text"
+                       name="treatmentDuration"
+                       placeholder="e.g., 7 days">
+            </div>
+
+            <div class="form-group">
+                <label for="follow-up">Follow-up Recommendations</label>
+                <textarea id="follow-up"
+                          name="followUp"
+                          placeholder="Provide any follow-up instructions or scheduling notes"></textarea>
+            </div>
+
+            <div class="form-actions right-align">
+                <button type="reset" class="register-btn">Reset</button>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-prescription-bottle-alt"></i>
+                    Save Prescription
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+</body>
+</html>
+

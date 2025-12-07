@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+    <head>
+        <meta charset="UTF-8">
+        <title data-fragment="title">EasyDoc</title>
+        <th:block data-fragment="head">
+            <link rel="stylesheet" th:href="@{/css/doctors.css}">
+            <link rel="stylesheet" th:href="@{/css/onboarding.css}">
+        </th:block>
+    </head>
+
+    <body data-fragment="body">
+
+        <!-- HEADER-->
+        <header sec:authorize="isAuthenticated()" th:insert="~{fragments/header :: header_auth}"></header>
+        <header sec:authorize="isAnonymous()" th:insert="~{fragments/header :: header}"></header>
+
+        <div sec:authorize="isAuthenticated()" class="workspace-container">
+
+            <!-- SIDEBAR NAVIGATION -->
+            <aside th:insert="~{fragments/sidebar_navigation :: settings_navigation}" class="sidebar"></aside>
+
+            <main class="main-content">
+                <th:block th:switch="${processState}">
+
+                <th:block th:case="'landing'">
+                    <div class="view-card">
+
+                        <section class="onboarding-section">
+                            <h1 class="onboarding-title">Grow your practice with EasyDoc</h1>
+                            <p class="onboarding-subtitle">Streamline scheduling, reduce no-shows, and discover new patients with the
+                                leading digital platform built for modern clinicians.</p>
+                        </section>
+
+                        <section class="onboarding-section">
+
+                            <h1 class="onboarding-title">Flexible plans for every practitioner</h1>
+
+                            <p class="onboarding-subtitle">Choose the plan that matches your pace. Switch or cancel anytime. All plans
+                                include onboarding support and GDPR-ready data protection.</p>
+
+                            <div class="onboarding-pricing">
+                                <article class="onboarding-price-card featured">
+
+                                    <h3>Starter</h3>
+                                    <div class="onboarding-price">
+                                        29.99<span><span class="currency-symbol">€</span>/month</span>
+                                    </div>
+                                    <p>Perfect for individual specialists getting started with online bookings.</p>
+                                    <ul class="onboarding-plan-features">
+                                        <li><i class="fas fa-check-circle"></i> Unlimited upcoming reservations</li>
+                                        <li><i class="fas fa-check-circle"></i> Email notifications</li>
+                                        <li><i class="fas fa-check-circle"></i> Public profile page</li>
+                                    </ul>
+                                    <div class="btn-primary">Get started</div>
+                                </article>
+                                <article class="onboarding-price-card featured">
+                                    <h3>Plus</h3>
+                                    <div class="onboarding-price">
+                                        49.99<span><span class="currency-symbol">€</span>/month</span>
+                                    </div>
+                                    <p>Unlock expanded scheduling, SMS reminders, and patient preference lists. Includes all Starter
+                                        features, plus:</p>
+                                    <ul class="onboarding-plan-features">
+                                        <li><i class="fas fa-check-circle"></i> SMS notifications</li>
+                                        <li><i class="fas fa-check-circle"></i> Featured profile</li>
+                                        <li><i class="fas fa-check-circle"></i> Support via ticket</li>
+                                    </ul>
+                                    <div class="btn-primary">Get started</div>
+                                </article>
+                                <article class="onboarding-price-card featured">
+                                    <h3>Pro</h3>
+                                    <div class="onboarding-price">
+                                        89.99<span><span class="currency-symbol">€</span>/month</span>
+                                    </div>
+                                    <p>Unlock advanced customization and premium support. Includes all Plus features, plus:</p>
+                                    <ul class="onboarding-plan-features">
+                                        <li><i class="fas fa-check-circle"></i> Priority support via phone</li>
+                                        <li><i class="fas fa-check-circle"></i> Custom Integrations</li>
+                                    </ul>
+                                    <div class="btn-primary">Get started</div>
+                                </article>
+                            </div>
+                        </section>
+
+                        <section class="onboarding-section">
+                            <h2 class="onboarding-title">Clinicians love the EasyDoc experience</h2>
+                            <p class="onboarding-subtitle">Hear from healthcare teams who have boosted patient satisfaction and reduced
+                                administrative work using EasyDoc.</p>
+
+                            <div class="onboarding-testimonials">
+                                <article class="onboarding-testimonial">
+                                    <p>“EasyDoc cut our inbound phone calls by half and let us focus on consultations. Patients enjoy the
+                                        convenience, and so do we.”</p><strong>Dr. Maria Petrova · Dermatologist</strong>
+                                </article>
+                                <article class="onboarding-testimonial">
+                                    <p>“Our clinic coordinates five practitioners with ease. The automated reminders drastically reduced
+                                        no-shows.”</p><strong>Dr. Ivan Dimitrov · Cardiologist</strong>
+                                </article>
+                                <article class="onboarding-testimonial">
+                                    <p>“With EasyDoc’s analytics we finally understand peak demand and can plan staffing accordingly.”</p>
+                                    <strong>Dr. Elena Vasileva · Pediatrician</strong>
+                                </article>
+                            </div>
+                        </section>
+                        <section class="onboarding-section">
+                            <div class="onboarding-cta">
+                                <h2>Ready to become the next EasyDoc success story?</h2>
+                                <p>Join hundreds of practitioners who manage their schedules, communicate with patients, and grow their
+                                    practice entirely online.</p><a sec:authorize="isAnonymous()" th:href="@{/register}"
+                                                                    class="btn-primary">Create your profile today</a> <a
+                                    sec:authorize="isAuthenticated()" th:href="@{/onboarding/doctors/apply}" class="btn-primary">Submit your
+                                application</a>
+                            </div>
+                        </section>
+                    </div>
+                </th:block>
+
+                <th:block th:case="formEntry">
+                    <div class="view-card">
+
+                        <div class="view-card onboarding-hero">
+
+                            <div class="onboarding-copy">
+                                <h1 class="view-card-title">Become an EasyDoc Provider</h1>
+                                <p class="view-card-subtitle">Share essential details about your medical practice to unlock doctor tools,
+                                    manage appointments, and reach new patients faster.</p>
+                            </div>
+                        </div>
+
+                        <div class="view-card onboarding-form" id="onboarding-form">
+
+                            <form th:object="${registerPractitionerRequest}" th:action="@{/onboarding/doctors/apply}" th:method="POST" enctype="multipart/form-data" class="entity-form" >
+
+                                <div class="form-group">
+                                    <label for="avatarUpload">Update Avatar</label>
+                                    <input th:field="*{profilePhoto}" type="file" id="avatarUpload" name="avatarUpload" accept="image/*" required>
+                                    <p th:if="${#fields.hasErrors('profilePhoto')}" th:errors="*{profilePhoto}" class="form-error">Placeholder Error</p>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="firstName">First Name</label>
+                                        <input th:field="*{firstName}" type="text" id="firstName" name="firstName" placeholder="Amelia" required>
+                                        <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="form-error">Placeholder Error</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lastName">Last Name</label>
+                                        <input th:field="*{lastName}" type="text" id="lastName" name="lastName" placeholder="Brooks" required>
+                                        <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="form-error">Placeholder Error</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="dateOfBirth">Date of Birth</label>
+                                        <input type="date"
+                                               id="dateOfBirth"
+                                               name="dateOfBirth"
+                                               th:field="*{dateOfBirth}"
+                                               th:value="${#temporals.format(registerPractitionerRequest.dateOfBirth, 'yyyy-MM-dd')}"
+                                               th:attr="min=${'1930-01-01'}, max=${#temporals.format(#temporals.createNow().minusYears(18),'yyyy-MM-dd')}"
+                                               required>
+                                        <p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="form-error">Placeholder Error</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="gender">Gender</label>
+                                        <select th:field="*{gender}" id="gender" name="gender" required>
+                                            <option value="" >Select your gender</option>
+                                            <option th:each="g : ${T(com.github.stoynko.easydoc.user.model.Gender).values()}"
+                                                    th:value="${g}" th:text="${g.getDisplayValue()}">Placeholder</option>
+                                        </select>
+                                        <p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="form-error">Placeholder Error</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="uin">UIN Number</label>
+                                        <input th:field="*{uin}" id="uin" name="uin" type="text" placeholder="Enter your unique identification number" required>
+                                        <p th:if="${#fields.hasErrors('uin')}" th:errors="*{uin}" class="form-error">Placeholder Error</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="specialization">Expertise</label>
+                                        <select th:field="*{expertise}" id="specialization" name="specialization" required>
+                                            <option value="" >Select your area of expertise</option>
+                                            <option th:each="e : ${T(com.github.stoynko.easydoc.practitioner.model.Expertise).values()}"
+                                                    th:value="${e}" th:text="${e.getDisplayValue()}">Placeholder</option>
+                                        </select>
+                                        <p th:if="${#fields.hasErrors('expertise')}" th:errors="*{expertise}" class="form-error">Placeholder Error</p>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="experience">Years of Professional Experience</label>
+                                        <input th:field="*{yearsExperience}" id="experience" class="no-spin" name="experience"
+                                               type="number" min="1" max="50" placeholder="e.g. 8" required>
+                                        <p th:if="${#fields.hasErrors('yearsExperience')}" th:errors="*{yearsExperience}" class="form-error">Placeholder Error</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address">Primary Practice Location</label>
+                                        <input th:field="*{practiceLocation}" id="address" name="address" rows="3"
+                                               placeholder="St. Nicholas Medical Center - Varna" required>
+                                        <p th:if="${#fields.hasErrors('practiceLocation')}" th:errors="*{practiceLocation}" class="form-error">Placeholder Error</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="spokenLanguages">Spoken Languages (Seperate by comma if such e.g. "English, German")</label>
+                                    <input th:field="*{spokenLanguages}" type="text" id="spokenLanguages" name="spokenLanguages" placeholder="Bulgarian, English, German" required>
+                                    <p th:if="${#fields.hasErrors('spokenLanguages')}" th:errors="*{spokenLanguages}" class="form-error">Placeholder Error</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="about">Professional Highlights</label>
+                                    <textarea th:field="*{professionalHighlights}" id="about" name="about" rows="5"
+                                              placeholder="Share your background, achievements, and patient care philosophy" required></textarea>
+                                    <p th:if="${#fields.hasErrors('professionalHighlights')}" th:errors="*{professionalHighlights}" class="form-error">Placeholder Error</p>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-primary">Submit Your Application</button>
+                                </div>
+                            </form>
+                        </div>
+                        <section class="onboarding-info">
+                            <div class="view-card onboarding-info-card">
+                                <h3 class="view-card-title">What happens next?</h3>
+                                <p class="text-muted">Our compliance team will review your submission within 1-2 business days. You will
+                                    receive an email with the outcome and next steps.</p>
+                            </div>
+                            <div class="view-card onboarding-info-card">
+                                <h3 class="view-card-title">Need assistance?</h3>
+                                <p class="text-muted">Contact our support team at <a href="mailto:support@easydoc.com" class="text-primary">support@easydoc.com</a>
+                                    for help with your onboarding documents or status.</p>
+                            </div>
+                        </section>
+                    </div>
+                </th:block>
+
+                <th:block th:case="success">
+                    <th:block th:insert="~{fragments/success_messages :: onboarding_doctor_submit_success}"></th:block>
+                </th:block>
+
+                <th:block th:case="failed">
+                    <th:block th:insert="~{fragments/error_messages :: onboarding_account_info_submit_failure}"></th:block>
+                </th:block>
+            </th:block>
+            </main>
+        </div>
+
+    </body>
+</html>

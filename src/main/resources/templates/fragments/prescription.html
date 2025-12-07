@@ -1,0 +1,254 @@
+<th:block th:fragment="prescription_patient">
+    <!--PATIENT & PRESCRIPTION SUMMARY CARD-->
+    <section class="card-summary">
+
+        <div class="card-summary-main">
+            <div class="card-summary-item">
+                <span class="card-summary-label">Patient</span>
+                <span th:text="${appointmentDetails.doctorFirstName + ' ' + appointmentDetails.doctorLastName}" class="card-summary-value">Placeholder Name</span>
+                <span class="card-summary-meta"><i class="fas fa-id-card"></i> <span th:text="${appointmentDetails.doctorExpertise}">Placeholder Expertise</span></span>
+                <span class="card-summary-meta"><i class="fas fa-id-card"></i> <span th:text="${appointmentDetails.doctorUin}">Placeholder Id</span></span>
+                <span class="card-summary-meta"><i class="fas fa-envelope"></i> <span th:text="${appointmentDetails.doctorEmail}">Placeholder Email</span></span>
+                <span th:if="${!#strings.isEmpty(appointmentDetails.doctorPhoneNumber)}" class="card-summary-meta"><i class="fas fa-phone"></i> <span th:text="${appointmentDetails.doctorPhoneNumber}">Placeholder Phone Number</span></span>
+            </div>
+            <div class="card-summary-item card-summary-item-meta">
+                <span class="card-summary-label">Appointment Details</span>
+                <span th:text="${appointmentDetails.appointmentReason.getDisplayValue()}" class="card-summary-value">Placeholder Reason</span>
+                <textarea th:text="${appointmentDetails.additionalNotes}" class="card-summary-meta card-summary-meta-textarea" rows="4" readonly>Placeholder Reason</textarea>
+            </div>
+        </div>
+
+        <!-- PRESCRIPTION DOCUMENT STATUS -->
+        <div class="card-status-block card-status-block-inline">
+            <div class="card-status-info">
+                <span class="card-status-label">Prescription Status</span>
+                <span th:text="${prescriptionDetails.prescriptionStatus}" class="card-status-value">Placeholder Status</span>
+
+                <!-- ISSUED AT DATE AND TIME -->
+                <span th:if="${prescriptionDetails.issuedAt != null and
+                               prescriptionDetails.prescriptionStatus == T(com.github.stoynko.easydoc.prescription.model.PrescriptionStatus).ISSUED}"
+                      class="card-status-meta">Issued At
+                    <strong th:text="${#temporals.format(prescriptionDetails.issuedAt, 'dd MMM yyyy ''at'' HH:mm')}">Placeholder Date</strong>
+                </span>
+
+                <!-- VALID UNTIL DATE AND TIME -->
+                <span th:if="${prescriptionDetails.expiresAt != null and
+                              prescriptionDetails.prescriptionStatus == T(com.github.stoynko.easydoc.prescription.model.PrescriptionStatus).ISSUED}" class="card-status-meta">Valid until
+                    <strong th:text="${#temporals.format(prescriptionDetails.expiresAt, 'dd MMM yyyy ''at'' HH:mm')}">Placeholder Date</strong>
+                </span>
+            </div>
+
+            <div class="card-status-actions"> </div>
+        </div>
+
+    </section>
+
+    <!-- MEDICAMENTS LIST -->
+    <div class="medicaments-list">
+
+        <article th:each="medicament : ${prescriptionDetails.medicaments}" class="medicament-card">
+
+            <div class="medicament-card-header">
+                <div class="medicament-main">
+                    <div class="medicament-type-row">
+                        <span class="medicament-type" th:text="${medicament.medicamentType}">Placeholder Type</span>
+                        <div class="medicament-icon">
+                            <i class="fas fa-virus-slash"></i>
+                        </div>
+                    </div>
+                    <h3 class="medicament-name" th:text="${medicament.brandName + ' ' + medicament.intakeDosage}">Placeholder Name</h3>
+                    <p class="medicament-purpose" th:text="${medicament.description}">Placeholder Description</p>
+                </div>
+
+            </div>
+            <div class="medicament-details">
+                <div class="detail-item">
+                    <span class="detail-label">Administration Method</span>
+                    <span class="detail-value" th:text="${medicament.deliveryMethod}">Placeholder Method</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Generic Name</span>
+                    <span class="detail-value" th:text="${medicament.genericName}">Placeholdeer Name</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Intake Frequency</span>
+                    <span class="detail-value" th:text="${medicament.intakeFrequency}">Placeholder Intake Frequency</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Treatment Duration</span>
+                    <span class="detail-value" th:text="${medicament.treatmentDuration}">Placeholder Duration</span>
+                </div>
+            </div>
+            <div class="medicament-notes">
+                <span class="detail-label">Additional notes</span>
+                <p class="detail-value" th:text="${medicament.additionalNotes}">Monitor for allergic reactions and report immediately.</p>
+            </div>
+        </article>
+
+    </div>
+</th:block>
+
+<th:block th:fragment="prescription_doctor">
+
+    <!--PATIENT & APPOINTMENT SUMMARY CARD-->
+    <section class="card-summary">
+
+        <div class="card-summary-main">
+            <div class="card-summary-item">
+                <span class="card-summary-label">Patient</span>
+                <span th:text="${appointmentDetails.patientFirstName + ' ' + appointmentDetails.patientLastName}" class="card-summary-value">Placeholder Name</span>
+                <span class="card-summary-meta"><i class="fas fa-id-card"></i> <span th:text="${appointmentDetails.patientPin}">Placeholder Id</span></span>
+                <span class="card-summary-meta"><i class="fas fa-envelope"></i> <span th:text="${appointmentDetails.patientEmail}">Placeholder Email</span></span>
+                <span th:if="${!#strings.isEmpty(appointmentDetails.patientPhoneNumber)}" class="card-summary-meta"><i class="fas fa-phone"></i> <span th:text="${appointmentDetails.patientPhoneNumber}">Placeholder Phone Number</span></span>
+            </div>
+            <div class="card-summary-item card-summary-item-meta">
+                <span class="card-summary-label">Appointment Details</span>
+                <span th:text="${appointmentDetails.appointmentReason.getDisplayValue()}" class="card-summary-value">Placeholder Reason</span>
+                <textarea th:text="${appointmentDetails.additionalNotes}" class="card-summary-meta card-summary-meta-textarea" rows="4" readonly>Placeholder Reason</textarea>
+            </div>
+        </div>
+
+        <form th:if="${!prescriptionExists}" th:action="@{/appointments/{appointmentId}/prescription/create(appointmentId=${appointmentId})}" th:method="POST">
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-file"></i>Create Prescription
+            </button>
+        </form>
+
+        <!-- PRESCRIPTION DOCUMENT STATUS -->
+        <div th:if="${prescriptionExists}" class="card-status-block card-status-block-inline">
+            <div class="card-status-info">
+                <span class="card-status-label">Prescription Status</span>
+                <span th:text="${prescriptionDetails.prescriptionStatus}" class="card-status-value">Placeholder Status</span>
+
+                <!-- CREATED ON DATE AND TIME -->
+                <span th:if="${prescriptionDetails.createdAt != null and
+                                               prescriptionDetails.prescriptionStatus == T(com.github.stoynko.easydoc.prescription.model.PrescriptionStatus).DRAFT}"
+                      class="card-status-meta">Created on
+                                    <strong th:text="${#temporals.format(prescriptionDetails.createdAt, 'dd MMM yyyy ''at'' HH:mm')}">Placeholder Date</strong>
+                                </span>
+
+                <!-- ISSUED AT DATE AND TIME -->
+                <span th:if="${prescriptionDetails.issuedAt != null and
+                                               prescriptionDetails.prescriptionStatus == T(com.github.stoynko.easydoc.prescription.model.PrescriptionStatus).ISSUED}"
+                      class="card-status-meta">Issued At
+                                    <strong th:text="${#temporals.format(prescriptionDetails.issuedAt, 'dd MMM yyyy ''at'' HH:mm')}">Placeholder Date</strong>
+                                </span>
+
+                <!-- VALID UNTIL DATE AND TIME -->
+                <span th:if="${prescriptionDetails.expiresAt != null and
+                                               prescriptionDetails.prescriptionStatus == T(com.github.stoynko.easydoc.prescription.model.PrescriptionStatus).ISSUED}" class="card-status-meta">Valid until
+                                    <strong th:text="${#temporals.format(prescriptionDetails.expiresAt, 'dd MMM yyyy ''at'' HH:mm')}">Placeholder Date</strong>
+                                </span>
+            </div>
+
+            <div class="card-status-actions">
+
+                <form th:if="${prescriptionDetails.issuedAt == null and
+                                               prescriptionDetails.prescriptionStatus == T(com.github.stoynko.easydoc.prescription.model.PrescriptionStatus).DRAFT}"
+                      th:action="@{/appointments/{appointmentId}/prescription/issue(appointmentId=${appointmentId})}"
+                      th:method="POST">
+
+                    <input type="hidden" name="prescriptionId" th:value="${prescriptionDetails.prescriptionId}"/>
+
+                    <button type="submit" class="btn-primary"
+                            th:attr="disabled=${#lists.isEmpty(prescriptionDetails.medicaments)}"
+                            th:classappend="${#lists.isEmpty(prescriptionDetails.medicaments)} ? ' btn-primary--disabled' : ''">
+                        <i class="fas fa-upload"></i>Issue Prescription
+                    </button>
+                </form>
+
+                <button th:if="${prescriptionDetails.prescriptionStatus ==
+                                               T(com.github.stoynko.easydoc.prescription.model.PrescriptionStatus).DRAFT}"
+                        type="button" class="btn-primary" onclick="openModal()">
+                    <i class="fas fa-prescription-bottle-alt"></i>Add Medicament
+                </button>
+
+            </div>
+        </div>
+
+    </section>
+
+    <!-- EMPTY MEDICAMENTS LIST-->
+    <div th:if="${!prescriptionExists}" class="view-card-empty-container empty-container-gap">
+        <div class="empty-container-icon">
+            <i class="fas fa-prescription"></i>
+        </div>
+        <h3 class="empty-container-title">No prescription has been created</h3>
+    </div>
+
+    <!-- EMPTY MEDICAMENTS LIST-->
+    <div th:if="${prescriptionExists and #lists.isEmpty(prescriptionDetails.medicaments)}" class="view-card-empty-container">
+        <div class="empty-container-icon">
+            <i class="fas fa-prescription-bottle-alt"></i>
+        </div>
+        <h3 class="empty-container-title">No prescribed medicaments</h3>
+        <p class="empty-container-description">No medications have been added for this prescription</p>
+    </div>
+
+    <!-- MEDICAMENTS LIST -->
+    <div th:if="${prescriptionExists and !#lists.isEmpty(prescriptionDetails.medicaments)}" class="medicaments-list">
+
+        <article th:each="medicament : ${prescriptionDetails.medicaments}" class="medicament-card">
+
+            <!--REMOVE MEDICAMENT BUTTON-->
+            <form th:if="${prescriptionDetails.prescriptionStatus == T(com.github.stoynko.easydoc.prescription.model.PrescriptionStatus).DRAFT}"
+                  th:action="@{/appointments/{appointmentId}/prescription/medicaments/remove(appointmentId=${prescriptionDetails.appointmentId})}"
+                  th:method="POST"
+                  class="medicament-remove-form">
+
+                <input type="hidden" name="prescriptionId" th:value="${prescriptionDetails.prescriptionId}"/>
+                <input type="hidden" name="medicamentId" th:value="${medicament.id}"/>
+
+                <button type="submit" class="medicament-remove-btn" title="Remove medicament">
+                    <span class="sr-only">Remove medicament</span>
+                    <i class="fas fa-times"></i>
+                </button>
+            </form>
+
+            <div class="medicament-card-header">
+                <div class="medicament-main">
+                    <div class="medicament-type-row">
+                        <span class="medicament-type" th:text="${medicament.medicamentType}">Placeholder Type</span>
+                        <div class="medicament-icon">
+                            <i class="fas fa-virus-slash"></i>
+                        </div>
+                    </div>
+                    <h3 class="medicament-name" th:text="${medicament.brandName + ' ' + medicament.intakeDosage}">Placeholder Name</h3>
+                    <p class="medicament-purpose" th:text="${medicament.description}">Placeholder Description</p>
+                </div>
+
+            </div>
+            <div class="medicament-details">
+                <div class="detail-item">
+                    <span class="detail-label">Administration Method</span>
+                    <span class="detail-value" th:text="${medicament.deliveryMethod}">Placeholder Method</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Generic Name</span>
+                    <span class="detail-value" th:text="${medicament.genericName}">Placeholdeer Name</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Intake Frequency</span>
+                    <span class="detail-value" th:text="${medicament.intakeFrequency}">Placeholder Intake Frequency</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Treatment Duration</span>
+                    <span class="detail-value" th:text="${medicament.treatmentDuration}">Placeholder Duration</span>
+                </div>
+            </div>
+            <div class="medicament-notes">
+                <span class="detail-label">Additional notes</span>
+                <p class="detail-value" th:text="${medicament.additionalNotes}">Monitor for allergic reactions and report immediately.</p>
+            </div>
+        </article>
+    </div>
+
+    <div id="medicament-modal" class="modal-overlay"
+         th:classappend="${#vars['org.springframework.validation.BindingResult.addMedicamentRequest']?.hasErrors()} ? ' is-open' : ''">
+        <div class="modal-content">
+
+            <div th:replace="~{fragments/medicament_creation :: medicament_creation}"></div>
+        </div>
+    </div>
+
+</th:block>

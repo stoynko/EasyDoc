@@ -1,0 +1,163 @@
+<th:block th:fragment="medicament_creation">
+
+    <div th:if="${prescriptionDetails != null}">
+        <form th:object="${addMedicamentRequest}"
+              th:action="@{/prescriptions/{prescriptionId}/medicaments/add(prescriptionId=${prescriptionDetails.prescriptionId})}"
+              th:method="POST" class="entity-form">
+
+            <input type="hidden" name="appointmentId" th:value="${prescriptionDetails.appointmentId}"/>
+            <input type="hidden" name="appointmentId" th:value="${prescriptionDetails.prescriptionId}"/>
+            <!-- MEDICAMENT PRESCRIPTION-->
+            <div class="entity-card-content">
+
+                <!-- MEDICAMENT DETAILS-->
+                <div class="entity-section">
+
+                    <h3 class="entity-section-title">Medicament Details</h3>
+
+                    <div class="entity-fields">
+
+                        <!-- MEDICAMENT TYPE -->
+                        <div class="entity-field">
+                            <label class="entity-field-label inline-error">Medicament Type
+                                <span class="required">*</span>
+                                <p th:if="${#fields.hasErrors('medicamentType')}" th:errors="*{medicamentType}" class="form-error form-error-inline"></p>
+                            </label>
+                            <div class="form-group">
+                                <select th:field="*{medicamentType}"
+                                        th:hx-get="@{/prescriptions/medicaments/options}"
+                                        hx-trigger="change"
+                                        hx-target="#medicament-block"
+                                        hx-swap="outerHTML">
+                                    <option value="" selected>Select medicament type</option>
+                                    <option th:each="medType : ${T(com.github.stoynko.easydoc.prescription.model.MedicamentType).values()}"
+                                            th:value="${medType}"
+                                            th:text="${medType.getDisplayValue()}">Placeholder Value
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- THIS WHOLE BLOCK WILL BE SWAPPED BY HTMX -->
+                        <div id="medicament-block" th:fragment="medicament_block">
+
+                            <!-- MEDICAMENT NAME -->
+                            <div class="entity-field">
+                                <label class="entity-field-label inline-error">Medicament
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="form-group">
+                                    <select disabled>
+                                        <option value="">
+                                            Select Medicament
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- DELIVERY METHODS -->
+                            <div class="entity-field">
+                                <label class="entity-field-label inline-error">Delivery Method
+                                    <span class="required">* </span>
+                                </label>
+                                <div id="delivery-method-container">
+                                    <div class="form-group">
+                                        <select disabled>
+                                            <option value="">
+                                                Select Medicament
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- INTAKE DETAILS-->
+                <div class="entity-section">
+
+                    <h3 class="entity-section-title">Treatment Details</h3>
+
+                    <div class="entity-fields">
+
+                        <!-- FREQUENCY -->
+                        <div class="entity-field">
+                            <label class="entity-field-label inline-error">Intake Frequency
+                                <span class="required">* </span>
+                                <p th:if="${#fields.hasErrors('intakeFrequency')}" th:errors="*{intakeFrequency}" class="form-error form-error-inline"></p>
+                            </label>
+                            <div class="form-group">
+                                <input th:field="*{intakeFrequency}" id="frequency" name="frequency"
+                                       placeholder="Specify the intake frequency" required>
+
+                            </div>
+                        </div>
+
+                        <!-- DOSAGE -->
+                        <div class="entity-field">
+                            <label class="entity-field-label inline-error">Intake Dosage
+                                <span class="required">* </span>
+                                <p th:if="${#fields.hasErrors('intakeDosage')}" th:errors="*{intakeDosage}" class="form-error form-error-inline"></p>
+                            </label>
+                            <div class="form-group">
+                                <input th:field="*{intakeDosage}" id="dosage" name="dosage"
+                                       placeholder="Specify the dosage i.e. 500mg" required>
+                            </div>
+                        </div>
+
+                        <!-- TREATMENT DURATION -->
+                        <div class="entity-field">
+                            <label class="entity-field-label inline-error">Treatment Duration
+                                <span class="required">* </span>
+                                <p th:if="${#fields.hasErrors('treatmentDuration')}" th:errors="*{treatmentDuration}" class="form-error form-error-inline"></p>
+
+                            </label>
+                            <div class="form-group">
+                                <input th:field="*{treatmentDuration}" id="treatment-duration" name="treatmentDuration"
+                                       placeholder="Specify the duration for intake" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ADDITIONAL NOTES -->
+            <div class="entity-card-content">
+
+                <div class="entity-section">
+                    <div class="entity-fields">
+
+                        <!-- ADDITIONAL INSTRUCTIONS -->
+                        <div class="entity-field">
+                            <label class="entity-field-label">Additional Notes</label>
+                            <div class="form-group">
+                            <textarea th:field="*{additionalNotes}" id="additional-instructions"
+                                      name="additionalInstructions"
+                                      placeholder="Outline additional instructions and/or any possible side effects "
+                                      rows="2">
+                            </textarea>
+                                <p th:if="${#fields.hasErrors('additionalNotes')}" th:errors="*{additionalNotes}"
+                                   class="form-error"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="view-card-actions">
+                <button type="button" class="btn-primary" onclick="closeModal()">
+                    <i class="fas fa-times"></i>Cancel
+                </button>
+
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-edit"></i>Add Medicament
+                </button>
+            </div>
+
+        </form>
+    </div>
+</th:block>

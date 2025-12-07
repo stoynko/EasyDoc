@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">Account</title>
+    <th:block data-fragment="head">
+        <link rel="stylesheet" th:href="@{/css/account.css}">
+    </th:block>
+</head>
+
+<body data-fragment="body">
+
+    <!-- HEADER -->
+    <header sec:authorize="isAuthenticated()" th:insert="~{fragments/header :: header_auth}"></header>
+    <header sec:authorize="isAnonymous()" th:insert="~{fragments/header :: header}"></header>
+
+    <div sec:authorize="isAuthenticated()" class="workspace-container">
+
+        <!-- SIDEBAR NAVIGATION -->
+        <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+        <!-- ACCOUNT CONTENT -->
+        <main class="main-content">
+
+            <div class="dashboard-card">
+
+                <div class="account-hero">
+                    <div class="account-hero-top">
+                        <div class="account-hero-left">
+                            <div class="avatar-container">
+                                <img th:src="${doctorSummary.profilePhotoUrl}" alt="profile-photo" class="avatar-img">
+                            </div>
+                            <div class="top-header" th:text="${doctorSummary.firstName + ' ' + doctorSummary.lastName}">Placeholder Name</div>
+                        </div>
+
+                        <div class="account-hero-right">
+                            <div class="expertise-tags">
+                                <span th:text="${doctorSummary.expertise.getDisplayValue()}">Placeholder expertise</span>
+                                <span th:text="${doctorSummary.yearsExperience + ' years of experience'}"
+                                      class="experience-tag">Placeholder Experience</span>
+                                <span th:if="${!#strings.isEmpty(doctorSummary.spokenLanguages)}"
+                                      th:text="${doctorSummary.spokenLanguages}" class="languages-tag">Placeholder Spoken Languages</span>
+                            </div>
+                            <p class="expertise-details" th:text="${doctorSummary.professionalHighlights}">Placeholder Professional Details</p>
+                        </div>
+
+                        <div class="account-hero-contacts">
+
+                            <ul class="account-info-list">
+                                <li>
+                                    <div class="info-icon"><i class="fas fa-at"></i></div>
+                                    <span th:text="${doctorSummary.emailAddress}" class="info-value">amelia.brooks@easydoc.com</span>
+                                </li>
+                                <li th:if="${!#strings.isEmpty(doctorSummary.phoneNumber)}">
+                                    <div class="info-icon"><i class="fas fa-phone"></i></div>
+                                    <span th:text="${doctorSummary.phoneNumber}" class="info-value">+359 88 123 4567</span>
+                                </li>
+                                <li>
+                                    <div class="info-icon"><i class="fas fa-hospital"></i></div>
+                                    <span th:text="${doctorSummary.practiceLocation}" class="info-value">EasyDoc Medical Center, Building B</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div sec:authorize="hasRole('PATIENT')" style="margin: var(--spacing-xl)">
+                    <a th:href="@{/appointments/doctors/{id}(id=${doctorSummary.id})}" class="btn-primary">
+                        <i class="fas fa-calendar"></i>
+                        <span>Book Appointment</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+

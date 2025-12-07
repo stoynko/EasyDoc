@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+    <head>
+        <meta charset="UTF-8">
+        <title data-fragment="title">EasyMed</title>
+        <th:block data-fragment="head">
+
+        </th:block>
+    </head>
+
+    <body data-fragment="body">
+
+    <!-- HEADER-->
+    <header th:insert="~{fragments/header :: header}"></header>
+
+    <!-- MAIN CONTENT-->
+    <section class="register-container">
+        <div class="register-wrapper">
+            <div class="register-header">
+                <h2>Create Your Account</h2>
+            </div>
+
+            <form th:object="${registerRequest}" th:action="@{/register}" th:method="POST" class="entity-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input th:field="*{emailAddress}" type="email" id="email" name="email" placeholder="Enter your email"
+                           maxlength="100">
+                    <p th:if="${#fields.hasErrors('emailAddress')}" th:errors="*{emailAddress}" class="form-error">Placeholder Error</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input th:field="*{password}" type="password" id="password" name="password"
+                           placeholder="Enter your password" required minlength="3" maxlength="50">
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="form-error">Placeholder Error</p>
+                </div>
+
+                <button type="submit" class="btn-register">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+
+                <div class="form-footer">
+                    <p>Already have an account? <a th:href="@{/login}">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </section>
+    </body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}">
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">Appointments</title>
+    <th:block data-fragment="head">
+        <link rel="stylesheet" th:href="@{/css/appointments.css}">
+    </th:block>
+</head>
+<body data-fragment="body">
+
+<th:block data-fragment="scripts">
+    <script th:src="@{/js/timeslots.js}"></script>
+</th:block>
+
+<!-- HEADER-->
+<header th:insert="~{fragments/header :: header_auth}"></header>
+
+<div class="workspace-container">
+
+    <!-- SIDEBAR -->
+    <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+
+    <!-- MAIN CONTENT-->
+    <main class="main-content">
+
+        <th:block th:switch="${processState}">
+
+            <th:block th:case="'formEntry'">
+
+                <div class="view-card onboarding-hero">
+
+                    <div class="onboarding-copy">
+                        <h1 class="view-card-title">Book Your Appointment With Ease</h1>
+                        <p class="view-card-subtitle">
+                            Choose the most suitable time for you and book your appointment in just a few easy steps.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card" id="schedule-appointment-form">
+
+                    <form th:object="${appointmentRequest}" th:action="@{/appointments/doctors/{doctorId}(doctorId=${doctorSummary.id})}" th:method="POST" class="entity-form">
+
+                        <!-- DOCTOR INFORMATION DISPLAY -->
+                        <div class="doctor-info-section">
+
+                            <span class="breadcrumb">
+                                    <a th:href="@{/doctors}" class="breadcrumb-link">Doctors</a>
+                                    <i class="fas fa-caret-right"></i>
+                                    <span class="" th:text="${'Dr. ' + doctorSummary.firstName + ' ' + doctorSummary.lastName + ' | ' + doctorSummary.expertise.getDisplayValue()  + ' | ' + doctorSummary.practiceLocation}">Placeholder Crumb</span>
+                                    <i class="fa-solid fa-pipe"></i>
+                            </span>
+
+                            <input type="hidden" name="doctorId" th:value="${doctorSummary.id}" required>
+                        </div>
+
+                        <!-- DATE AND TIMES -->
+                        <div class="summary-card">
+                            <div class="form-row appointment-form-row">
+                                <div class="view-card appointment-card">
+
+                                    <div class="form-group">
+                                        <label for="date">Date</label>
+                                        <input th:field="*{date}"
+                                               type="date"
+                                               id="date"
+                                               name="date"
+                                               th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')},
+                                               hx-get=@{/appointments/doctors/{doctorId}/available-times(doctorId=${doctorSummary.id})}"
+                                               hx-target="#time-slots-container"
+                                               hx-trigger="load, change"
+                                               hx-params="date">
+                                        <p class="form-error" th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Placeholder Error</p>
+                                    </div>
+
+                                    <div class="form-group appointment-form-group-flex" hidden>
+
+                                        <label class="appointment-label-no-shrink">Available Times</label>
+
+                                        <div id="time-slots-container" class="time-slots-container appointment-time-container">
+                                            <th:block th:insert="~{fragments/time_slots :: time-slots}"></th:block>
+                                        </div>
+
+                                        <input th:field="*{time}" type="hidden" id="selected-time" name="time">
+                                        <p th:if="${#fields.hasErrors('time')}" th:errors="*{time}" class="form-error">Placeholder Error</p>
+                                    </div>
+                                </div>
+
+                                <!-- REASON AND NOTES -->
+                                <div class="view-card appointment-card">
+
+                                    <div class="form-group appointment-form-group-no-shrink">
+
+                                        <label for="appointmentType">Reason for Appointment</label>
+
+                                        <select th:field="*{appointmentReason}" id="appointmentType" name="appointmentType">
+                                            <option value="">Select the reason for your appointment</option>
+                                            <option th:each="reason : ${T(com.github.stoynko.easydoc.appointment.model.AppointmentReason).values()}"
+                                                    th:value="${reason}" th:text="${reason.getDisplayValue()}">Placeholder</option>
+                                        </select>
+                                        <p th:if="${#fields.hasErrors('appointmentReason')}" th:errors="*{appointmentReason}" class="form-error">Placeholder Error</p>
+                                    </div>
+
+                                    <div class="form-group appointment-form-group-flex">
+                                        <label for="reason" class="appointment-label-no-shrink">Additional Notes</label>
+                                        <textarea th:field="*{additionalNotes}" id="reason"
+                                                  name="reason"
+                                                  class="appointment-textarea-flex"
+                                                  placeholder="Please describe the reason for your appointment"></textarea>
+                                        <p th:if="${#fields.hasErrors('additionalNotes')}" th:errors="*{additionalNotes}" class="form-error">Placeholder Error</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary appointment-submit-button">
+                                <i class="fas fa-calendar-check"></i>Book Appointment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </th:block>
+
+            <th:block th:case="'success'">
+                <th:block th:insert="~{fragments/success_messages :: appointment-booking-success}"></th:block>
+            </th:block>
+
+            <th:block th:case="'failed'">
+                <th:block th:insert="~{fragments/error_messages :: appointment-booking-failed}"></th:block>
+            </th:block>
+
+            <th:block th:case="*"></th:block>
+        </th:block>
+
+    </main>
+</div>
+
+</body>
+</html>

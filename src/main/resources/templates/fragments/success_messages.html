@@ -1,0 +1,305 @@
+<th:block th:fragment="registration_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Registration Successful!</h2>
+                <p class="success-subtitle">Your account has been created successfully. You can now log in to access
+                    your account.</p>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/login}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> Go to Login
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="email_verification_success"
+          xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Email Verification Successful!</h2>
+                <p class="success-subtitle">Your email address has been successfully verified.</p>
+            </div>
+
+            <div class="form-actions">
+                <a sec:authorize="isAuthenticated()" th:href="@{/dashboard}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+                <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="onboarding-account-submit-success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Details Submitted Successfully</h2>
+                <p class="success-subtitle">Thank you for submitting your personal details.</p>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/dashboard}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="onboarding_doctor_submit_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Application Submitted</h2>
+                <p class="success-subtitle">Your onboarding application was submitted successfully.
+                    You will be notified once it’s reviewed</p>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/dashboard}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="personal_info_update_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Personal Info Updated Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/settings}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Settings Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="profile_photo_update_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Profile Photo Updated Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/settings}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Settings Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="contact_info_update_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Contact Details Updated Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/settings}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Settings Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="professional_info_update_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Professional Info Updated Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/settings}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Settings Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="email_address_update_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Professional Info Updated Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/settings}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Settings Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="account_deletion_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Account Deletion Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/logout}" class="btn-register">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="password_update_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Password Updated Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/dashboard}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+
+                <a th:href="@{/settings}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> Settings
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="appointment-booking-success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Appointment Booked!</h2>
+                <p class="success-subtitle">Your appointment has been booked successfully.</p>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/appointments}" class="btn-register">
+                    <i class="fas fa-calendar-check"></i> Appointments
+                </a>
+                <a th:href="@{/dashboard}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="appointment_cancellation_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Appointment Cancelled Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/appointments}" class="btn-register">
+                    <i class="fas fa-calendar-check"></i> Appointments
+                </a>
+                <a th:href="@{/dashboard}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="appointment_mark_noshow_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Appointment Successfully Marked As No-Show</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/appointments}" class="btn-register">
+                    <i class="fas fa-calendar-check"></i> Appointments
+                </a>
+                <a th:href="@{/dashboard}" class="btn-register">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="medical_report_creation_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Medical Report Created Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/appointments/{appointmentId}/prescription(appointmentId=${appointmentId})}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> Issue Prescription
+                </a>
+
+                <form th:action="@{/appointments/{appointmentId}/report/issue(appointmentId=${appointmentId})}" th:method="POST">
+                    <button class="btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Issue Report
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="medical_report_edit_success">
+    <section class="register-container">
+        <div class="success-wrapper">
+            <div class="register-header">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2 class="success-title">Medical Report Edited Successfully</h2>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/appointments/{appointmentId}/prescription(appointmentId=${appointmentId})}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> Issue Prescription
+                </a>
+
+                <a th:href="@{/appointments/{appointmentId}/conclude(appointmentId=${appointmentId})}" class="btn-register">
+                    <i class="fas fa-sign-in-alt"></i> Complete Appointment
+                </a>
+            </div>
+        </div>
+    </section>
+</th:block>

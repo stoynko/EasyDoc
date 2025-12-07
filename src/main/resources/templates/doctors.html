@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{main_layout :: layout(~{::title},
+                                    ~{::body[@data-fragment='body']},
+                                    ~{::th:block[@data-fragment='head']},
+                                    ~{::th:block[@data-fragment='scripts']}
+      )}" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title data-fragment="title">EasyDoc</title>
+    <th:block data-fragment="head">
+        <link rel="stylesheet" th:href="@{/css/doctors.css}">
+    </th:block>
+</head>
+
+<body data-fragment="body">
+
+    <!-- HEADER-->
+    <header sec:authorize="isAnonymous()" th:insert="~{fragments/header :: header}"></header>
+    <header sec:authorize="isAuthenticated()" th:insert="~{fragments/header :: header_auth}"></header>
+
+    <div sec:authorize="isAuthenticated()" class="workspace-container">
+
+        <!-- SIDEBAR NAVIGATION -->
+        <aside th:insert="~{fragments/sidebar_navigation :: workspace_navigation}" class="sidebar"></aside>
+
+        <!-- DOCTOR'S CONTENT-->
+        <main th:insert="~{fragments/doctors :: doctors_fragment}" class="main-content"></main>
+    </div>
+
+    <!-- DOCTOR'S CONTENT-->
+    <main sec:authorize="isAnonymous()" th:insert="~{fragments/doctors :: doctors_fragment}" class="main-content"></main>
+
+</body>
+</html>

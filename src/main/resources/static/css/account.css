@@ -1,0 +1,240 @@
+.account-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.account-hero {
+    margin: 0;
+    padding: 0;
+}
+
+.account-hero-top {
+    --left: 260px;
+    display: grid;
+    grid-template-columns: minmax(var(--left), 360px) 1fr;
+    grid-auto-rows: min-content;
+    column-gap: clamp(24px, 4vw, 40px);
+    row-gap: var(--spacing-lg);
+    align-items: start;
+    width: 100%;
+}
+
+.account-hero-left {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    align-self: start;
+}
+
+.account-hero-contacts {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    background: var(--color-gray-light);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+}
+
+.account-hero-right {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+    width: 100%;
+    padding-left: 6px;
+}
+
+.avatar-container {
+    width: var(--left);
+    height: var(--left);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+}
+
+.expertise-tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.expertise-tag,
+.expertise-tags span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    border-radius: 14px;
+    background: rgba(37, 99, 235, .12);
+    color: var(--color-primary-dark);
+}
+
+.expertise-details {
+    max-width: 70ch;
+    line-height: 1.7;
+}
+
+.account-info-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.account-info-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-md);
+}
+
+.info-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(37, 99, 235, .15);
+    color: rgba(37, 99, 235, .95);
+    flex-shrink: 0;
+}
+
+.info-icon i {
+    font-size: 14px;
+    line-height: 1;
+}
+
+.info-label {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
+}
+
+.info-value {
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.expertise-heading {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.expertise {
+    font-size: var(--font-size-lg);
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+}
+
+.account-hero-details {
+    width: 100%;
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xs) var(--spacing-xl) var(--spacing-xl);
+    box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
+}
+
+.account-panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.activity-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    height: 100%;
+}
+
+.section-header {
+    margin: 0 0 6px 0;
+}
+
+.section-title {
+    margin: 0;
+    font-size: clamp(14px, 1rem, 16px);
+    font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 992px) {
+    .account-hero-top {
+        --left: 220px;
+        grid-template-columns: var(--left) 1fr;
+    }
+
+    .avatar-container {
+        width: var(--left);
+        height: var(--left);
+    }
+}
+
+@media (max-width: 768px) {
+    .account-hero-top {
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
+    }
+
+    .account-hero-left {
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: center;
+    }
+
+    .account-hero-right {
+        grid-column: 1;
+        grid-row: 2;
+        width: 100%;
+        align-items: center;
+        text-align: center;
+        padding-left: 0;
+    }
+
+    .account-hero-contacts {
+        grid-column: 1;
+        grid-row: 3;
+        width: 100%;
+    }
+
+    .account-info-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .info-value {
+        text-align: left;
+        white-space: normal;
+        text-overflow: clip;
+    }
+}
