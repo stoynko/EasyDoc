@@ -11,15 +11,13 @@ import com.github.stoynko.easydoc.practitioner.web.dto.request.UpdateProfessiona
 import com.github.stoynko.easydoc.practitioner.web.dto.request.UpdateProfilePhotoRequest;
 import com.github.stoynko.easydoc.practitioner.web.dto.response.DoctorBriefSummaryResponse;
 import com.github.stoynko.easydoc.practitioner.web.mapper.PractitionerMapper;
-import com.github.stoynko.easydoc.security.SecurityContextUpdater;
 import com.github.stoynko.easydoc.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,20 +26,12 @@ import static com.github.stoynko.easydoc.user.model.AccountRole.DOCTOR;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DoctorService {
 
     private final DoctorRepository repository;
     private final UserService userService;
     private final CloudinaryService cloudinaryService;
-    private final SecurityContextUpdater contextUpdater;
-
-    @Autowired
-    public DoctorService(DoctorRepository repository, UserService userService, CloudinaryService cloudinaryService, SecurityContextUpdater contextUpdater) {
-        this.repository = repository;
-        this.userService = userService;
-        this.cloudinaryService = cloudinaryService;
-        this.contextUpdater = contextUpdater;
-    }
 
     @Transactional
     public void updateUserProfilePhoto(UUID uuid, UpdateProfilePhotoRequest request) throws IOException {
@@ -67,7 +57,7 @@ public class DoctorService {
         doctor.setProfessionalHighlights(request.getProfessionalHighlights());
         doctor.setSpokenLanguages(request.getSpokenLanguages());
         repository.save(doctor);
-        log.info("[update-professional-info] | userId: {} timestamp:{}", uuid, LocalDateTime.now());
+        log.info("[update-professional-info] | Doctor with id {} has successfully updated his professional details", uuid);
     }
 
     @Transactional
@@ -75,7 +65,7 @@ public class DoctorService {
 
         Doctor doctor = PractitionerMapper.toDoctorEntity(application);
         repository.save(doctor);
-        log.info("[doctor-onboarding] | userId: {} timestamp:{}", application.getUser().getId(), LocalDateTime.now());
+        log.info("[doctor-onboarding] | User with id {} was successfully onboarded as a doctor", application.getUser().getId());
 
         userService.updateUserRoleTo(application.getUser(), DOCTOR);
     }

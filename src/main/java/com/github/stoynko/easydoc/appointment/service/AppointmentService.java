@@ -5,6 +5,7 @@ import com.github.stoynko.easydoc.appointment.exception.AppointmentDoesNotExistE
 import com.github.stoynko.easydoc.appointment.exception.InvalidTimeException;
 import com.github.stoynko.easydoc.appointment.exception.PastDateException;
 import com.github.stoynko.easydoc.appointment.model.Appointment;
+import com.github.stoynko.easydoc.appointment.model.AppointmentStatus;
 import com.github.stoynko.easydoc.appointment.repository.AppointmentRepository;
 import com.github.stoynko.easydoc.appointment.web.dto.request.AppointmentRequest;
 import com.github.stoynko.easydoc.appointment.web.dto.response.AppointmentTimeSlotResponse;
@@ -44,6 +45,7 @@ public class AppointmentService {
     private static final LocalTime START_TIME = LocalTime.of(8, 0);
     private static final LocalTime END_TIME = LocalTime.of(15, 40);
     private static final int EXAMINATION_INTERVAL = 20;
+
     private final AppointmentRepository repository;
     private final DoctorService doctorService;
     private final UserService userService;
@@ -79,14 +81,14 @@ public class AppointmentService {
         eventPublisher.publishEvent(new AppointmentCompletedEvent(appointment.getPatient().getEmailAddress(), appointmentId));
     }
 
-    public void cancelAppointment(UUID appointmentId, UserAuthenticationDetails principal) {
+    public void cancelAppointment(UUID appointmentId) {
         Appointment appointment = getAppointmentById(appointmentId);
         appointment.setStatus(CANCELLED);
         repository.save(appointment);
         log.info("[appointment-cancellation] | Appointment {} was successfully canceled at {}", appointment.getId(), LocalDateTime.now());
     }
 
-    public void markAsNoShow(UUID appointmentId, UserAuthenticationDetails principal) {
+    public void markAsNoShow(UUID appointmentId) {
         Appointment appointment = getAppointmentById(appointmentId);
         appointment.setStatus(NO_SHOW);
         repository.save(appointment);
@@ -115,8 +117,10 @@ public class AppointmentService {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.plusDays(1).atStartOfDay().minusNanos(1);
 
-        return repository.findByDoctorAndStatusAndStartsAtBetweenOrderByStartsAtAsc(
-                doctor, PENDING, startOfDay, endOfDay
+        List<AppointmentStatus> blockingStatus = List.of(PENDING, PROCESSING, COMPLETED);
+
+        return repository.findByDoctorAndStatusInAndStartsAtBetweenOrderByStartsAtAsc(
+                doctor, blockingStatus, startOfDay, endOfDay
         );
     }
 

@@ -1,22 +1,19 @@
 package com.github.stoynko.easydoc.appointment.web;
 
 import com.github.stoynko.easydoc.appointment.model.Appointment;
-import com.github.stoynko.easydoc.appointment.model.AppointmentStatus;
+import com.github.stoynko.easydoc.appointment.service.AppointmentService;
+import com.github.stoynko.easydoc.appointment.web.dto.request.AppointmentRequest;
+import com.github.stoynko.easydoc.appointment.web.dto.response.AppointmentTimeSlotResponse;
 import com.github.stoynko.easydoc.prescription.model.DeliveryMethod;
 import com.github.stoynko.easydoc.prescription.service.MedicamentsCatalog;
+import com.github.stoynko.easydoc.prescription.service.PrescriptionService;
 import com.github.stoynko.easydoc.prescription.web.dto.response.MedicamentItemResponse;
 import com.github.stoynko.easydoc.prescription.web.dto.response.PrescriptionResponse;
-import com.github.stoynko.easydoc.report.model.ReportStatus;
-import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
-import com.github.stoynko.easydoc.appointment.service.AppointmentService;
-import com.github.stoynko.easydoc.prescription.service.PrescriptionService;
 import com.github.stoynko.easydoc.report.service.ReportService;
-import com.github.stoynko.easydoc.appointment.web.dto.request.AppointmentRequest;
 import com.github.stoynko.easydoc.report.web.dto.request.MedicalReportRequest;
-import com.github.stoynko.easydoc.appointment.web.dto.response.AppointmentTimeSlotResponse;
+import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
 import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import jakarta.validation.Valid;
-import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,18 +27,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.PENDING;
-import static com.github.stoynko.easydoc.appointment.model.AppointmentStatus.PROCESSING;
 import static com.github.stoynko.easydoc.report.model.ReportStatus.DRAFT;
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forPage;
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forTargetResource;
-import static com.github.stoynko.easydoc.web.dto.DtoContext.forTargetResourceWithAction;
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forTargetResourceWithContent;
-import static com.github.stoynko.easydoc.web.model.ViewAction.READ;
-import static com.github.stoynko.easydoc.web.model.ViewAction.WRITE;
 import static com.github.stoynko.easydoc.web.model.ViewPage.APPOINTMENTS_TABLE;
 import static com.github.stoynko.easydoc.web.model.ViewPage.APPOINTMENT_CREATION;
 import static com.github.stoynko.easydoc.web.model.ViewPage.CONFIRMATION;
@@ -131,7 +125,7 @@ public class AppointmentsController {
             return new ModelAndView("redirect:/appointments");
         }
 
-        appointmentService.cancelAppointment(appointmentId, principal);
+        appointmentService.cancelAppointment(appointmentId);
         ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
         return modelAndView.addObject("confirmationMessage", "appointmentCancellationSuccess");
     }
@@ -146,7 +140,7 @@ public class AppointmentsController {
             return new ModelAndView("redirect:/appointments");
         }
 
-        appointmentService.markAsNoShow(appointmentId, principal);
+        appointmentService.markAsNoShow(appointmentId);
         ModelAndView modelAndView = pageBuilder.buildPage(forPage(CONFIRMATION, principal));
         return modelAndView.addObject("confirmationMessage", "appointmentMarkNoShow");
     }
