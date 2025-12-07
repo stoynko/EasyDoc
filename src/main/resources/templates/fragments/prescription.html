@@ -192,7 +192,8 @@
 
             <!--REMOVE MEDICAMENT BUTTON-->
             <form th:if="${prescriptionDetails.prescriptionStatus == T(com.github.stoynko.easydoc.prescription.model.PrescriptionStatus).DRAFT}"
-                  th:action="@{/appointments/{appointmentId}/prescription/medicaments/remove(appointmentId=${prescriptionDetails.appointmentId})}"
+                  th:action="@{/appointments/{appointmentId}/prescription/medicaments/remove/{medicamentId}(appointmentId=${prescriptionDetails.appointmentId},
+                                                                                                            medicamentId=${medicament.id})}"
                   th:method="POST"
                   class="medicament-remove-form">
 

@@ -1,14 +1,15 @@
 package com.github.stoynko.easydoc.prescription.web.client;
 
-import com.github.stoynko.easydoc.prescription.web.dto.request.AddMedicamentRequest;
-import com.github.stoynko.easydoc.prescription.web.dto.request.RemoveMedicamentRequest;
-import com.github.stoynko.easydoc.prescription.web.dto.response.PrescriptionResponse;
 import com.github.stoynko.easydoc.config.PrescriptionFeignConfig;
+import com.github.stoynko.easydoc.prescription.web.dto.request.AddMedicamentRequest;
+import com.github.stoynko.easydoc.prescription.web.dto.response.PrescriptionResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.UUID;
@@ -22,14 +23,12 @@ public interface PrescriptionClient {
     @PostMapping("/appointments/{appointmentId}/prescription")
     public ResponseEntity<PrescriptionResponse> createPrescription(@PathVariable UUID appointmentId);
 
-    @PostMapping("/appointments/{appointmentId}/prescription/medicaments")
-    public ResponseEntity<PrescriptionResponse> addMedicament(@PathVariable UUID appointmentId,
-                                                                @RequestBody AddMedicamentRequest request);
+    @PostMapping("/prescriptions/{prescriptionId}/medicaments")
+    public ResponseEntity<PrescriptionResponse> addMedicament(@PathVariable UUID prescriptionId, @RequestBody AddMedicamentRequest request);
 
-    @PostMapping("appointments/{appointmentId}/prescription/medicaments/remove")
-    public ResponseEntity<PrescriptionResponse> removeMedicament(@PathVariable UUID appointmentId,
-                                                                 @RequestBody RemoveMedicamentRequest request);
+    @DeleteMapping("/prescriptions/{prescriptionId}/medicaments/{medicamentId}")
+    public ResponseEntity<PrescriptionResponse> removeMedicament(@PathVariable UUID prescriptionId, @PathVariable UUID medicamentId);
 
-    @PostMapping("appointments/{appointmentId}/prescription/issue")
-    public ResponseEntity<PrescriptionResponse> issuePrescription(@PathVariable UUID appointmentId, @RequestBody UUID prescriptionId);
+    @PutMapping("/prescriptions/{prescriptionId}")
+    public ResponseEntity<PrescriptionResponse> issuePrescription(@PathVariable UUID prescriptionId);
 }

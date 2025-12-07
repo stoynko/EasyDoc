@@ -1,12 +1,11 @@
 package com.github.stoynko.easydoc.prescription.web;
 
+import com.github.stoynko.easydoc.appointment.model.Appointment;
 import com.github.stoynko.easydoc.appointment.service.AppointmentService;
-import com.github.stoynko.easydoc.prescription.model.DeliveryMethod;
 import com.github.stoynko.easydoc.prescription.model.MedicamentType;
 import com.github.stoynko.easydoc.prescription.service.MedicamentsCatalog;
 import com.github.stoynko.easydoc.prescription.service.PrescriptionService;
 import com.github.stoynko.easydoc.prescription.web.dto.request.AddMedicamentRequest;
-import com.github.stoynko.easydoc.prescription.web.dto.request.RemoveMedicamentRequest;
 import com.github.stoynko.easydoc.prescription.web.dto.response.MedicamentItemResponse;
 import com.github.stoynko.easydoc.prescription.web.dto.response.PrescriptionResponse;
 import com.github.stoynko.easydoc.security.UserAuthenticationDetails;
@@ -15,7 +14,6 @@ import com.github.stoynko.easydoc.web.utilities.PageBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,17 +21,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.github.stoynko.easydoc.web.dto.DtoContext.forTargetResourceWithContent;
 import static com.github.stoynko.easydoc.web.model.ViewPage.PRESCRIPTIONS_TABLE;
@@ -75,17 +67,18 @@ public class PrescriptionsController {
         return new ModelAndView("redirect:/appointments/" + appointmentId + "/prescription");
     }
 
-    @PostMapping("/appointments/{appointmentId}/prescription/medicaments/remove")
-    public ModelAndView removeMedicament(@PathVariable UUID appointmentId,
-                                         RemoveMedicamentRequest request) {
+    @PostMapping("/appointments/{appointmentId}/prescription/medicaments/remove/{medicamentId}")
+    public ModelAndView removeMedicament(@PathVariable UUID appointmentId, @PathVariable UUID medicamentId) {
 
-        prescriptionService.removeMedicament(appointmentId, request);
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+        prescriptionService.removeMedicament(appointmentId, appointment.getPrescription(), medicamentId);
         return new ModelAndView("redirect:/appointments/" + appointmentId + "/prescription");
     }
 
     @PostMapping("appointments/{appointmentId}/prescription/issue")
-    public ModelAndView issuePrescription(@PathVariable UUID appointmentId, @RequestParam UUID prescriptionId) {
-        prescriptionService.issuePrescription(appointmentId, prescriptionId);
+    public ModelAndView issuePrescription(@PathVariable UUID appointmentId) {
+        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+        prescriptionService.issuePrescription(appointmentId, appointment.getPrescription());
         return new ModelAndView("redirect:/appointments/" + appointmentId + "/prescription");
     }
     @PreAuthorize("hasAnyRole('DOCTOR')")

@@ -3,7 +3,6 @@ package com.github.stoynko.easydoc.prescription.service;
 import com.github.stoynko.easydoc.appointment.service.AppointmentService;
 import com.github.stoynko.easydoc.prescription.web.client.PrescriptionClient;
 import com.github.stoynko.easydoc.prescription.web.dto.request.AddMedicamentRequest;
-import com.github.stoynko.easydoc.prescription.web.dto.request.RemoveMedicamentRequest;
 import com.github.stoynko.easydoc.prescription.web.dto.response.PrescriptionResponse;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +51,7 @@ public class PrescriptionService {
     @CachePut(value = "prescriptions", key = "#appointmentId")
     public PrescriptionResponse addMedicament(UUID appointmentId, AddMedicamentRequest request) {
         try {
-            client.addMedicament(appointmentId, request);
-            return client.getPrescription(appointmentId).getBody();
+            return client.addMedicament(request.getPrescriptionId(), request).getBody();
         } catch (FeignException exception) {
             log.error("[S2S Call] Adding medicament to prescription with id {} failed due to {}",
                     request.getPrescriptionId(), exception.getMessage());
@@ -63,13 +61,12 @@ public class PrescriptionService {
     }
 
     @CachePut(value = "prescriptions", key = "#appointmentId")
-    public PrescriptionResponse removeMedicament(UUID appointmentId, RemoveMedicamentRequest request) {
+    public PrescriptionResponse removeMedicament(UUID appointmentId, UUID prescriptionId, UUID medicamentId) {
         try {
-            client.removeMedicament(appointmentId, request);
-            return client.getPrescription(appointmentId).getBody();
+            return client.removeMedicament(prescriptionId, medicamentId).getBody();
         } catch (FeignException exception) {
             log.error("[S2S Call] Removing medicament with id {} from prescription with id {} failed due to {}",
-                    request.getMedicamentId(), request.getPrescriptionId(), exception.getMessage());
+                    medicamentId, prescriptionId, exception.getMessage());
 
             return client.getPrescription(appointmentId).getBody();
         }
@@ -78,13 +75,10 @@ public class PrescriptionService {
     @CachePut(value = "prescriptions", key = "#appointmentId")
     public PrescriptionResponse issuePrescription(UUID appointmentId, UUID prescriptionId) {
         try {
-            client.issuePrescription(appointmentId, prescriptionId);
-            return client.getPrescription(appointmentId).getBody();
+            return client.issuePrescription(prescriptionId).getBody();
         } catch (FeignException exception) {
             log.error("[S2S Call] Issuing prescription with id {} failed due to {}", prescriptionId, exception.getMessage());
             return client.getPrescription(appointmentId).getBody();
         }
     }
-
-
 }
